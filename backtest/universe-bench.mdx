@@ -4,8 +4,6 @@ sidebarTitle: "全市场"
 description: "日期：2026-10-11"
 ---
 
-{/* 同步自 java-quant-backtest/docs/universe-bench.md */}
-
 日期：2026-10-11
 
 ## 架构结论
@@ -19,7 +17,6 @@ description: "日期：2026-10-11"
 
 ## 全 A 文件
 
-- 导出：`scripts/export_all_a.py`
 - 文件：`data/universe/all_a_codes.txt`（约 **5223** 只）
 
 ## 用法
@@ -40,8 +37,8 @@ curl -s -X POST http://127.0.0.1:8080/api/v1/universe/market-backtest \
 
 ## 实现要点
 
-- 列式驻留：`CompactSeries(code, dates, open, close)` 组成 `MarketPanel`
-- 引擎：`VectorSmaCrossEngine`（滚动 SMA，并行 `IntStream`）
+- 内存里按股票保存代码、日期、开盘、收盘
+- 向量计算做滚动均线，可以并行
 - 不落库、预热命中 Redis 时不查证券表
 
 ## 组合交易模型（选股回测右侧面板）
@@ -55,4 +52,4 @@ curl -s -X POST http://127.0.0.1:8080/api/v1/universe/market-backtest \
 | `GET /jobs/{jobId}` | 查询已落库任务 |
 | `POST/GET /strategies` | 保存/列出策略 |
 
-完整流程见 [`BACKTEST_FLOW.md`](/backtest/flow)。
+完整流程见 [完整回测流程（产品 × 开发）](/backtest/flow)。

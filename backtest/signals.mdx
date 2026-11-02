@@ -1,27 +1,12 @@
 ---
 title: "指标、买卖点与回测结果"
 sidebarTitle: "买卖点"
-description: "更新日期：2026-10-16。公式以当前代码为准。工作台下拉项以 GET /api/v1/portfolio/meta 为准，见 api/portfolio-meta.md(/api/portfolio-meta)。字段落在哪个接口见 api/portfolio-outp..."
+description: "更新日期：2026-10-16。工作台下拉项以 GET /api/v1/portfolio/meta 为准，见 组合回测枚举（GET /api/v1/portfolio/meta）。字段落在哪个接口见 组合回测输出结构。本文写指标怎么算、买卖点哪一天成立、结果里的每个数怎么来。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/SIGNAL_LOGIC.md */}
+更新日期：2026-10-16。工作台下拉项以 `GET /api/v1/portfolio/meta` 为准，见 [组合回测枚举（`GET /api/v1/portfolio/meta`）](/api/portfolio-meta)。字段落在哪个接口见 [组合回测输出结构](/api/portfolio-output)。本文写指标怎么算、买卖点哪一天成立、结果里的每个数怎么来。
 
-更新日期：2026-10-16。公式以当前代码为准。工作台下拉项以 `GET /api/v1/portfolio/meta` 为准，见 [`api/portfolio-meta.md`](/api/portfolio-meta)。字段落在哪个接口见 [`api/portfolio-output.md`](/api/portfolio-output)。本文写指标怎么算、买卖点哪一天成立、结果里的每个数怎么来。
-
-改公式、参数或新增一条规则时，同步改本文对应小节。新增规则还要在 `TradeSignalCatalog.builtins()` 注册，编号用大写，和配置里的 `buySignal` / `sellSignal` 一致。
-
-| 内容 | 代码 |
-|------|------|
-| 规则注册 | `strategy/TradeSignalCatalog.java` |
-| 双均线金叉、死叉、动量 | `strategy/SmaSignals.java` |
-| 金叉买入、成分排序买入 | `strategy/rules/SmaGoldenBuyRule.java`、`UniverseRankBuyRule.java` |
-| 死叉、顶背离、持股周期 | `strategy/rules/MaDeathSellRule.java`、`MaTopDivSellRule.java`、`HoldPeriodSellRule.java` |
-| 其余 35 条卖出 | `strategy/rules/IndicatorSellRule.java`、`CloseSellMath.java` |
-| 开跑前写成布尔数组 | `strategy/SignalPrepCache.java` |
-| 昨收确认、次日开盘成交、净值与收益 | `portfolio/PortfolioEngine.java` |
-| Sharpe、换手 | `analytics/PortfolioAnalytics.java` |
-| 任务摘要里的胜率、盈亏比 | `portfolio/PortfolioBacktestService.java` 的 `slimForJob` |
-| 全市场扫描（同日收盘成交） | `panel/VectorSmaCrossEngine.java` |
+改公式、参数或新增一条规则时，同步改本文对应小节。新增规则的编号用大写，和配置里的 `buySignal` / `sellSignal` 一致。
 
 ---
 
@@ -60,7 +45,7 @@ description: "更新日期：2026-10-16。公式以当前代码为准。工作�
 
 K 线序列按每只股票自己的交易日排列。停牌日没有这根 K 线，指标窗口会把停牌前后的交易日接在一起，中间不补空日。
 
-窗口还没满的位置：`CloseSellMath` 写成 `NaN`，比较直接跳过；`SmaSignals.rolling` 写成 `0`，金叉和死叉从下标 `longMa` 起读，此时短、长窗口都已满。
+窗口还没满的位置：指标写成 `NaN`，比较直接跳过；简单均线写成 `0`，金叉和死叉从下标 `longMa` 起读，此时短、长窗口都已满。
 
 ---
 
@@ -85,7 +70,7 @@ K 线序列按每只股票自己的交易日排列。停牌日没有这根 K 线
 
 ## 4. 指标公式
 
-周期写死在 `CloseSellMath` 里，请求参数改不了。只有金叉、死叉、MA 顶背离和「成分按排序买入」的动量用请求里的 `shortMa`、`longMa`。默认短 20、长 60。`shortMa` 小于 2 或 `longMa` 不大于 `shortMa` 时，金叉和死叉整段不触发。
+周期是固定的，请求参数改不了。只有金叉、死叉、MA 顶背离和「成分按排序买入」的动量用请求里的 `shortMa`、`longMa`。默认短 20、长 60。`shortMa` 小于 2 或 `longMa` 不大于 `shortMa` 时，金叉和死叉整段不触发。
 
 ### 4.1 简单均线 SMA(N)
 
@@ -242,13 +227,13 @@ SMA(short)_{i-1} ≤ SMA(long)_{i-1}
 
 | id | 名称 | 计算 | 成立 |
 |----|------|------|------|
-| `MA_DEATH` | MA死叉日线（默认） | `SmaSignals.rolling`，周期用请求的短、长均线 | 下标 `i ≥ longMa`：上一根短 ≥ 长，这一根短 &lt; 长 |
-| `MA_TOP_DIV` | MA顶背离日线 | **ta4j**：`SMA(shortMa)` 与 `HighestValueIndicator(收盘, shortMa+1)` | 下标 `i ≥ shortMa+1`：当天收盘等于最近 `shortMa+1` 根收盘的最高值（含当天，并列也算），并且 SMA 今天 &lt; 昨天 |
+| `MA_DEATH` | MA死叉日线（默认） | 周期用请求的短、长均线 | 下标 `i ≥ longMa`：上一根短 ≥ 长，这一根短 &lt; 长 |
+| `MA_TOP_DIV` | MA顶背离日线 | **ta4j**：`SMA(shortMa)` 与最近 `shortMa+1` 根收盘的最高值 | 下标 `i ≥ shortMa+1`：当天收盘等于最近 `shortMa+1` 根收盘的最高值（含当天，并列也算），并且 SMA 今天 &lt; 昨天 |
 | `HOLD_PERIOD` | 仅持股周期卖出 | 不计算指标 | 标记恒为 false，只等第 6 节的持股天数 |
 
-`MA_TOP_DIV` 预计算走 ta4j。`SmaSignals.maTopDivergence` 把「新高」写成「收盘 ≥ 含当天在内的窗口最大值」，这个比较恒成立，实际只剩「短均线今天 &lt; 昨天」。那条实现只在没有预计算、退回逐根 `signal()` 时才会用到。撮合读的是 ta4j 写好的数组。
+`MA_TOP_DIV` 预计算走 ta4j。另一条「新高」写法把收盘和含当天在内的窗口最大值相比，这个比较恒成立，实际只剩「短均线今天 &lt; 昨天」。撮合读的是 ta4j 写好的数组。
 
-ta4j 这条规则建 K 线时，最高价 = max(开盘, 收盘)，最低价 = min(开盘, 收盘)，成交量写 0。`HighestValueIndicator` 读的是收盘，高低价不影响结果。
+ta4j 这条规则建 K 线时，最高价 = max(开盘, 收盘)，最低价 = min(开盘, 收盘)，成交量写 0。比较读的是收盘，高低价不影响结果。
 
 ### 6.2 RSI（收盘，周期 6 / 12）
 
@@ -374,7 +359,7 @@ ta4j 这条规则建 K 线时，最高价 = max(开盘, 收盘)，最低价 = mi
 
 ## 9. 全市场双均线扫描
 
-`VectorSmaCrossEngine.runOne` 与组合回测共用 `SmaSignals.goldenCross` / `deathCross`，交叉定义相同。成交不同：
+全市场扫描和组合回测的金叉、死叉定义相同。成交不同：
 
 - 金叉当天、空仓时，用**当天收盘**买入，满仓。
 - 死叉当天、持仓时，用**当天收盘**卖出。
@@ -398,7 +383,7 @@ ta4j 这条规则建 K 线时，最高价 = max(开盘, 收盘)，最低价 = mi
 
 ## 10. 组合回测结果
 
-工作台结果页的十项绩效和收益曲线来自 `PortfolioEngine` 跑完后的 `PortfolioReport`。最大回撤库存是正数，页面也按正的百分数显示。`POST /api/v1/portfolio/run` 的 `trades` 带全部成交。结果页表格仍按 `GET /api/v1/portfolio/jobs/{jobId}/trades` 从本进程内存分页取。收益曲线默认对照沪深300。
+工作台结果页的十项绩效和收益曲线在组合回测跑完后给出。最大回撤库存是正数，页面也按正的百分数显示。`POST /api/v1/portfolio/run` 的 `trades` 带全部成交。结果页表格仍按 `GET /api/v1/portfolio/jobs/{jobId}/trades` 从本进程内存分页取。收益曲线默认对照沪深300。
 
 写入 `bt_job.result_json` 的是同一套绩效的摘要。曲线和成交在库里是空数组。`barCount` 写的是股票数 `candidateCount`，不是 K 线根数。
 
@@ -461,7 +446,7 @@ benchmarkReturn = 最后一笔 benchmarkEquity / 初始资金 − 1
 
 ### 10.4 Sharpe
 
-`PortfolioAnalytics.sharpe`。年化无风险利率 2%，日利率 `0.02 / 252`。`result_json.riskFreeRate` 写的就是这个 2%。
+年化无风险利率 2%，日利率 `0.02 / 252`。`result_json.riskFreeRate` 写的就是这个 2%。
 
 从初始资金走到每一个净值点，逐段算超额收益 `r − 0.02/252`，其中 `r = 今权益 / 昨权益 − 1`。昨权益 ≤ 0 的段丢掉。有效段少于 2 时，Sharpe 为 0。
 
@@ -538,7 +523,7 @@ tradeCount = 0 时，winRate = 0
 
 因子不是买卖点。配了 `factorCombo` 时，因子服务按区间给出每日成分；组合引擎只在**上一交易日**成分里的股票上检查买入标记。卖出不看成分。
 
-本地warmup算出来的行情因子（`factor-service` 的 `FactorCompute`）如下。涨跌幅按百分数。分位取当日有限值里从低到高排序后的 80%～100%，下标算法与 `FactorScreen.percentileBounds` 相同：`floor(n × 80 / 100)` 到 `ceil(n × 100 / 100)`。
+本地预热算出来的行情因子如下。涨跌幅按百分数。分位取当日有限值里从低到高排序后的 80%～100%，下标从 `floor(n × 80 / 100)` 到 `ceil(n × 100 / 100)`。
 
 | id | 入选 |
 |----|------|

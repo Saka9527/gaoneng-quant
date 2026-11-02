@@ -1,12 +1,10 @@
 ---
 title: "组合回测输出结构"
 sidebarTitle: "输出"
-description: "代码：PortfolioReport、PortfolioBacktestService.clientReportView、slimForJob。每个数的公式见 ../SIGNAL_LOGIC.md(/backtest/signals) 第 10 节。"
+description: "每个数的公式见 指标、买卖点与回测结果 第 10 节。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/api/portfolio-output.md */}
-
-代码：`PortfolioReport`、`PortfolioBacktestService.clientReportView`、`slimForJob`。每个数的公式见 [`../SIGNAL_LOGIC.md`](/backtest/signals) 第 10 节。
+每个数的公式见 [指标、买卖点与回测结果](/backtest/signals) 第 10 节。
 
 同一笔回测有两份输出。`POST /run` 带净值曲线、期末持仓和全部成交。写入 `bt_job.result_json` 的是摘要，曲线和成交都是空数组。
 
@@ -41,7 +39,7 @@ description: "代码：PortfolioReport、PortfolioBacktestService.clientReportVi
 | `equityCurve` | array | 见下表 |
 | `trades` | array | 全部成交，字段见第 4 节。按发生顺序，`index` 从 1 递增。笔数不少于 `tradeCount`，因为含买入 |
 | `holdingsSnapshot` | array | 期末仍持有的仓位 |
-| `config` | object | 归一化后的 `PortfolioTradeConfig` |
+| `config` | object | 归一化后的交易配置 |
 
 `equityCurve[]`：
 

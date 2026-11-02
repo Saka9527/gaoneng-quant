@@ -1,18 +1,15 @@
 ---
 title: "测试库 `gngltdb"
 sidebarTitle: "概览"
-description: "本库有两类表：服务自己的业务表，以及从同花顺精简过来的行情镜像。回测热路径读的是本地 DuckDB，见 ../duckdb/README.md(/data/duckdb)。同花顺源库字段见 ../ths-db/README.md(/data/ths/index)。"
+description: "本库有两类表：服务自己的业务表，以及从同花顺精简过来的行情镜像。回测热路径读的是本地 DuckDB，见 本地行情文件 data/market.duckdb。同花顺源库字段见 同花顺库表结构：lm_ths_db。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/gngltdb/README.md */}
-
-本库有两类表：服务自己的业务表，以及从同花顺精简过来的行情镜像。回测热路径读的是本地 DuckDB，见 [`../duckdb/README.md`](/data/duckdb)。同花顺源库字段见 [`../ths-db/README.md`](/data/ths/index)。
+本库有两类表：服务自己的业务表，以及从同花顺精简过来的行情镜像。回测热路径读的是本地 DuckDB，见 [本地行情文件 data/market.duckdb](/data/duckdb)。同花顺源库字段见 [同花顺库表结构：lm_ths_db](/data/ths/index)。
 
 - Host: `rm-uf68ip7k7isrv895h7o.mysql.rds.aliyuncs.com:6306`
 - 库名: `gngltdb`
 - 账号: `gngltdb_rw`（密码用环境变量 `APP_DB_PASSWORD`）
-- 业务表 DDL: `../../src/main/resources/schema-gngltdb.sql`（`../../src/main/resources/schema-gngltdb.sql`）、`../../src/main/resources/schema-product.sql`（`../../src/main/resources/schema-product.sql`），部署时执行，启动不再建表
-- 镜像表 DDL: `../../scripts/sync_ths_market_to_gngltdb.py`（`../../scripts/sync_ths_market_to_gngltdb.py`） 里的 `DDL`
+- 业务表在部署时建好，启动不再建表
 
 ## 业务表
 
@@ -23,12 +20,12 @@ description: "本库有两类表：服务自己的业务表，以及从同花顺
 | [`gn_factor`](/data/gngltdb/gn_factor) | 产品种子 / 板块刷新 | 工作台选股因子 |
 | [`gn_factor_signal`](/data/gngltdb/gn_factor_signal) | 因子信号、板块刷新 | 页面预览用最新一个信号日；选股服务的三年成分在本机快照里 |
 | [`gn_factor_combo`](/data/gngltdb/gn_factor_combo) | 保存动态组合 | 用户因子组合 JSON |
-| `gn_user` / `gn_user_browse` / `gn_user_follow` | 产品种子 | 演示用户、最近浏览、关注。字段在 `schema-product.sql` |
+| `gn_user` / `gn_user_browse` / `gn_user_follow` | 产品种子 | 演示用户、最近浏览、关注 |
 | `gn_strategy` / `gn_strategy_nav` / `gn_strategy_position` / `gn_strategy_rebalance` | 策略榜单种子 | 展示用净值、持仓和调仓。当前工作台不读 |
 
 ## 行情镜像（精简列，近三年全 A）
 
-这些表是同花顺源表的子集，列名和源库不完全相同。同步脚本见 [`../market-mirror.md`](/data/mirror)。
+这些表是同花顺源表的子集，列名和源库不完全相同。同步脚本见 [行情镜像（THS → gngltdb）](/data/mirror)。
 
 | 镜像表 | 同花顺源表 | DuckDB 表 |
 |--------|------------|-----------|

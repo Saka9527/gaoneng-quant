@@ -3,10 +3,8 @@ title: "bt_float_share"
 description: "主键 (sec_code, end_date)。索引 idx_end (end_date)。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/gngltdb/tables/bt_float_share.md */}
-
 - 说明: 自由流通股本。买入排序选成交额、换手或流通市值时才参与计算
-- 源表: `ls_stock_free_float_share`，按 `sec_id` 对到代码，见 [`../../ths-db/tables/ls_stock_free_float_share.md`](/data/ths/ls_stock_free_float_share)
+- 源表: `ls_stock_free_float_share`，按 `sec_id` 对到代码，见 [ls_stock_free_float_share](/data/ths/ls_stock_free_float_share)
 - 迁入 DuckDB: `float_share`
 
 | 字段 | 类型 | 说明 |

@@ -1,12 +1,10 @@
 ---
 title: "本地行情文件 `data/market.duckdb"
 sidebarTitle: "本地库"
-description: "回测读行情的第一路径。文件由 DuckDbMarketStore 从 gngltdb 镜像一次性迁入，建表语句在该类的 DDL。quant.duckdb.migrate 为 false 时启动不会重迁。"
+description: "回测读行情的第一路径。文件从 gngltdb 镜像一次性迁入。quant.duckdb.migrate 为 false 时启动不会重迁。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/duckdb/README.md */}
-
-回测读行情的第一路径。文件由 `DuckDbMarketStore` 从 `gngltdb` 镜像一次性迁入，建表语句在该类的 `DDL`。`quant.duckdb.migrate` 为 false 时启动不会重迁。
+回测读行情的第一路径。文件从 `gngltdb` 镜像一次性迁入。`quant.duckdb.migrate` 为 false 时启动不会重迁。
 
 JDBC 使用 `jdbc:duckdb:` 加正斜杠路径。不要在 URL 后加 `access_mode=READ_ONLY`。
 

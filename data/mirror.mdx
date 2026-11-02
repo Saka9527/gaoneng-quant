@@ -4,8 +4,6 @@ sidebarTitle: "镜像"
 description: "全量拷贝过大且指数表查询易超时，因此镜像策略为精简近 N 年（默认 3 年）全 A + 主要对比指数。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/market-mirror.md */}
-
 ## 源表体量（lm_ths_db，information_schema 估算）
 
 | 表 | 约行数 | 约体积 |
@@ -44,7 +42,7 @@ python -u scripts/sync_ths_market_to_gngltdb.py --years 3 --offset 1000 --skip-i
 python -u scripts/sync_indexes_and_adjust.py
 ```
 
-服务器资源与部署规格见 [`DEPLOY.md`](/guide/deploy)。
+服务器资源与部署规格见 [部署与服务器资源](/guide/deploy)。
 
 ## 应用读镜像
 

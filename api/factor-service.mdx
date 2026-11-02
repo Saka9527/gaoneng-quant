@@ -4,11 +4,9 @@ sidebarTitle: "选股"
 description: "独立进程 factor-service。没有 Swagger。响应是裸 JSON，没有回测服务那层 { success, code, message, data, timestamp }。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/api/factor-service.md */}
-
 独立进程 `factor-service`。没有 Swagger。响应是裸 JSON，没有回测服务那层 `{ success, code, message, data, timestamp }`。
 
-浏览器不调用。带回测因子组合时，回测进程的 `FactorConstituentClient` 只调成分接口。
+浏览器不调用。带回测因子组合时，回测进程只调成分接口。
 
 快照文件默认 `factor-service/data/membership.bin`，启动时装入内存。2026-10-14 启动日志：276 个因子，9,267,897 行，79,777 个因子日，2023-09-12 至 2026-10-12。
 

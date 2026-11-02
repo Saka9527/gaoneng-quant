@@ -30,9 +30,9 @@ sidebarTitle: "因子编写"
 六条公式没有表达式编辑器。修改步骤：
 
 <Steps>
-  <Step title="改计算">在 `FormulaSignals` 里改对应 `calc_*`，窗口不够或输入无效时保持为假。</Step>
+  <Step title="改计算">改对应公式，窗口不够或输入无效时保持为假。</Step>
   <Step title="改文档">同步本目录里的公式页。牛线定义变了要同时改上升通道、回踩和辅助金叉。</Step>
   <Step title="重做成分">公式结果进内存成分后，回测和成分服务才看得到。页面预览仍读 `gn_factor_signal` 最新一个信号日。</Step>
 </Steps>
 
-公式因子不是买卖点。买卖点在 `TradeSignalCatalog` 注册，编号大写，和配置里的 `buySignal` / `sellSignal` 一致。
+公式因子不是买卖点。买卖点编号大写，和配置里的 `buySignal` / `sellSignal` 一致。

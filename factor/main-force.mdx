@@ -4,8 +4,6 @@ sidebarTitle: "主力"
 description: "当天收盘标记。原文里参与输出的是最后一行，前面的 跟庄量化8、跟庄量化11 只定义了中间量，条件没有用到它们。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/product/factors/06-主力进场.md */}
-
 当天收盘标记。原文里参与输出的是最后一行，前面的 `跟庄量化8`、`跟庄量化11` 只定义了中间量，条件没有用到它们。
 
 ```
@@ -30,88 +28,3 @@ description: "当天收盘标记。原文里参与输出的是最后一行，前
 
 输出不读价差。价差、它的 3 日均线，以及原文里的 `跟庄量化8`（价差均线抬高且 20 日收盘均线抬高时为 −100，否则为 0）都不是「主力大幅锁筹」的条件。上穿 0 的 `CROSS` 同样不参与。条件只看变化率：今天比昨天至少大 2，并且今天大于 0。变化率要连续两根有效，前一根 `EMA` 为 0 时当天无效。
 
-```java
-/** 原文定义了价差，输出条件不读它。分母为 0 时无效。 */
-static double chipSpread(double cost95, double cost5) {
-    double den = cost95 + cost5;
-    if (!Double.isFinite(cost95) || !Double.isFinite(cost5) || den == 0) {
-        return Double.NaN;
-    }
-    return (cost95 - cost5) / den * 50.0;
-}
-
-static boolean mainForceLock(double[] adjClose, double[] rawHigh, double[] rawLow,
-                             double[] rawClose, double[] turnoverPct, int i) {
-    double[] ema9 = ema(ema(adjClose, 9), 9);
-    double[] speed = new double[adjClose.length];
-    Arrays.fill(speed, Double.NaN);
-    for (int t = 1; t < adjClose.length; t++) {
-        double prev = ema9[t - 1];
-        if (Double.isFinite(ema9[t]) && Double.isFinite(prev) && prev != 0) {
-            speed[t] = (ema9[t] - prev) / prev * 500.0;
-        }
-    }
-    if (i < 1 || !Double.isFinite(speed[i]) || !Double.isFinite(speed[i - 1])) {
-        return false;
-    }
-    return speed[i] > speed[i - 1] + 2 && speed[i] > 0;
-}
-
-/** 按交易日顺序调用。chips 的键是价格（元）乘 100 后的整数档。 */
-static void addDay(TreeMap<Integer, Double> chips, double high, double low, double close, double turnoverPct) {
-    if (!Double.isFinite(turnoverPct)) {
-        return;
-    }
-    double turn = Math.min(Math.max(turnoverPct, 0), 100) / 100.0;
-    if (turn == 0) {
-        return;
-    }
-    for (var e : chips.entrySet()) {
-        e.setValue(e.getValue() * (1 - turn));
-    }
-    int lo = (int) Math.round(low * 100);
-    int hi = (int) Math.round(high * 100);
-    if (hi < lo) {
-        int swap = lo;
-        lo = hi;
-        hi = swap;
-    }
-    if (lo == hi) {
-        chips.merge((int) Math.round(close * 100), turn, Double::sum);
-        return;
-    }
-    int peak = (int) Math.round((high + low + close) / 3.0 * 100);
-    peak = Math.min(hi, Math.max(lo, peak));
-    double weightSum = 0;
-    double[] w = new double[hi - lo + 1];
-    for (int p = lo; p <= hi; p++) {
-        double weight = p <= peak
-                ? (peak == lo ? 1 : (p - lo) / (double) (peak - lo))
-                : (hi == peak ? 1 : (hi - p) / (double) (hi - peak));
-        w[p - lo] = weight;
-        weightSum += weight;
-    }
-    for (int p = lo; p <= hi; p++) {
-        chips.merge(p, turn * w[p - lo] / weightSum, Double::sum);
-    }
-}
-
-static double cost(TreeMap<Integer, Double> chips, double percent) {
-    double total = 0;
-    for (double v : chips.values()) {
-        total += v;
-    }
-    if (total <= 0) {
-        return Double.NaN;
-    }
-    double target = total * percent / 100.0;
-    double cum = 0;
-    for (var e : chips.entrySet()) {
-        cum += e.getValue();
-        if (cum >= target) {
-            return e.getKey() / 100.0;
-        }
-    }
-    return chips.lastKey() / 100.0;
-}
-```

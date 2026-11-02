@@ -4,14 +4,11 @@ sidebarTitle: "清单"
 description: "默认估算口径：全 A 约 5200 只，近 3 年约 750 个交易日。信号缓存只在对应均线参数被跑过之后才占用。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/cache-inventory.md */}
-
 | 项 | 内容 |
 |----|------|
-| 文档状态 | 随缓存代码更新 |
+| 文档状态 | 随缓存结构更新 |
 | 更新日期 | 2026-10-12 |
-| 对应代码 | `cache/MarketBarCache`、`panel/MarketPanel`、`strategy/SignalPrepCache`、`portfolio/PortfolioBacktestService` 的辅助数据与 `reportCache` |
-| 容量测算 | 日 K JSON / Redis 见 [`cache-sizing.md`](/guide/cache-sizing)；机器规格见 [`DEPLOY.md`](/guide/deploy) |
+| 容量测算 | 日 K JSON / Redis 见 [行情缓存容量评估（Caffeine + 本地 Redis）](/guide/cache-sizing)；机器规格见 [部署与服务器资源](/guide/deploy) |
 
 > **维护约定**：新增、删除或改变缓存的键、值结构、条数上限、TTL 时，先改本文再合入。空间数字是估算，写明标的数和交易日数；有实测时把日志或 `GET /api/v1/cache/stats` 的结果补进文末「变更记录」。
 
@@ -21,14 +18,14 @@ description: "默认估算口径：全 A 约 5200 只，近 3 年约 750 个交�
 
 ## 1. 总表
 
-| 缓存 | 类 | 放在哪 | 上限 | 全 A × 3 年大约 |
-|------|----|--------|------|-----------------|
-| 全市场面板 | `MarketPanel` | 进程，按股票池一份 | 预热过的池子都留着 | **80–160 MB** |
-| 日 K 本地 | `MarketBarCache` Caffeine | 进程 | 512 条，写入后 30 分钟 | 满额约 **50 MB** |
-| 日 K Redis | `MarketBarCache` | Redis `quant:bars:` | TTL 24 小时 | **400–500 MB** |
-| 买卖信号 | `SignalPrepCache` | 进程，弱引用到 `CompactSeries` | 随面板对象；买点日表最多 8 份 | 金叉/死叉约 **55 MB** + 买点表 **1–2 MB** |
-| 市场辅助 | `PortfolioBacktestService` 的 `aux` | 进程一份 | 1 份 | 日历/行业/停牌/股本约数 MB～十几 MB；涨跌停紧凑数组约 **80 MB** |
-| 回测报告 | `reportCache` | 进程 `ConcurrentHashMap` | 无上限，重启清空 | 单次任务数 MB～数十 MB，随成交笔数涨 |
+| 缓存 | 放在哪 | 上限 | 全 A × 3 年大约 |
+|------|--------|------|-----------------|
+| 全市场面板 | 进程，按股票池一份 | 预热过的池子都留着 | **80–160 MB** |
+| 日 K 本地 | 进程 | 512 条，写入后 30 分钟 | 满额约 **50 MB** |
+| 日 K Redis | Redis `quant:bars:` | TTL 24 小时 | **400–500 MB** |
+| 买卖信号 | 进程，跟着面板里的股票对象 | 随面板对象；买点日表最多 8 份 | 金叉/死叉约 **55 MB** + 买点表 **1–2 MB** |
+| 市场辅助 | 进程一份 | 1 份 | 日历/行业/停牌/股本约数 MB～十几 MB；涨跌停紧凑数组约 **80 MB** |
+| 回测报告 | 进程内，按任务编号 | 无上限，重启清空 | 单次任务数 MB～数十 MB，随成交笔数涨 |
 
 现金、持仓、按手取整后的成交**不进**信号缓存和辅助缓存。摘要进 `bt_job`。成交和净值曲线只留在 `reportCache`，进程退出后没有。
 
@@ -36,22 +33,22 @@ description: "默认估算口径：全 A 约 5200 只，近 3 年约 750 个交�
 
 ## 2. 全市场面板
 
-类：`com.hello.quant.panel.MarketPanel`，由 `MarketPanelService` 按 `universeId` 放在 `ConcurrentHashMap`。
+按股票池放在进程里，键是 `universeId`。
 
 ```text
-MarketPanel
+内存面板
   universeId, from, to, forwardAdjust, loadMs, requested, loaded, failed
-  series: List<CompactSeries>
-CompactSeries
-  code: String
-  epochDays: int[]      // 交易日（epoch day）
-  open: double[]
-  close: double[]
+  series: 每只股票一条
+每只股票
+  code
+  epochDays      // 交易日（epoch day）
+  open
+  close
 ```
 
 面板里没有 high、low、volume。`estimateCloseBytes()` 只统计收盘价数组（约 30 MB）。开盘和日期与之同量级，加上数组头后合计 80–160 MB。
 
-面板价锚在库内最新 `cum_back`。回测另按结束日乘每股系数做点时前复权，任意结束日只要落在面板区间内都能复用同一份数组。系数为 1 时不拷贝。复权因子表在启动预热时装进 `AdjustAnchor`。
+面板价锚在库内最新 `cum_back`。回测另按结束日乘每股系数做点时前复权，任意结束日只要落在面板区间内都能复用同一份数组。系数为 1 时不拷贝。复权因子表在启动预热时装进内存。
 
 组合回测在股票池、复权方式和区间被面板覆盖时直接复用这份数组。冷加载优先读本地 DuckDB（`data/market.duckdb`：日 K、复权、涨跌停、日历、行业、停牌、ST、流通股本、用到的指数）。文件还没有数据时仍走 MySQL。
 
@@ -59,7 +56,7 @@ CompactSeries
 
 ## 3. 日 K 二级缓存
 
-类：`com.hello.quant.cache.MarketBarCache`。配置：`application.yml` 的 `quant.cache.local-max-entries`（512）、`quant.cache.ttl-hours`（24）、`quant.cache.redis-enabled`。
+配置：`quant.cache.local-max-entries`（512）、`quant.cache.ttl-hours`（24）、`quant.cache.redis-enabled`。
 
 键：
 
@@ -70,7 +67,7 @@ idx:{代码}:{前复权 1/0}:{from}:{to}
 
 Redis 实际键前缀为 `quant:bars:`。
 
-值：`CachedBarSeries`。
+每条缓存是一只股票一段区间的日 K。
 
 ```text
 code, index, forwardAdjust, from, to
@@ -88,11 +85,11 @@ BarRow
 
 ## 4. 买卖信号
 
-类：`com.hello.quant.strategy.SignalPrepCache`（单例 `shared()`）、`PreparedSignals`。
+全进程共用一份。
 
-买卖标记由 ta4j 0.16 的指标和规则算完后写入（`Ta4jBuyPreparer` / `Ta4jSellPreparer`）。`BarSeries` 只在第一次预计算时存在，不算进下面的占用。热路径和第二次回测只读布尔数组。
+买卖标记由 ta4j 0.16 的指标算完后写入。K 线对象只在第一次预计算时存在，不算进下面的占用。热路径和第二次回测只读布尔数组。
 
-外层是 `WeakHashMap<CompactSeries, Map<参数键, PreparedSignals>>`。键对应的股票对象还在面板里才命中；对象被回收后条目消失。换初始资金、仓位、手续费不会另建一份。
+外层按面板里的股票对象索引。对象还在面板里才命中；对象被回收后条目消失。换初始资金、仓位、手续费不会另建一份。
 
 参数键：
 
@@ -101,12 +98,12 @@ shortMa|longMa|buySignal|sellSignal|sellOnIndicator|日历长度|日历首日|�
 ```
 
 ```text
-PreparedSignals
-  barAtCal: int[]       // 日历下标 → 该股票 K 线下标，缺失为 -1
-  buy: boolean[]        // 下标是 K 线（昨收确认日）
-  sell: boolean[]
-  strength: double[]
-  momentum: double[]    // 仅 UNIVERSE_RANK；其他规则为 null
+预计算标记
+  barAtCal       // 日历下标 → 该股票 K 线下标，缺失为 -1
+  buy            // 下标是 K 线（昨收确认日）
+  sell
+  strength
+  momentum       // 仅 UNIVERSE_RANK；其他规则为空
 ```
 
 另有按日买点表，最多 8 份，参数或首只股票对象变化会换键；超过 8 份时清空再写。
@@ -115,7 +112,7 @@ PreparedSignals
 String[][]     // [日历下标] = 当日有买点的代码
 ```
 
-代码字符串与 `CompactSeries.code` 是同一批对象，买点表只多了引用。`UNIVERSE_RANK`（几乎每天全中）不建这张表，买入仍扫全池。
+买点表里的代码和面板里的股票代码是同一批对象，只多了引用。`UNIVERSE_RANK`（几乎每天全中）不建这张表，买入仍扫全池。
 
 全 A、750 日、金叉/死叉：每只股票约 11 KB（日期对齐 3 KB + 两个 boolean 数组 1.5 KB + 强度 6 KB），合计约 **55 MB**。买点表约 **1–2 MB**。排序买入再加每只股票一条动量数组，大约再 **30 MB**。
 
@@ -123,13 +120,13 @@ String[][]     // [日历下标] = 当日有买点的代码
 
 ## 5. 市场辅助数据
 
-类：`PortfolioBacktestService` 的字段 `aux`。启动预热时装入一份，覆盖预热股票池和预热区间。没有按请求拼的缓存键。
+启动预热时装入一份，覆盖预热股票池和预热区间。没有按请求拼的缓存键。
 
 请求的起止日落在这份区间里，且代码都在预热名单中时，直接使用这份内存。因子成分是全市场的子集，因此命中。超出预热区间，或出现名单以外的代码时，按该次请求读 DuckDB，读完不另存。
 
 当前简称里的 ST 随这份数据一起装入。只有回测打开「排除 ST」时才用来挡买入；涨跌停板幅仍按戴帽区间，不按当前简称。
 
-值：`MarketContext`。
+里面有这些表：
 
 ```text
 limitsByCode: Map<代码, 升序日期 int[] + 涨停 double[] + 跌停 double[]>
@@ -147,10 +144,10 @@ industryByCode: Map<代码, 申万一级行业>
 
 ## 6. 回测报告
 
-类：`PortfolioBacktestService` 的字段 `reportCache`，类型 `ConcurrentHashMap<String, PortfolioReport>`。键是 `jobId`。没有条数上限，也没有过期，进程退出才清空。
+键是 `jobId`。没有条数上限，也没有过期，进程退出才清空。
 
 ```text
-PortfolioReport
+报告
   收益、回撤、夏普、拒单计数、loadMs、computeMs
   equityCurve: 日期、权益、基准权益、回撤
   trades: 代码、方向、日期、价格、数量、金额、盈亏
@@ -166,7 +163,7 @@ PortfolioReport
 | 数据 | 原因 |
 |------|------|
 | 当日现金、持仓、成交数量 | 依赖本次资金、仓位、费率，不能跨任务复用 |
-| 因子组合的逐日成分 | `FactorComboService` 仍用因子最新一个信号日的代码列表 |
+| 因子组合的逐日成分 | 仍用因子最新一个信号日的代码列表 |
 | 均线原始窗口和 | 只保留算完的买卖标记和强度，不保留每天的均线值 |
 
 ---
@@ -175,11 +172,11 @@ PortfolioReport
 
 | 日期 | 变更 |
 |------|------|
-| 2026-10-12 | 初稿。纳入面板、日 K 两级缓存、信号缓存、辅助数据缓存、报告缓存。信号与辅助缓存于同日接入 `PortfolioEngine` / `PortfolioBacktestService`。 |
-| 2026-10-12 | 信号预计算改为 ta4j 指标（`ta4j-core` 0.16）。缓存结构不变，`BarSeries` 不驻留。 |
+| 2026-10-12 | 初稿。纳入面板、日 K 两级缓存、信号缓存、辅助数据缓存、报告缓存。信号与辅助缓存于同日接入组合回测。 |
+| 2026-10-12 | 信号预计算改为 ta4j 指标（`ta4j-core` 0.16）。缓存结构不变，K 线对象不驻留。 |
 | 2026-10-12 | 冷加载增加本地 DuckDB（`quant.duckdb.path`，默认 `data/market.duckdb`）。面板和信号缓存结构不变。 |
 | 2026-10-13 | 成交不再写入 `bt_trade`。逐笔只留在 `reportCache`。 |
 | 2026-10-13 | 涨跌停改为每只股票的紧凑数组。异步任务结束时只写一次 `bt_job`。 |
 | 2026-10-14 | `st_hat` 区间改为每次辅助加载都读。当前简称里的 ST 仍只在 `excludeSt=true` 时进入 `alwaysSt`。缓存键不变。 |
-| 2026-10-21 | 去掉按代码哈希分键的 `MarketContextCache`。辅助数据改为预热时一份内存，区间内的股票子集直接复用。 |
+| 2026-10-21 | 去掉按代码哈希分键的辅助缓存。辅助数据改为预热时一份内存，区间内的股票子集直接复用。 |
 | 2026-10-21 | 删掉已停用的 `bt_trade`、`bt_dataset`。成交仍只在 `reportCache`。 |

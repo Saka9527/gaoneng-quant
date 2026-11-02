@@ -7,9 +7,9 @@ sidebarTitle: "预计算"
 六条公式的计算发生在预热，不发生在用户点击回测的那一下。
 
 <Steps>
-  <Step title="按日计算">`factor-service` 的 `FormulaSignals` 对每只股票的前复权 K 线跑 `calc_rising_channel`、`calc_pullback`、`calc_rocket`、`calc_assist_above`、`calc_short_wave`、`calc_main_force`。</Step>
+  <Step title="按日计算">`factor-service` 对每只股票的前复权 K 线跑 `calc_rising_channel`、`calc_pullback`、`calc_rocket`、`calc_assist_above`、`calc_short_wave`、`calc_main_force`。</Step>
   <Step title="写入成分">为真的日期进入成分快照。快照文件默认 `factor-service/data/membership.bin`，进程启动时装入内存。</Step>
-  <Step title="回测只读">组合回测通过 `FactorConstituentClient` 调 `POST /api/v1/constituents`，按区间做交或并。</Step>
+  <Step title="回测只读">组合回测调 `POST /api/v1/constituents`，按区间做交或并。</Step>
   <Step title="页面看最新一日">产品页信号表读 `gn_factor_signal` 的最新信号日，不读三年快照的每一天。</Step>
 </Steps>
 

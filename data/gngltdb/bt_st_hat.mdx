@@ -3,10 +3,8 @@ title: "bt_st_hat"
 description: "主键 (sec_code, start_date)。索引 idx_range (sec_code, start_date, end_date)。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/gngltdb/tables/bt_st_hat.md */}
-
 - 说明: 风险警示戴帽区间。缺涨跌停公布价时，用区间判断该日是不是 ST 板幅。当前简称里的 ST 不写进这张表
-- 源表: `risk_warning_situation`，见 [`../../ths-db/tables/risk_warning_situation.md`](/data/ths/risk_warning_situation)
+- 源表: `risk_warning_situation`，见 [risk_warning_situation](/data/ths/risk_warning_situation)
 - 迁入 DuckDB: `st_hat`（只保留代码和起止日）
 - 旧表若只有 `implementation_date`，同步脚本会改成区间；迁 DuckDB 时起止都写成该日
 

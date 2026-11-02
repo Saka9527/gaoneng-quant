@@ -3,8 +3,6 @@ title: "bt_job"
 description: "bt_job"
 ---
 
-{/* 同步自 java-quant-backtest/docs/gngltdb/tables/bt_job.md */}
-
 - 说明: 回测任务与结果
 - 引擎: InnoDB
 
@@ -19,7 +17,7 @@ description: "bt_job"
 | `dataset_id` | varchar(128) | 组合任务里是股票池或因子组合标识，不再登记单票数据集 |
 | `strategy` | varchar(32) | 买入信号代码，如 `SMA_GOLDEN`、`UNIVERSE_RANK` |
 | `request_json` | mediumtext | 完整请求 |
-| `result_json` | longtext | 成功时的摘要 JSON。字段见 [`../../api/portfolio-output.md`](/api/portfolio-output)。曲线和成交是空数组 |
+| `result_json` | longtext | 成功时的摘要 JSON。字段见 [组合回测输出结构](/api/portfolio-output)。曲线和成交是空数组 |
 | `error_message` | varchar(2000) | 失败原因 |
 | `created_at` | bigint | epoch ms |
 | `finished_at` | bigint | epoch ms |

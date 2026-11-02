@@ -3,10 +3,8 @@ title: "bt_limit_price"
 description: "主键 (sec_code, td_date)。索引 idx_td_date (td_date)。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/gngltdb/tables/bt_limit_price.md */}
-
 - 说明: 当日涨停价、跌停价。有记录时直接用价格判断开盘是否封板，不再按百分比推算
-- 源表: `shsz_stock_up_and_dl_price` 的 `ul_price` / `dl_price`，见 [`../../ths-db/tables/shsz_stock_up_and_dl_price.md`](/data/ths/shsz_stock_up_and_dl_price)
+- 源表: `shsz_stock_up_and_dl_price` 的 `ul_price` / `dl_price`，见 [shsz_stock_up_and_dl_price](/data/ths/shsz_stock_up_and_dl_price)
 - 迁入 DuckDB: `limit_price`
 - 价格未复权
 

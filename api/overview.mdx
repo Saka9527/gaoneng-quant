@@ -4,8 +4,6 @@ sidebarTitle: "总览"
 description: "统一响应：{ \"success\", \"code\", \"message\", \"data\", \"timestamp\" }"
 ---
 
-{/* 同步自 java-quant-backtest/docs/api/README.md */}
-
 ## 在线文档
 
 | 入口 | URL |
@@ -22,10 +20,10 @@ description: "统一响应：{ \"success\", \"code\", \"message\", \"data\", \"t
 
 | 文件 | 用途 |
 |------|------|
-| [`page-api-map.md`](/api/page-map) | 页面功能和路径对照。改路径时先改这份 |
-| [`portfolio-meta.md`](/api/portfolio-meta) | 买入排序 14 项、卖出信号 38 项、涨跌停与 ST。OpenAPI 不展开这些枚举 |
-| [`portfolio-output.md`](/api/portfolio-output) | 回测输出：首屏字段、`bt_job.result_json`、任务视图、成交分页 |
-| [`factor-service.md`](/api/factor-service) | 选股服务 8081 的 3 个接口。该进程没有 Swagger |
+| [开放接口与量化页面对照](/api/page-map) | 页面功能和路径对照。改路径时先改这份 |
+| [组合回测枚举（GET /api/v1/portfolio/meta）](/api/portfolio-meta) | 买入排序 14 项、卖出信号 38 项、涨跌停与 ST。OpenAPI 不展开这些枚举 |
+| [组合回测输出结构](/api/portfolio-output) | 回测输出：首屏字段、`bt_job.result_json`、任务视图、成交分页 |
+| [选股服务（8081）](/api/factor-service) | 选股服务 8081 的 3 个接口。该进程没有 Swagger |
 | `openapi.json`（`openapi.json`） | OpenAPI 3.0 快照，描述字段类型 |
 | `apipost.collection.json`（`apipost.collection.json`） | **Postman Collection v2.1**，ApiPost 一键导入 |
 
@@ -53,4 +51,4 @@ python -u scripts/export_api_docs.py
 | 因子组合 | `/api/v1/product/factor-combo` | 交并集预览 / 保存 / 列表 |
 | 选股因子 | `/api/v1/product` | 工作台因子列表；组合见上一行 |
 
-表结构入口：[`../TABLES.md`](/data/tables)。流程见 [`../BACKTEST_FLOW.md`](/backtest/flow)。
+表结构入口：[表元数据放在哪](/data/tables)。流程见 [完整回测流程（产品 × 开发）](/backtest/flow)。

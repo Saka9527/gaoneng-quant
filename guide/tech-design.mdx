@@ -1,26 +1,22 @@
 ---
 title: "量化回测系统 — 技术实现方案"
 sidebarTitle: "方案"
-description: "可编辑源（Mermaid）：diagrams/sources/（diagrams/sources/）。重绘 PNG：python -u scripts/generate_tech_diagrams.py。"
+description: "可编辑源是设计图目录里的 Mermaid。"
 ---
-
-{/* 同步自 java-quant-backtest/docs/TECH_DESIGN.md */}
 
 | 项 | 内容 |
 |----|------|
 | 文档状态 | 评审稿（随迭代持续更新） |
 | 版本 | v1.2 |
 | 更新日期 | 2026-10-12 |
-| 对应代码 | `java-quant-backtest`（Spring Boot 3.3 / JDK 21） |
-| 配套文档 | [`TECH_STACK.md`](/guide/tech-stack)、[`BACKTEST_FLOW.md`](/backtest/flow)、[`cache-inventory.md`](/guide/cache-inventory)、[`api/README.md`](/api/overview)、[`DEPLOY.md`](/guide/deploy) |
+| 配套文档 | [技术选型](/guide/tech-stack)、[完整回测流程（产品 × 开发）](/backtest/flow)、[运行时缓存清单](/guide/cache-inventory)、[API 文档与 ApiPost 导入](/api/overview)、[部署与服务器资源](/guide/deploy) |
 | **设计图目录** | `diagrams/`（`diagrams/`）（PNG + Mermaid 源） |
 | **Word 评审稿** | `TECH_DESIGN.docx`（`TECH_DESIGN.docx`） |
 | **PPT 评审稿** | `TECH_DESIGN.pptx`（`TECH_DESIGN.pptx`） |
 
-> **维护约定**：架构/口径/接口有变更时，先改本文与 `scripts/generate_tech_diagrams.py`，再执行  
-> `python -u scripts/export_tech_design_office.py`（会先重绘 PNG 再导出 Word/PPT）。  
-> 细节流程以 `BACKTEST_FLOW.md` 为准，缺口以 `OPTIMIZATION.md` / `product/GAP_ANALYSIS.md` 为准。  
-> 缓存的键、结构和占用见 [`cache-inventory.md`](/guide/cache-inventory)，缓存代码变更时同步改该文。
+> **维护约定**：架构、口径或接口有变更时，先改本文。  
+> 细节流程见 [完整回测流程（产品 × 开发）](/backtest/flow)。  
+> 缓存的键、结构和占用见 [运行时缓存清单](/guide/cache-inventory)，缓存结构变更时同步改该文。
 
 ---
 
@@ -36,7 +32,7 @@ description: "可编辑源（Mermaid）：diagrams/sources/（diagrams/sources/�
 | 图6 | !镜像（`diagrams/06_datasource_mirror.png`） | 产品域策略表 + 行情镜像辅助表 |
 | 图7 | !信号（`diagrams/07_signal_catalog.png`） | 买卖信号注册表扩展设计 |
 
-可编辑源（Mermaid）：`diagrams/sources/`（`diagrams/sources/`）。重绘 PNG：`python -u scripts/generate_tech_diagrams.py`。
+可编辑源是设计图目录里的 Mermaid。
 
 ---
 
@@ -75,17 +71,17 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 ## 3. 模块划分
 
-| 包 / 模块 | 职责 | 关键类 |
-|-----------|------|--------|
-| `portfolio` | 组合回测 API、配置、引擎编排 | `PortfolioApiController`、`PortfolioBacktestService`、`PortfolioEngine`、`PortfolioTradeConfig` |
-| `strategy` | 买卖信号插件与注册表 | `TradeSignalCatalog`、`BuySignalRule`、`SellSignalRule`、`rules/*` |
-| `broker` | 成本、涨跌停/停牌规则、市场上下文 | `CostModel`、`MarketRules`、`MarketContext` |
-| `analytics` | 绩效补充（Sharpe、换手近似） | `PortfolioAnalytics` |
-| `panel` / `cache` | 紧凑行情、全市场预热、缓存 | `CompactSeries`、`MarketPanelService`、`MarketBarCache` |
-| `ths` | 行情与辅助表加载 | `ThsBarLoader`、`MarketAuxRepository` |
-| `product` | 策略榜单/因子/关注/因子组合 | `ProductService`、`FactorComboService`、`SectorFactorSignalService` |
-| `universe` | 股票池文件、向量全市场扫 | `UniverseFileService`、`VectorSmaCrossEngine` |
-| `store` | 任务与成交落库 | `BacktestJobRepository` |
+| 模块 | 职责 |
+|------|------|
+| 组合回测 | API、配置、引擎编排 |
+| 买卖信号 | 信号规则与登记 |
+| 交易规则 | 成本、涨跌停、停牌、市场上下文 |
+| 绩效 | Sharpe、换手近似 |
+| 行情面板 / 缓存 | 紧凑行情、全市场预热、缓存 |
+| 行情加载 | 日 K 与辅助表 |
+| 产品 | 因子、关注、因子组合 |
+| 股票池 | 股票池文件、向量全市场扫 |
+| 任务存储 | 任务摘要落库 |
 
 ---
 
@@ -103,7 +99,7 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 !行情与候选池加载路径（`diagrams/04_data_load.png`）
 
-镜像同步与表说明见 [`market-mirror.md`](/data/mirror)、[`ths-db/README.md`](/data/ths/index)、[`gngltdb/README.md`](/data/gngltdb/index)。
+镜像同步与表说明见 [行情镜像（THS → gngltdb）](/data/mirror)、[同花顺库表结构：lm_ths_db](/data/ths/index)、[测试库 gngltdb](/data/gngltdb/index)。
 
 ### 4.3 表结构关系
 
@@ -135,24 +131,22 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 | 项 | 口径 |
 |----|------|
 | 信号确认 | 昨收 bar |
-| 成交价 | 次日开盘，经 `CostModel`（佣金 + 滑点；卖出再扣印花税） |
+| 成交价 | 次日开盘，扣除佣金和滑点；卖出再扣印花税 |
 | 日历 | 有镜像交易日历时与基准取交集，否则用基准交易日 |
 | T+1 | 默认开启：当日买入不可卖 |
-| 可交易性 | `MarketRules`：停牌；开盘达到当日涨停价不可买、达到跌停价不可卖。优先用镜像涨跌停价。没有公布价时按板块生效日和该股 ST 区间取板幅，不统一成 10% 或 20% |
+| 可交易性 | 停牌不成交；开盘达到当日涨停价不可买、达到跌停价不可卖。优先用镜像涨跌停价。没有公布价时按板块生效日和该股 ST 区间取板幅，不统一成 10% 或 20% |
 | 仓位 | `positionRatio` / `maxStockWeight` / `maxHoldings` / `maxDailyBuys`；按手取整 |
 | 再平衡 | `DAILY` / `WEEKLY` / `MONTHLY`（仅约束买入日） |
 | 过滤 | 排除 ST 默认关闭；动量前 N%、流通市值下限、同申万一级行业持仓上限可选。`st_hat` 区间每次都装入，用于板幅，不用于默认剔除 |
-
-实现：`PortfolioEngine` + `broker/*`。
 
 ### 5.3 信号规则横扩
 
 !信号注册表扩展（`diagrams/07_signal_catalog.png`）
 
-- 内置 Buy：`SMA_GOLDEN` / `UNIVERSE_RANK`。Sell：`MA_DEATH` / `MA_TOP_DIV` / `HOLD_PERIOD`，以及 `IndicatorSellRule` 里的 RSI、BOLL、KDJ、MACD、阴线、均线条件。默认卖出仍是 `MA_DEATH`。新指标卖出在开跑前写入 `boolean[]`，日循环只读标记
-- 回测开始：`catalog.resolve(cfg)` → `BoundSignalStrategy`（绑定规则引用）；热路径无 Map 查找
-- 枚举选项：`GET /portfolio/meta` 的 `buySignal` / `sellSignal` **来自注册表**
-- **扩展步骤**：实现 `BuySignalRule` 或 `SellSignalRule` → 注册进 `TradeSignalCatalog.builtins()`（或 `withExtra`）→ 重启
+- 内置买入：`SMA_GOLDEN` / `UNIVERSE_RANK`。卖出：`MA_DEATH` / `MA_TOP_DIV` / `HOLD_PERIOD`，以及 RSI、BOLL、KDJ、MACD、阴线、均线条件。默认卖出仍是 `MA_DEATH`。新指标卖出在开跑前写入 `boolean[]`，日循环只读标记
+- 回测开始时把选中的规则绑好，热路径不再按名字查找
+- 枚举选项：`GET /portfolio/meta` 的 `buySignal` / `sellSignal` **来自已登记的规则**
+- **扩展**：新增一条规则并登记后重启
 
 再平衡 / 仓位模式等仍为引擎内字符串分支，后续可按同样模式插件化。
 
@@ -163,7 +157,7 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 | 组合 | 最多 10 因子；AND（交集）/ OR（并集） |
 | 条件 | HIT / LT / GT / BETWEEN / PERCENTILE（相对 `gn_factor_signal`） |
 | API | `POST .../factor-combo/preview|save`；回测体带 `factorCombo` |
-| 板块 | `SectorFactorSignalService` 从 `lm_ths_db.stk_corp_ic` 写入信号；概念成分对齐待补 |
+| 板块 | 从 `lm_ths_db.stk_corp_ic` 写入信号；概念成分对齐待补 |
 
 ---
 
@@ -171,14 +165,14 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 **选股回测结果为真实计算**（非演示写死）。策略榜单等产品页净值当前仍可能走 `gn_*` 演示数据。
 
-| 指标 | 实现位置 | 口径摘要 |
-|------|----------|----------|
-| 总收益 / 基准收益 | `PortfolioEngine` | 期末权益 / 初始 − 1；基准按指数等比缩放 |
-| 最大回撤 | `PortfolioEngine` | 净值 peak 回撤 |
-| 年化 | `PortfolioEngine` | `(1+R)^(252/N)−1` |
-| Sharpe | `PortfolioAnalytics` | 日收益均值/标准差 × √252（rf=0；总体方差） |
-| 换手 | `PortfolioAnalytics` | 双边成交额 / (初始资金 × 交易日)，**近似密度** |
-| 成交/拒单 | `PortfolioEngine` | 撮合计数 |
+| 指标 | 口径摘要 |
+|------|----------|
+| 总收益 / 基准收益 | 期末权益 / 初始 − 1；基准按指数等比缩放 |
+| 最大回撤 | 净值 peak 回撤 |
+| 年化 | `(1+R)^(252/N)−1` |
+| Sharpe | 日收益均值/标准差 × √252（rf=0；总体方差） |
+| 换手 | 双边成交额 / (初始资金 × 交易日)，**近似密度** |
+| 成交/拒单 | 撮合计数 |
 
 公式为项目自研，**未接入** ta4j Criteria / empyrical 等库。若需对齐外部研报，应先冻结口径再对账或引入对照脚本。
 
@@ -188,7 +182,7 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 | 表 / 存储 | 内容 |
 |-----------|------|
-| `bt_job.result_json` | 收益、耗时、拒单次数。曲线和成交写成空数组。字段见 [`api/portfolio-output.md`](/api/portfolio-output) |
+| `bt_job.result_json` | 收益、耗时、拒单次数。曲线和成交写成空数组。字段见 [组合回测输出结构](/api/portfolio-output) |
 | 进程 `reportCache` | 净值曲线、逐笔成交、期末持仓。成交分页读这里 |
 | `bt_portfolio_strategy` | 用户保存的交易配置 |
 | `gn_factor` / `gn_factor_signal` / `gn_factor_combo` | 因子与组合 |
@@ -218,7 +212,7 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 ## 9. 前端（产品工作台）
 
-- 静态资源：`src/main/resources/static/product/`（`product.js` / `product.css`）
+- 产品页是同进程里的静态页
 - 路由：hash（`#/backtest`、`#/backtest/result`、`#/factors`、`#/me` 等）
 - 左栏：因子词典组合 + 选股过滤；右栏：交易模型（选项来自 `meta`）
 - 结果页：指标 / ECharts 净值 / 成交表格滚动懒加载
@@ -230,16 +224,16 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 | 维度 | 现状 |
 |------|------|
 | 性能瓶颈 | 主要为行情 IO 与候选池规模；信号均线现场算，相对加载通常可忽略 |
-| 缓存 | Caffeine + Redis 日 K；全量组合优先复用 `MarketPanel` |
+| 缓存 | Caffeine + Redis 日 K；全量组合优先复用内存面板 |
 | 结果 | 净值、成交、持仓在进程内存。`bt_job` 只留收益和耗时摘要 |
-| 可测性 | `PortfolioEngineTest`、`TradeSignalCatalogTest`、信号对账测试等 |
-| 部署 | 见 [`DEPLOY.md`](/guide/deploy) |
+| 可测性 | 撮合、信号登记和信号对账都有测试 |
+| 部署 | 见 [部署与服务器资源](/guide/deploy) |
 
 ---
 
 ## 11. 已知边界与后续方向
 
-供评审拍板优先级（细节跟踪见 `OPTIMIZATION.md` / `GAP_ANALYSIS.md`）：
+供评审拍板优先级：
 
 1. **策略榜单 / 因子详情**：演示数据 → 真实回测日批或缓存净值  
 2. **概念板块成分**：对齐 `ths_index_his_stocks`  
@@ -261,26 +255,10 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 ---
 
-## 13. 相关代码索引（速查）
-
-| 主题 | 路径 |
-|------|------|
-| 引擎 | `.../portfolio/PortfolioEngine.java` |
-| 编排 | `.../portfolio/PortfolioBacktestService.java` |
-| 配置模型 | `.../portfolio/PortfolioTradeConfig.java` |
-| 信号注册表 | `.../strategy/TradeSignalCatalog.java` |
-| 成本/规则 | `.../broker/CostModel.java`、`MarketRules.java` |
-| 绩效 | `.../analytics/PortfolioAnalytics.java` |
-| 因子组合 | `.../product/FactorComboService.java` |
-| 任务落库 | `.../store/BacktestJobRepository.java` |
-| 产品前端 | `.../resources/static/product/js/product.js` |
-
----
-
 ## 变更记录
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
-| v1.0 | 2026-10-12 | 首版：基于当前代码整理架构、撮合口径、信号注册表、因子组合、绩效与 API；导出 Word/PPT |
+| v1.0 | 2026-10-12 | 首版：整理架构、撮合口径、信号登记、因子组合、绩效与 API；导出 Word/PPT |
 | v1.1 | 2026-10-12 | 补充架构/流程/ER/加载/信号扩展等 PNG 设计图，嵌入 Markdown 与 Word/PPT |
 | v1.2 | 2026-10-12 | 设计图改为「中文名（类名/表名）」标注，便于产品等非研发评审 |

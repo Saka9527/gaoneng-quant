@@ -32,10 +32,10 @@ quant.ths.mode: mirror   # mirror 读 gngltdb 副本；ths 读远端同花顺
 
 ## 刷新 API 快照
 
-服务已启动时，在代码仓库执行：
+服务已启动时执行：
 
 ```bash
 python -u scripts/export_api_docs.py
 ```
 
-导入 ApiPost 时选 Postman 集合，环境变量设 `baseUrl=http://127.0.0.1:8080` 和 `userId=demo_user`。集合文件在代码仓库的 `docs/api/`，不在本文档仓库。
+导入 ApiPost 时选 Postman 集合，环境变量设 `baseUrl=http://127.0.0.1:8080` 和 `userId=demo_user`。集合由上面的命令生成。

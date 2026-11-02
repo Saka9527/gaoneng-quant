@@ -179,7 +179,6 @@ def write_ported(src_root: Path, dest_map: dict[str, str]) -> None:
             f"{sidebar_line}"
             f"description: {yaml_quote(description)}\n"
             "---\n\n"
-            f"{{/* 同步自 java-quant-backtest/docs/{rel} */}}\n\n"
             f"{body}"
         )
         target = ROOT / dest_rel

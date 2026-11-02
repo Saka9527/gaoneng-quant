@@ -3,10 +3,7 @@ title: "gn_factor_signal"
 description: "索引：idx_gn_fs_factor_date (factor_id, trade_date)，idx_gn_fs_code (sec_code)。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/gngltdb/tables/gn_factor_signal.md */}
-
 - 说明: 因子信号池。页面「预览选股」只取各因子最新一个 `trade_date`。选股服务的三年成分在 `membership.bin`，不在查询时扫这张表
-- DDL: `schema-product.sql`
 - 引擎: InnoDB
 
 | 字段 | 类型 | 说明 |

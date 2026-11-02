@@ -1,14 +1,12 @@
 ---
 title: "组合回测枚举（`GET /api/v1/portfolio/meta`）"
 sidebarTitle: "枚举"
-description: "OpenAPI 快照只描述字段类型。买入排序和卖出信号的可选项以这个接口的 data.buyPriority、data.sellSignal 为准，代码在 BuyPriority 和 TradeSignalCatalog。"
+description: "OpenAPI 快照只描述字段类型。买入排序和卖出信号的可选项以这个接口的 data.buyPriority、data.sellSignal 为准。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/api/portfolio-meta.md */}
+OpenAPI 快照只描述字段类型。买入排序和卖出信号的可选项以这个接口的 `data.buyPriority`、`data.sellSignal` 为准。
 
-OpenAPI 快照只描述字段类型。买入排序和卖出信号的可选项以这个接口的 `data.buyPriority`、`data.sellSignal` 为准，代码在 `BuyPriority` 和 `TradeSignalCatalog`。
-
-默认值和下拉项存在业务库表 `bt_trade_model`。服务启动时读进内存；表是空的才写入下面这套内置值，之后改表再重启即可，不会覆盖已改过的行。买卖信号的规则清单仍由代码注册，表里只保存当前选中的编号。
+默认值和下拉项存在业务库表 `bt_trade_model`。服务启动时读进内存；表是空的才写入下面这套内置值，之后改表再重启即可，不会覆盖已改过的行。表里只保存当前选中的编号。
 
 内置默认（首次装库）：买入 `CHANGE_DESC`，卖出 `MA_DEATH`，`sellOnIndicator` true，`excludeSt` false，`limitRules` true，对比指数 `000300`。`scope=default` 的 `item_key` 是参数名，`item_value` 是默认值。其它 `scope` 是下拉分组。
 
@@ -41,7 +39,7 @@ OpenAPI 快照只描述字段类型。买入排序和卖出信号的可选项以
 
 只计算选中的那一条。`sellOnIndicator` 为 false 时不计算卖出标记，只按持股周期平仓。
 
-公式、周期、信号日和成交日见 [`../SIGNAL_LOGIC.md`](/backtest/signals)。指标类 35 条在收盘价上一次写成 `boolean[]`。`MA_DEATH` 用请求里的短、长均线做一次滚动计算。`MA_TOP_DIV` 仍走 ta4j。`HOLD_PERIOD` 不预计算，信号恒为 false。
+公式、周期、信号日和成交日见 [指标、买卖点与回测结果](/backtest/signals)。指标类 35 条在收盘价上一次写成 `boolean[]`。`MA_DEATH` 用请求里的短、长均线做一次滚动计算。`MA_TOP_DIV` 仍走 ta4j。`HOLD_PERIOD` 不预计算，信号恒为 false。
 
 | id | 名称 | 口径 |
 |----|------|------|

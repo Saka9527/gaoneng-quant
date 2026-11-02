@@ -1,11 +1,9 @@
 ---
 title: "技术选型"
-description: "更新日期：2026-10-14。只记已经落地的选择。流程见 BACKTEST_FLOW.md(/backtest/flow)，表见 TABLES.md(/data/tables)。"
+description: "更新日期：2026-10-14。只记已经落地的选择。流程见 完整回测流程（产品 × 开发），表见 表元数据放在哪。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/TECH_STACK.md */}
-
-更新日期：2026-10-14。只记已经落地的选择。流程见 [`BACKTEST_FLOW.md`](/backtest/flow)，表见 [`TABLES.md`](/data/tables)。
+更新日期：2026-10-14。只记已经落地的选择。流程见 [完整回测流程（产品 × 开发）](/backtest/flow)，表见 [表元数据放在哪](/data/tables)。
 
 ## 运行形态
 
@@ -22,11 +20,11 @@ description: "更新日期：2026-10-14。只记已经落地的选择。流程�
 
 ## 引擎
 
-组合撮合用自研 `PortfolioEngine`：昨收出信号，次日开盘成交，日频循环。不用 ta4j 的 `BarSeriesManager` 做账户。
+组合撮合是自研日频循环：昨收出信号，次日开盘成交。不用 ta4j 管理账户。
 
 ta4j-core 0.16 只算均线死叉和均线顶背离。其余卖出信号在收盘价上一次写成 `boolean[]`。买入排序用准备好的分数，日循环不再重算。
 
-全市场向量扫 `VectorSmaCrossEngine` 只做双均线排名，不走组合撮合，不写任务。
+全市场向量扫只做双均线排名，不走组合撮合，不写任务。
 
 ## 数据
 

@@ -4,8 +4,6 @@ sidebarTitle: "上升通道"
 description: "当天收盘标记。原文："
 ---
 
-{/* 同步自 java-quant-backtest/docs/product/factors/01-上升通道.md */}
-
 当天收盘标记。原文：
 
 ```
@@ -19,54 +17,3 @@ XG: 牛线>生命线 AND LOW>牛线*(1+0.03) AND 牛线>=REF(牛线,1);
 
 牛线从下标 20 起有效。生命线要 5 根有效牛线，从下标 24 起有效。在这之前信号为假。
 
-```java
-static double mid(double open, double high, double low, double close) {
-    return (3 * close + low + open + high) / 6.0;
-}
-
-/** 滞后 0..18 权重 20..2，跳过滞后 19，滞后 20 权重 1。 */
-static double bull(double[] mid, int i) {
-    if (i < 20) {
-        return Double.NaN;
-    }
-    double acc = 0;
-    int weight = 20;
-    for (int lag = 0; lag <= 18; lag++) {
-        acc += weight * mid[i - lag];
-        weight--;
-    }
-    return (acc + mid[i - 20]) / 210.0;
-}
-
-static double life(double[] bull, int i) {
-    if (i < 4) {
-        return Double.NaN;
-    }
-    double sum = 0;
-    for (int k = i - 4; k <= i; k++) {
-        if (!Double.isFinite(bull[k])) {
-            return Double.NaN;
-        }
-        sum += bull[k];
-    }
-    return sum / 5.0;
-}
-
-static boolean risingChannel(double[] open, double[] high, double[] low, double[] close, int i) {
-    double[] mid = new double[close.length];
-    double[] bull = new double[close.length];
-    for (int t = 0; t < close.length; t++) {
-        mid[t] = mid(open[t], high[t], low[t], close[t]);
-        bull[t] = bull(mid, t);
-    }
-    double b = bull[i];
-    double life = life(bull, i);
-    if (!Double.isFinite(b) || !Double.isFinite(life) || i < 1 || !Double.isFinite(bull[i - 1])) {
-        return false;
-    }
-    boolean trend = b > life;
-    boolean strong = low[i] > b * 1.03;
-    boolean dir = b >= bull[i - 1];
-    return trend && strong && dir;
-}
-```

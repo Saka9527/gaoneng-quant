@@ -3,10 +3,8 @@ title: "ls_index_daily_quotation`（gngltdb 镜像）"
 description: "主键 (index_code, td_date)。索引 idx_td_date (td_date)。"
 ---
 
-{/* 同步自 java-quant-backtest/docs/gngltdb/tables/ls_index_daily_quotation.md */}
-
 - 说明: 对比指数日 K。源库约 6112 万行、约 17 GB，镜像只同步 `000300`、`000001`、`399001`、`399006`、`000905`、`000016`
-- 源表: [`../../ths-db/tables/ls_index_daily_quotation.md`](/data/ths/ls_index_daily_quotation)
+- 源表: [ls_index_daily_quotation](/data/ths/ls_index_daily_quotation)
 - 迁入 DuckDB: `index_bars`。`latest_index`→`close_index`，`vol`→`volume`
 
 | 字段 | 类型 | 说明 |

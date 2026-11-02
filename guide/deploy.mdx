@@ -4,8 +4,6 @@ sidebarTitle: "部署"
 description: "更新日期：2026-10-11"
 ---
 
-{/* 同步自 java-quant-backtest/docs/DEPLOY.md */}
-
 更新日期：2026-10-11  
 适用版本：`java-quant-backtest` 单体 API（Spring Boot 3.3 / JDK 21）
 
@@ -17,7 +15,7 @@ description: "更新日期：2026-10-11"
 | **MySQL 8**（`gngltdb`） | 是 | 业务表 `bt_*` / `gn_*`；`quant.ths.mode=mirror` 时兼作行情副本 |
 | **Redis 6+** | 强烈建议 | 单票日线 JSON 缓存；无 Redis 时冷路径更慢 |
 | 同花顺库 `lm_ths_db` | 可选 | `mode=ths` 直读，或仅作镜像同步源 |
-| Python 3.10+ | 运维可选 | `scripts/sync_ths_market_to_gngltdb.py` 增量/全量同步 |
+| Python 3.10+ | 运维可选 | 镜像增量或全量同步 |
 
 默认端口：`8080`。环境变量：`APP_DB_PASSWORD`、`THS_DB_PASSWORD`、`REDIS_HOST`、`REDIS_PORT`、`QUANT_THS_MODE`、`QUANT_UNIVERSE_DIR`。
 
@@ -34,9 +32,9 @@ description: "更新日期：2026-10-11"
 | 镜像 `ls_sec_basic_info` | **~5223** | **&lt; 5 MB** |
 | 镜像 `ls_index_daily_quotation` | 0（尚未同步） | 6 只主要指数近 3 年约 **数 MB～十几 MB** |
 | 业务表 `bt_*` / `gn_*` | 小 | **预留 1–5 GB**（任务 JSON 会涨） |
-| 源库 `lm_ths_db` 相关表 | — | 全量约 **~24 GB**（勿整库拷贝，见 [`market-mirror.md`](/data/mirror)） |
-| JVM `MarketPanel`（全 A 预热） | 5223 序列 | 数组约 **80–160 MB**（open+close+date）；`closeBytes` 约 **30 MB** |
-| Redis 全 A 日线缓存 | ~5000 key | **约 400–500 MB**（见 [`cache-sizing.md`](/guide/cache-sizing)） |
+| 源库 `lm_ths_db` 相关表 | — | 全量约 **~24 GB**（勿整库拷贝，见 [行情镜像（THS → gngltdb）](/data/mirror)） |
+| 全 A 预热面板 | 5223 序列 | 数组约 **80–160 MB**（open+close+date）；收盘价数组约 **30 MB** |
+| Redis 全 A 日线缓存 | ~5000 key | **约 400–500 MB**（见 [行情缓存容量评估（Caffeine + 本地 Redis）](/guide/cache-sizing)） |
 | Caffeine 本地 | max 512 | **约 ≤50 MB** |
 
 > `information_schema` 的 `DATA_LENGTH` / `TABLE_ROWS` 对刚灌入的 InnoDB 常严重偏小，以 `COUNT(*)` + 上表估算为准。
@@ -149,7 +147,7 @@ maxmemory-policy allkeys-lru
 - 库：`gngltdb`（读写账号）；镜像表与业务表同库即可。  
 - 字符集：`utf8mb4`。  
 - 磁盘：镜像近 3 年全 A **按 2 GB 预留**（含碎片/binlog 余量），业务另加 **≥5 GB**。  
-- 同步：见 [`market-mirror.md`](/data/mirror)；生产勿对指数大表无筛选全量 COPY。  
+- 同步：见 [行情镜像（THS → gngltdb）](/data/mirror)；生产勿对指数大表无筛选全量 COPY。  
 - 备份：业务表按日；镜像表可重建，优先备份 `bt_job` / 产品表。
 
 ---
@@ -175,4 +173,4 @@ maxmemory-policy allkeys-lru
 | 一体机 | **8C / 16G / 80G SSD** |
 | 软件依赖 | MySQL 8、Redis 6+、JDK 21 |
 
-更细的缓存测算见 [`cache-sizing.md`](/guide/cache-sizing)；全市场耗时见 [`universe-bench.md`](/backtest/universe-bench)。
+更细的缓存测算见 [行情缓存容量评估（Caffeine + 本地 Redis）](/guide/cache-sizing)；全市场耗时见 [文件股票池 + 全市场一次回测](/backtest/universe-bench)。
