@@ -8,22 +8,31 @@
     "light": "#3B82F6",
     "dark": "#1E3A5F"
   },
+  "interaction": {
+    "drilldown": false
+  },
   "navigation": {
     "tabs": [
       {
         "tab": "指南",
         "icon": "book-open",
-        "pages": [
-          "index",
-          "quickstart",
-          "guide/tech-stack",
-          "guide/tech-design",
-          "guide/deploy",
+        "groups": [
           {
-            "group": "运行",
+            "group": " ",
             "pages": [
-              "guide/cache-sizing",
-              "guide/cache-inventory"
+              "index",
+              "quickstart",
+              "guide/tech-stack",
+              "guide/tech-design",
+              "guide/deploy",
+              {
+                "group": "运行",
+                "expanded": false,
+                "pages": [
+                  "guide/cache-sizing",
+                  "guide/cache-inventory"
+                ]
+              }
             ]
           }
         ]
@@ -31,30 +40,36 @@
       {
         "tab": "因子研究",
         "icon": "sigma",
-        "pages": [
-          "factor/overview",
-          "factor/guide",
-          "factor/operators",
-          "factor/catalog",
+        "groups": [
           {
-            "group": "选股公式",
+            "group": " ",
             "pages": [
-              "factor/formulas",
-              "factor/rising-channel",
-              "factor/pullback",
-              "factor/rocket",
-              "factor/assist-cross",
-              "factor/short-wave",
-              "factor/main-force"
+              "factor/overview",
+              "factor/guide",
+              "factor/operators",
+              "factor/catalog",
+              {
+                "group": "选股公式",
+                "expanded": false,
+                "pages": [
+                  "factor/formulas",
+                  "factor/rising-channel",
+                  "factor/pullback",
+                  "factor/rocket",
+                  "factor/assist-cross",
+                  "factor/short-wave",
+                  "factor/main-force"
+                ]
+              },
+              "factor/authoring",
+              "factor/publish",
+              "factor/library",
+              "factor/precompute",
+              "factor/tracking",
+              "factor/lifecycle",
+              "factor/advanced"
             ]
-          },
-          "factor/authoring",
-          "factor/publish",
-          "factor/library",
-          "factor/precompute",
-          "factor/tracking",
-          "factor/lifecycle",
-          "factor/advanced"
+          }
         ]
       },
       {
@@ -69,7 +84,10 @@
       {
         "tab": "数据",
         "icon": "database",
-        "pages": [
+        "groups": [
+          {
+            "group": " ",
+            "pages": [
           "data/tables",
           "data/duckdb",
           "data/mirror",
@@ -154,6 +172,8 @@
               "data/ths/ths_index_his_stocks",
               "data/ths/top10_float_hlolder_f9",
               "data/ths/trans_pi_branch_detail"
+            ]
+          }
             ]
           }
         ]

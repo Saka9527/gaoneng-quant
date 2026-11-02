@@ -199,56 +199,72 @@ def page_list(prefix: str, dest_map: dict[str, str]) -> list[str]:
 def write_docs_json(dest_map: dict[str, str]) -> None:
     gng_tables = page_list("data/gngltdb/", dest_map)
     ths_tables = page_list("data/ths/", dest_map)
+    # Mintlify only draws a collapse chevron on a group nested inside another group.
+    # A blank parent supplies that nesting without a visible heading.
+    nest = " "
     document = {
         "$schema": "https://mintlify.com/docs.json",
         "theme": "mint",
         "name": "GN Quant",
         "description": "高能量化回测、因子研究与数据字典。",
         "colors": {"primary": "#1B4D89", "light": "#3B82F6", "dark": "#1E3A5F"},
+        "interaction": {"drilldown": False},
         "navigation": {
             "tabs": [
                 {
                     "tab": "指南",
                     "icon": "book-open",
-                    "pages": [
-                        "index",
-                        "quickstart",
-                        "guide/tech-stack",
-                        "guide/tech-design",
-                        "guide/deploy",
+                    "groups": [
                         {
-                            "group": "运行",
-                            "pages": ["guide/cache-sizing", "guide/cache-inventory"],
-                        },
+                            "group": nest,
+                            "pages": [
+                                "index",
+                                "quickstart",
+                                "guide/tech-stack",
+                                "guide/tech-design",
+                                "guide/deploy",
+                                {
+                                    "group": "运行",
+                                    "expanded": False,
+                                    "pages": ["guide/cache-sizing", "guide/cache-inventory"],
+                                },
+                            ],
+                        }
                     ],
                 },
                 {
                     "tab": "因子研究",
                     "icon": "sigma",
-                    "pages": [
-                        "factor/overview",
-                        "factor/guide",
-                        "factor/operators",
-                        "factor/catalog",
+                    "groups": [
                         {
-                            "group": "选股公式",
+                            "group": nest,
                             "pages": [
-                                "factor/formulas",
-                                "factor/rising-channel",
-                                "factor/pullback",
-                                "factor/rocket",
-                                "factor/assist-cross",
-                                "factor/short-wave",
-                                "factor/main-force",
+                                "factor/overview",
+                                "factor/guide",
+                                "factor/operators",
+                                "factor/catalog",
+                                {
+                                    "group": "选股公式",
+                                    "expanded": False,
+                                    "pages": [
+                                        "factor/formulas",
+                                        "factor/rising-channel",
+                                        "factor/pullback",
+                                        "factor/rocket",
+                                        "factor/assist-cross",
+                                        "factor/short-wave",
+                                        "factor/main-force",
+                                    ],
+                                },
+                                "factor/authoring",
+                                "factor/publish",
+                                "factor/library",
+                                "factor/precompute",
+                                "factor/tracking",
+                                "factor/lifecycle",
+                                "factor/advanced",
                             ],
-                        },
-                        "factor/authoring",
-                        "factor/publish",
-                        "factor/library",
-                        "factor/precompute",
-                        "factor/tracking",
-                        "factor/lifecycle",
-                        "factor/advanced",
+                        }
                     ],
                 },
                 {
@@ -263,20 +279,25 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                 {
                     "tab": "数据",
                     "icon": "database",
-                    "pages": [
-                        "data/tables",
-                        "data/duckdb",
-                        "data/mirror",
+                    "groups": [
                         {
-                            "group": "业务库",
-                            "expanded": False,
-                            "pages": ["data/gngltdb/index", *gng_tables],
-                        },
-                        {
-                            "group": "同花顺",
-                            "expanded": False,
-                            "pages": ["data/ths/index", *ths_tables],
-                        },
+                            "group": nest,
+                            "pages": [
+                                "data/tables",
+                                "data/duckdb",
+                                "data/mirror",
+                                {
+                                    "group": "业务库",
+                                    "expanded": False,
+                                    "pages": ["data/gngltdb/index", *gng_tables],
+                                },
+                                {
+                                    "group": "同花顺",
+                                    "expanded": False,
+                                    "pages": ["data/ths/index", *ths_tables],
+                                },
+                            ],
+                        }
                     ],
                 },
                 {
