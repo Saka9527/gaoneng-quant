@@ -39,8 +39,8 @@
         "groups": [
           {
             "group": "因子研究",
-            "root": "factor/overview",
             "pages": [
+              "factor/overview",
               "factor/guide",
               "factor/operators",
               "factor/catalog",
@@ -76,9 +76,7 @@
             "pages": [
               "backtest/flow",
               "backtest/signals",
-              "backtest/universe-bench",
-              "api/portfolio-meta",
-              "api/portfolio-output"
+              "backtest/universe-bench"
             ]
           }
         ]
@@ -97,9 +95,9 @@
           },
           {
             "group": "业务库",
-            "root": "data/gngltdb/index",
             "expanded": false,
             "pages": [
+              "data/gngltdb/index",
               "data/gngltdb/bt_float_share",
               "data/gngltdb/bt_industry",
               "data/gngltdb/bt_job",
@@ -119,9 +117,9 @@
           },
           {
             "group": "同花顺",
-            "root": "data/ths/index",
             "expanded": false,
             "pages": [
+              "data/ths/index",
               "data/ths/ashare_analysis_downlimit",
               "data/ths/ashare_analysis_uplimit",
               "data/ths/ashare_bshare_big_order",
@@ -183,10 +181,17 @@
       {
         "tab": "API",
         "icon": "braces",
-        "pages": [
-          "api/overview",
-          "api/page-map",
-          "api/factor-service"
+        "groups": [
+          {
+            "group": "接口",
+            "pages": [
+              "api/overview",
+              "api/page-map",
+              "api/factor-service",
+              "api/portfolio-meta",
+              "api/portfolio-output"
+            ]
+          }
         ]
       }
     ]

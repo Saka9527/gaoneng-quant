@@ -227,8 +227,8 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                     "groups": [
                         {
                             "group": "因子研究",
-                            "root": "factor/overview",
                             "pages": [
+                                "factor/overview",
                                 "factor/guide",
                                 "factor/operators",
                                 "factor/catalog",
@@ -265,8 +265,6 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                                 "backtest/flow",
                                 "backtest/signals",
                                 "backtest/universe-bench",
-                                "api/portfolio-meta",
-                                "api/portfolio-output",
                             ],
                         }
                     ],
@@ -281,22 +279,31 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                         },
                         {
                             "group": "业务库",
-                            "root": "data/gngltdb/index",
                             "expanded": False,
-                            "pages": gng_tables,
+                            "pages": ["data/gngltdb/index", *gng_tables],
                         },
                         {
                             "group": "同花顺",
-                            "root": "data/ths/index",
                             "expanded": False,
-                            "pages": ths_tables,
+                            "pages": ["data/ths/index", *ths_tables],
                         },
                     ],
                 },
                 {
                     "tab": "API",
                     "icon": "braces",
-                    "pages": ["api/overview", "api/page-map", "api/factor-service"],
+                    "groups": [
+                        {
+                            "group": "接口",
+                            "pages": [
+                                "api/overview",
+                                "api/page-map",
+                                "api/factor-service",
+                                "api/portfolio-meta",
+                                "api/portfolio-output",
+                            ],
+                        }
+                    ],
                 },
             ]
         },
