@@ -41,6 +41,33 @@ SPECIAL = {
     "product/factors/06-主力进场.md": "factor/main-force.mdx",
 }
 
+SIDEBAR = {
+    "backtest/flow.mdx": "流程",
+    "backtest/signals.mdx": "买卖点",
+    "backtest/universe-bench.mdx": "全市场",
+    "guide/tech-design.mdx": "方案",
+    "guide/deploy.mdx": "部署",
+    "guide/cache-sizing.mdx": "容量",
+    "guide/cache-inventory.mdx": "清单",
+    "data/tables.mdx": "总览",
+    "data/duckdb.mdx": "本地库",
+    "data/mirror.mdx": "镜像",
+    "data/gngltdb/index.mdx": "概览",
+    "data/ths/index.mdx": "概览",
+    "api/overview.mdx": "总览",
+    "api/page-map.mdx": "对照",
+    "api/portfolio-meta.mdx": "枚举",
+    "api/portfolio-output.mdx": "输出",
+    "api/factor-service.mdx": "选股",
+    "factor/formulas.mdx": "总览",
+    "factor/rising-channel.mdx": "上升通道",
+    "factor/pullback.mdx": "回踩",
+    "factor/rocket.mdx": "火箭",
+    "factor/assist-cross.mdx": "辅助金叉",
+    "factor/short-wave.mdx": "短波",
+    "factor/main-force.mdx": "主力",
+}
+
 CODE_RE = re.compile(r"```[\s\S]*?```|`[^`\n]*`")
 LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 
@@ -144,9 +171,12 @@ def write_ported(src_root: Path, dest_map: dict[str, str]) -> None:
         body = rewrite_links(body, source, src_root, dest_map)
         body = escape_mdx(body)
         description = description_from(body, title)
+        sidebar = SIDEBAR.get(dest_rel)
+        sidebar_line = f"sidebarTitle: {yaml_quote(sidebar)}\n" if sidebar else ""
         page = (
             "---\n"
             f"title: {yaml_quote(title)}\n"
+            f"{sidebar_line}"
             f"description: {yaml_quote(description)}\n"
             "---\n\n"
             f"{{/* 同步自 java-quant-backtest/docs/{rel} */}}\n\n"
@@ -250,13 +280,13 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                             "pages": ["data/tables", "data/duckdb", "data/mirror"],
                         },
                         {
-                            "group": "业务库 gngltdb",
+                            "group": "业务库",
                             "root": "data/gngltdb/index",
                             "expanded": False,
                             "pages": gng_tables,
                         },
                         {
-                            "group": "同花顺源库",
+                            "group": "同花顺",
                             "root": "data/ths/index",
                             "expanded": False,
                             "pages": ths_tables,

@@ -96,7 +96,7 @@
             ]
           },
           {
-            "group": "业务库 gngltdb",
+            "group": "业务库",
             "root": "data/gngltdb/index",
             "expanded": false,
             "pages": [
@@ -118,7 +118,7 @@
             ]
           },
           {
-            "group": "同花顺源库",
+            "group": "同花顺",
             "root": "data/ths/index",
             "expanded": false,
             "pages": [
