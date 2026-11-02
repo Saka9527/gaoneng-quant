@@ -39,15 +39,6 @@ SPECIAL = {
     "product/factors/04-辅助金叉区域.md": "factor/assist-cross.mdx",
     "product/factors/05-短波金叉区域.md": "factor/short-wave.mdx",
     "product/factors/06-主力进场.md": "factor/main-force.mdx",
-    "product/GAP_ANALYSIS.md": "internal/gap.mdx",
-    "product/CODESIGN_1.0_GAP.md": "internal/codesign.mdx",
-    "product/TA4J回测能力对照.md": "internal/ta4j.mdx",
-    "product/回测框架技术交流问题清单.md": "internal/questions.mdx",
-    "product/Java量化回测所需的技术技能.md": "internal/skills.mdx",
-    "product/_extracted/因子字典及管理后台.md": "product/factor-dictionary.mdx",
-    "product/_extracted/策略榜单___产品需求文档.md": "product/strategy-board.mdx",
-    "product/_extracted/个人中心_-_我的关注___产品需求文档.md": "product/follows.mdx",
-    "OPTIMIZATION.md": "internal/optimization.mdx",
 }
 
 CODE_RE = re.compile(r"```[\s\S]*?```|`[^`\n]*`")
@@ -276,32 +267,6 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                     "tab": "API",
                     "icon": "braces",
                     "pages": ["api/overview", "api/page-map", "api/factor-service"],
-                },
-                {
-                    "tab": "产品",
-                    "icon": "layout-dashboard",
-                    "groups": [
-                        {
-                            "group": "需求",
-                            "pages": [
-                                "product/factor-dictionary",
-                                "product/strategy-board",
-                                "product/follows",
-                            ],
-                        },
-                        {
-                            "group": "内部备忘",
-                            "expanded": False,
-                            "pages": [
-                                "internal/gap",
-                                "internal/codesign",
-                                "internal/ta4j",
-                                "internal/optimization",
-                                "internal/questions",
-                                "internal/skills",
-                            ],
-                        },
-                    ],
                 },
             ]
         },

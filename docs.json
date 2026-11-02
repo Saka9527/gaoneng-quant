@@ -188,32 +188,6 @@
           "api/page-map",
           "api/factor-service"
         ]
-      },
-      {
-        "tab": "产品",
-        "icon": "layout-dashboard",
-        "groups": [
-          {
-            "group": "需求",
-            "pages": [
-              "product/factor-dictionary",
-              "product/strategy-board",
-              "product/follows"
-            ]
-          },
-          {
-            "group": "内部备忘",
-            "expanded": false,
-            "pages": [
-              "internal/gap",
-              "internal/codesign",
-              "internal/ta4j",
-              "internal/optimization",
-              "internal/questions",
-              "internal/skills"
-            ]
-          }
-        ]
       }
     ]
   }
