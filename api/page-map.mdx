@@ -18,9 +18,9 @@ description: "统一响应（回测服务）：{ \"success\", \"code\", \"messag
 
 | 范围 | 个数 | 说明 |
 |------|-----:|------|
-| 回测服务 JSON 接口（8080） | **23** | 下面第 2～3 节全部路径 |
+| 回测服务 JSON 接口（8080） | **22** | 下面第 2～3 节全部路径 |
 | 其中产品页直接调用 | **9** | 页面发起的请求 |
-| 已开放、页面未调用 | **14** | 运维、全市场向量回测、备用查询。`/portfolio/submit` 仍在，但页面不再调用 |
+| 已开放、页面未调用 | **13** | 运维和备用查询。`/portfolio/submit` 仍在，但页面不再调用 |
 | 产品页本身 | 1 | `GET /product`、`GET /product/`，返回页面，不是 JSON |
 | 选股服务（8081） | **3** | 浏览器不调用；带回测因子组合时由回测进程内部调用其中 1 个 |
 
@@ -65,7 +65,6 @@ description: "统一响应（回测服务）：{ \"success\", \"code\", \"messag
 | GET | `/api/v1/universe/{universeId}/codes` | 股票池全部代码，可加 `limit` |
 | GET | `/api/v1/universe/market-panel` | 已预热的全市场面板状态 |
 | POST | `/api/v1/universe/market-warmup` | 把股票池日 K 预热进内存面板 |
-| POST | `/api/v1/universe/market-backtest` | 对已预热面板做向量双均线，不走产品页撮合 |
 | GET | `/api/v1/product/factor-combo` | 当前用户已保存的动态因子组合 |
 | POST | `/api/v1/product/factor-combo/refresh-sectors` | 从同花顺刷新板块、行业的当日成分到 `gn_factor_signal` |
 

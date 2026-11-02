@@ -16,7 +16,6 @@ ROOT = Path(__file__).resolve().parents[1]
 SPECIAL = {
     "SIGNAL_LOGIC.md": "backtest/signals.mdx",
     "BACKTEST_FLOW.md": "backtest/flow.mdx",
-    "universe-bench.md": "backtest/universe-bench.mdx",
     "TECH_DESIGN.md": "guide/tech-design.mdx",
     "TECH_STACK.md": "guide/tech-stack.mdx",
     "DEPLOY.md": "guide/deploy.mdx",
@@ -44,7 +43,6 @@ SPECIAL = {
 SIDEBAR = {
     "backtest/flow.mdx": "流程",
     "backtest/signals.mdx": "买卖点",
-    "backtest/universe-bench.mdx": "全市场",
     "guide/tech-design.mdx": "方案",
     "guide/deploy.mdx": "部署",
     "guide/cache-sizing.mdx": "容量",
@@ -287,6 +285,10 @@ def prepare_openapi(spec: dict) -> dict:
     )
     user["x-default"] = "demo_user"
     spec["security"] = [{"UserId": []}]
+    spec.get("paths", {}).pop("/api/v1/universe/market-backtest", None)
+    for tag in spec.get("tags") or []:
+        if isinstance(tag, dict) and tag.get("name") == "Universe Files":
+            tag["description"] = "文件股票池 / 因子成分股"
     _rename_wildcard_content(spec)
     # Windows cannot create the generated page file when a summary contains *, ?, or :.
     # Pin each page to its operationId so the filename stays safe.
@@ -415,7 +417,6 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                     "pages": [
                         "backtest/flow",
                         "backtest/signals",
-                        "backtest/universe-bench",
                     ],
                 },
                 {

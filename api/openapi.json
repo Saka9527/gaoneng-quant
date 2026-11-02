@@ -37,7 +37,7 @@
     },
     {
       "name": "Universe Files",
-      "description": "文件股票池 / 因子成分股 / 全市场向量回测",
+      "description": "文件股票池 / 因子成分股",
       "x-group": "股票池"
     }
   ],
@@ -124,44 +124,6 @@
           "metadata": {
             "title": "预热全市场/因子池面板到内存",
             "sidebarTitle": "预热全市场/因子池面板到内存"
-          }
-        }
-      }
-    },
-    "/api/v1/universe/market-backtest": {
-      "post": {
-        "tags": [
-          "Universe Files"
-        ],
-        "summary": "对已预热面板做全市场向量化双均线（毫秒级）",
-        "operationId": "marketBacktest",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MarketBacktestRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
-                }
-              }
-            }
-          }
-        },
-        "x-mint": {
-          "href": "/api-reference/universe-files/marketBacktest",
-          "metadata": {
-            "title": "对已预热面板做全市场向量化双均线（毫秒级）",
-            "sidebarTitle": "对已预热面板做全市场向量化双均线（毫秒级）"
           }
         }
       }

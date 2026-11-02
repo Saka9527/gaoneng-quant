@@ -78,7 +78,7 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 | 行情面板 / 缓存 | 紧凑行情、全市场预热、缓存 |
 | 行情加载 | 日 K 与辅助表 |
 | 产品 | 因子、关注、因子组合 |
-| 股票池 | 股票池文件、向量全市场扫 |
+| 股票池 | 股票池文件 |
 | 任务存储 | 任务摘要落库 |
 
 ---
@@ -202,7 +202,6 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 | 组合 | GET | `/api/v1/portfolio/jobs/{id}/trades` | 成交分页，默认 limit=50 |
 | 因子组合 | POST | `/api/v1/product/factor-combo/*` | 预览/保存/刷新板块 |
 | 股票池 | POST | `/api/v1/universe/market-warmup` | 预热 Panel |
-| 股票池 | POST | `/api/v1/universe/market-backtest` | 向量全市场扫（不落 bt_job） |
 
 完整集合：`api/apipost.collection.json`（`api/apipost.collection.json`）、Swagger `/swagger-ui.html`。
 

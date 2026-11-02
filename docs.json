@@ -87,8 +87,7 @@
         "icon": "chart-line",
         "pages": [
           "backtest/flow",
-          "backtest/signals",
-          "backtest/universe-bench"
+          "backtest/signals"
         ]
       },
       {

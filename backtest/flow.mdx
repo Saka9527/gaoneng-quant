@@ -1,165 +1,40 @@
 ---
-title: "完整回测流程（产品 × 开发）"
+title: "回测流程"
 sidebarTitle: "流程"
-description: "更新日期：2026-10-14"
+description: "在选股回测工作台选择股票池和交易模型，查看绩效、收益曲线和成交。"
 ---
 
-本文从**产品使用路径**与**工程实现路径**说明当前系统里两条回测线如何串起来。
-
----
-
-## 一、总览：两条回测线
-
-| 线 | 产品入口 | 核心 API | 引擎 | 是否落 `bt_job` | 典型用途 |
-|----|----------|----------|------|-----------------|----------|
-| **A. 组合选股回测** | `/product/` → 选股回测 | `POST /api/v1/portfolio/run` | 组合撮合 | **是** | 工作台主流程：股票池 + 右侧交易模型 |
-| **B. 全市场向量扫一遍** | 运维（暂无产品页） | `market-warmup` → `market-backtest` | 向量双均线 | **否** | 全 A 毫秒级排名/压测 |
-
-> 单票 ta4j 回测路径已移除；客户端与产品页统一走组合回测。
->
-> **成交口径**：信号在昨收确认 → 次日开盘成交；有 `bt_trade_calendar` 时与基准取交集推进；默认 T+1、涨跌停/停牌、印花税。ST 默认可交易，勾选「排除 ST/*ST」才整段不买。涨跌停优先用同花顺当日 `ul_price` / `dl_price`；没有公布价时按板块生效日和该股 `st_hat` 区间取板幅（主板 10%、主板 ST 区间 5%、创业板 2020-08-24 起 20%、科创板 20%、北交所 30%）。可选动量前 N%、流通市值下限、同申万一级行业持仓上限。全量组合自动预热并复用内存面板。成交明细只留在跑任务的那台进程内存里。
+入口是产品页的 **选股回测**。
 
 ```mermaid
-flowchart TB
-  subgraph prep [数据准备]
-    U[股票池文件 data/universe]
-    M[gngltdb 镜像 / THS]
-    R[Redis + Caffeine]
-    P[内存面板]
-  end
-
-  subgraph product [产品主路径]
-    UI[选股回测工作台]
-    PF[portfolio/run]
-    PE[组合撮合]
-    JOB[(bt_job)]
-    RS[回测结果页]
-  end
-
-  subgraph vector [向量扫市场]
-    WU[market-warmup]
-    MB[market-backtest]
-    VE[向量双均线]
-  end
-
-  U --> UI
-  U --> WU
-  M --> R
-  R --> P
-  WU --> P
-  UI --> PF
-  P -.->|优先复用| PF
-  M --> PF
-  PF --> PE --> JOB --> RS
-  WU --> MB --> VE
+flowchart LR
+  open[打开选股回测]
+  pool[选择股票池]
+  factor[可选：选择因子]
+  model[配置交易模型]
+  run[点击回测]
+  result[查看结果]
+  save[可选：保存策略]
+  open --> pool --> factor --> model --> run --> result --> save
 ```
 
----
+| 步骤 | 你要做的 | 页面上看到 |
+|------|----------|------------|
+| 1 | 打开选股回测 | 股票池、交易模型的默认项、最近的回测 |
+| 2 | 选择股票池 | 可以预览池里的股票 |
+| 3 | 需要时，在左侧点选因子，并选择交集或并集 | 预览当天入选的股票。这一步还不是回测 |
+| 4 | 在右侧配置交易模型 | 区间、对比指数、买卖规则、仓位和过滤 |
+| 5 | 点击「回测」 | 算完后进入结果页：绩效、收益曲线、成交明细 |
+| 6 | 需要留下这次配置时，保存策略 | 会按回看区间回测到今天。每个交易日行情更新后会重跑，刷新收益和持仓 |
+| 7 | 以后再打开某次结果 | 可以看到当时的绩效和收益曲线，成交明细可以翻页 |
 
-## 二、产品视角
+## 成交怎么发生
 
-### 2.1 前置条件
+- 买卖信号在前一个交易日收盘确认，下一个交易日开盘成交。
+- 默认买入当天不能卖，下一个交易日起可以卖。
+- 停牌不成交。开盘涨停不能买，开盘跌停不能卖。
+- 买卖都扣佣金和滑点，卖出再扣印花税。
+- ST 默认可以买。勾选「排除 ST/*ST」后，戴帽区间内不买。
+- 结果页可以翻看成交。成交只留在当次打开的结果里。
 
-1. 服务已启动（`mirror` 模式读 `gngltdb` 推荐）。
-2. 近 3 年全 A 日 K 已同步到镜像（见 [行情镜像（THS → gngltdb）](/data/mirror)）。
-3. 股票池文件就绪：`data/universe/all_a_codes.txt` 及可选 `factors/*.txt`。
-4. （建议）全 A 已预热进内存 Panel。
-5. 演示用户头：`X-User-Id: demo_user`。
-
-### 2.2 主流程：选股回测（组合）
-
-入口：`http://127.0.0.1:8080/product/` → **选股回测**。
-
-| 步骤 | 用户动作 | 系统行为 |
-|------|----------|----------|
-| 1 | 打开页面 | 拉股票池列表、`portfolio/meta`、最近任务 |
-| 2 | 选 Universe | 预览代码；可设调试样本上限 |
-| 3 | 配右侧交易模型 | 区间、对比指数、买卖择时、仓位 |
-| 4 | 点「回测」 | 一律同步 `POST /portfolio/run`，请求返回后才出结果 |
-| 5 | 看结果 | 指标、净值曲线、成交（`/jobs/{id}/trades`，内存分页） |
-| 6 | （可选）保存策略 | `POST /portfolio/strategies`。立刻回测到今天；每个交易日 17:00 行情同步后重跑，更新收益和持仓 |
-| 7 | 重开结果 | 结果页带 `jobId` → `GET /portfolio/jobs/{id}` |
-
-### 2.3 研发流程：全市场向量扫
-
-1. `POST /universe/market-warmup`
-2. `POST /universe/market-backtest` → `computeMs` / top-bottom  
-不写入回测记录。
-
-### 2.4 选股因子与回测的边界
-
-| 模块 | 是否走回测引擎 | 说明 |
-|------|----------------|------|
-| 选股回测工作台 | **是**（组合） | 即时计算 |
-| 左侧因子列表 / 今日预览 | **否** | 读 `gn_factor` / 最新一个信号日 |
-
----
-
-## 三、开发视角
-
-### 3.1 数据平面
-
-```text
-股票池文件 → 代码列表
-行情源 → MySQL（mirror / ths）→ 紧凑日 K
-         日 K 缓存（Caffeine + Redis）
-         预热 → 内存面板
-```
-
-### 3.2 组合回测
-
-```text
-工作台点击回测 → #/backtest/result 结果页
-  → POST /api/v1/portfolio/run
-       ├─ 解析股票：优先因子组合，其次候选代码，再次股票池文件
-       ├─ 优先复用已预热的内存面板
-       ├─ 内存撮合
-       ├─ 净值、成交、期末持仓留在本进程
-       └─ 任务表只写摘要，不写成交
-  → 结果页展示指标、净值和成交；GET /portfolio/jobs/{jobId} 供记录复看
-```
-
-### 3.2.1 因子词典组合选股
-
-选股回测左栏「因子词典」：从 `gn_factor` 点选最多 10 个高能因子，选交集 AND / 并集 OR，
-每因子默认「命中当日 `gn_factor_signal`」；有数值列时可设 LT/GT/BETWEEN/PERCENTILE。
-预览：`POST /api/v1/product/factor-combo/preview`；保存：`…/save` → `gn_factor_combo`。
-回测请求体带 `factorCombo`，与底池（默认 `all_a`）求交后得到候选池。
-板块/行业成分：启动或 `POST /api/v1/product/factor-combo/refresh-sectors` 从
-`lm_ths_db.stk_corp_ic`（+ `ls_sec_basic_info`）写入 `gn_factor_signal`。
-概念专题指数成分尚未对齐 `ths_index_his_stocks` 的 index_id，暂以行业板块为主。
-
-### 3.3 向量全市场
-
-```text
-market-warmup → 内存面板
-market-backtest → 向量双均线
-```
-
----
-
-## 四、推荐自测
-
-```bash
-curl -s -X POST http://127.0.0.1:8080/api/v1/universe/market-warmup \
-  -H "Content-Type: application/json" \
-  -d "{\"universeId\":\"all_a\",\"lookbackYears\":3,\"limit\":50}"
-
-curl -s -X POST http://127.0.0.1:8080/api/v1/portfolio/run \
-  -H "Content-Type: application/json" -H "X-User-Id: demo_user" \
-  -d "{\"universeId\":\"all_a\",\"lookbackYears\":3,\"benchmarkCode\":\"000300\",\"warmupLimit\":50}"
-```
-
-ApiPost：`docs/api/apipost.collection.json`（`api/apipost.collection.json`）。
-
----
-
-## 五、相关文档
-
-| 文档 | 内容 |
-|------|------|
-| [量化回测系统 — 技术实现方案](/guide/tech-design) | **技术实现方案（评审主文档）** |
-| [部署与服务器资源](/guide/deploy) | 部署资源 |
-| [行情镜像（THS → gngltdb）](/data/mirror) | 镜像同步 |
-| [文件股票池 + 全市场一次回测](/backtest/universe-bench) | 全市场耗时 |
-| [API 文档与 ApiPost 导入](/api/overview) | API / ApiPost |
+买卖规则和结果里每个数的算法，见 [指标、买卖点与回测结果](/backtest/signals)。

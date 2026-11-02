@@ -64,7 +64,7 @@ description: "更新日期：2026-10-11"
 
 依据：
 
-- 全 A 预热实测约 **30 s** 量级（镜像库、并行 3）；之后向量回测毫秒级，组合回测秒级。
+- 全 A 预热实测约 **30 s** 量级（镜像库、并行 3）；之后组合回测秒级。
 - 堆需容纳：Spring + Panel（~0.2 GB）+ 预热/组合临时缓冲 + Caffeine；4 GB 堆较稳妥。
 - Redis 全 A 约占 0.5 GB，生产建议 **≥1 GB maxmemory**。
 
@@ -172,4 +172,4 @@ maxmemory-policy allkeys-lru
 | 一体机 | **8C / 16G / 80G SSD** |
 | 软件依赖 | MySQL 8、Redis 6+、JDK 21 |
 
-更细的缓存测算见 [行情缓存容量评估（Caffeine + 本地 Redis）](/guide/cache-sizing)；全市场耗时见 [文件股票池 + 全市场一次回测](/backtest/universe-bench)。
+更细的缓存测算见 [行情缓存容量评估（Caffeine + 本地 Redis）](/guide/cache-sizing)。
