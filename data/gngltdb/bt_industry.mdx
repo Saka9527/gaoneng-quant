@@ -1,0 +1,18 @@
+---
+title: "bt_industry"
+description: "索引：idx_ind (industry_code)。"
+---
+
+{/* 同步自 java-quant-backtest/docs/gngltdb/tables/bt_industry.md */}
+
+- 说明: 每只股票当前申万一级行业，一行一只。用于同行业持仓上限
+- 来源: `corp_his_sw_ic.corp_code = ls_sec_basic_info.issue_org_id`，见 [`../../ths-db/tables/corp_his_sw_ic.md`](/data/ths/corp_his_sw_ic)
+- 迁入 DuckDB: `industry`
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `sec_code` | varchar(16) PK | 证券代码 |
+| `industry_code` | varchar(32) | 申万一级代码 |
+| `industry_name` | varchar(200) | 行业名称 |
+
+索引：`idx_ind (industry_code)`。

@@ -1,0 +1,41 @@
+---
+title: "快速开始"
+description: "在本机启动回测服务，并打开产品页和 Swagger。"
+---
+
+## 启动
+
+在 `java-quant-backtest` 目录：
+
+```bash
+mvn -q spring-boot:run
+```
+
+| 入口 | URL |
+| --- | --- |
+| 服务 | http://127.0.0.1:8080 |
+| 产品 UI | http://127.0.0.1:8080/product/ |
+| Swagger | http://127.0.0.1:8080/swagger-ui.html |
+| OpenAPI | http://127.0.0.1:8080/v3/api-docs |
+
+选股成分是另一个进程，端口 `8081`，见 [选股服务](/api/factor-service)。
+
+## 配置
+
+```yaml
+quant.ths.mode: mirror   # mirror 读 gngltdb 副本；ths 读远端同花顺
+```
+
+密码用环境变量 `THS_DB_PASSWORD`、`APP_DB_PASSWORD`，不写进仓库。本地 Redis 默认 `127.0.0.1:6379`。
+
+可选鉴权：配置 `quant.api-key` 后，请求带 `X-API-Key`。工作台保存因子组合和回测记录时用请求头 `X-User-Id`，演示值是 `demo_user`。
+
+## 刷新 API 快照
+
+服务已启动时，在代码仓库执行：
+
+```bash
+python -u scripts/export_api_docs.py
+```
+
+导入 ApiPost 时选 Postman 集合，环境变量设 `baseUrl=http://127.0.0.1:8080` 和 `userId=demo_user`。集合文件在代码仓库的 `docs/api/`，不在本文档仓库。

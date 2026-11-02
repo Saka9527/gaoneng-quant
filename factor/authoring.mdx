@@ -1,0 +1,38 @@
+---
+title: "因子编写"
+description: "一条字典因子要填的分类、描述和来源，以及公式因子改哪里。"
+sidebarTitle: "因子编写"
+---
+
+## 字典因子
+
+工作台左侧读 `gn_factor`。一条记录至少要能回答名称、分类、选股逻辑和数据从哪来。
+
+| 字段 | 作用 |
+| --- | --- |
+| `factor_id` | 主键。成分接口和组合 JSON 都用它 |
+| `name` | 展示名 |
+| `description` | 悬浮框和详情里的说明 |
+| `select_logic` | 选股逻辑文案 |
+| `category_l1` / `category_l2` | 推荐 / 独家 / 板块，以及二级菜单 |
+| `status` | `ONLINE` 或 `OFFLINE`，默认 ONLINE |
+| `source_type` | `MANUAL`、`THS_SECTOR`、`THS_FLOW`、`THS_HOTMONEY`、`PROPRIETARY` |
+| `source_ref` | 外部引用键，例如板块代码 |
+
+板块描述规则：概念、行业、风格分别是「名称 + 对应成分股」。
+
+<Warning>
+因子管理后台还不能在页面上改这些字段。当前写入来自产品种子和板块刷新。
+</Warning>
+
+## 公式因子
+
+六条公式没有表达式编辑器。修改步骤：
+
+<Steps>
+  <Step title="改计算">在 `FormulaSignals` 里改对应 `calc_*`，窗口不够或输入无效时保持为假。</Step>
+  <Step title="改文档">同步本目录里的公式页。牛线定义变了要同时改上升通道、回踩和辅助金叉。</Step>
+  <Step title="重做成分">公式结果进内存成分后，回测和成分服务才看得到。页面预览仍读 `gn_factor_signal` 最新一个信号日。</Step>
+</Steps>
+
+公式因子不是买卖点。买卖点在 `TradeSignalCatalog` 注册，编号大写，和配置里的 `buySignal` / `sellSignal` 一致。

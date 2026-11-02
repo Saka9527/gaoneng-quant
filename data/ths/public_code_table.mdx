@@ -1,0 +1,37 @@
+---
+title: "public_code_table"
+description: "public_code_table"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/public_code_table.md */}
+
+- 说明: 公共编码表
+- 引擎: InnoDB
+- 约行数: 36141
+- 数据量: 4.52 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `ctgry_code` | `varchar(18)` | YES | MUL |  |  | 类目编码 |
+| 6 | `ctgry_name` | `varchar(256)` | YES |  |  |  | 类目名称 |
+| 7 | `class_encode` | `varchar(12)` | YES |  |  |  | 总类编码 |
+| 8 | `class_name` | `varchar(60)` | YES |  |  |  | 总类名称 |
+| 9 | `standard_code` | `varchar(12)` | YES |  |  |  | 标准编码 |
+| 10 | `ed` | `date` | YES |  |  |  | 终止日期 |
+| 11 | `stop_reason` | `varchar(1000)` | YES |  |  |  | 终止原因 |
+| 12 | `ctgry_specification` | `mediumtext` | YES |  |  |  | 类目详细说明 |
+| 13 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `idx_ctgry_code_class` | ctgry_code,class_encode,isvalid | 否 | BTREE |
+| `PRIMARY` | seq | 是 | BTREE |

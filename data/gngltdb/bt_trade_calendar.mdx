@@ -1,0 +1,14 @@
+---
+title: "bt_trade_calendar"
+description: "bt_trade_calendar"
+---
+
+{/* 同步自 java-quant-backtest/docs/gngltdb/tables/bt_trade_calendar.md */}
+
+- 说明: 上交所开市日。源条件 `open_close_identifier = 1` 且 `td_mkt_code = 212001`
+- 源表: `exchange_opening_calendar`，见 [`../../ths-db/tables/exchange_opening_calendar.md`](/data/ths/exchange_opening_calendar)
+- 迁入 DuckDB: `calendar`
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `td_date` | date PK | 开市日 |

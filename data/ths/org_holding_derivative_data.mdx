@@ -1,0 +1,37 @@
+---
+title: "org_holding_derivative_data"
+description: "org_holding_derivative_data"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/org_holding_derivative_data.md */}
+
+- 说明: 中国股票机构持股衍生数据
+- 引擎: InnoDB
+- 约行数: 11210703
+- 数据量: 2318.98 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `org_type_encode` | `varchar(12)` | YES |  |  |  | 机构类型编码 |
+| 6 | `sec_held_id` | `varchar(32)` | YES |  |  |  | 持有证券id |
+| 7 | `org_id_or_fund_id` | `varchar(20)` | YES |  |  |  | 机构id或基金id |
+| 8 | `ed` | `date` | YES |  |  |  | 截止日期 |
+| 9 | `org_name_or_fund_name` | `varchar(100)` | YES |  |  |  | 机构或基金名称 |
+| 10 | `org_type_code` | `varchar(30)` | YES |  |  |  | 机构类型名称 |
+| 11 | `held_num` | `decimal(18,0)` | YES |  |  |  | 持股数量 |
+| 12 | `share_held_mkt_value` | `decimal(18,4)` | YES |  |  |  | 持股市值 |
+| 13 | `to_float_shares_ratio` | `decimal(18,4)` | YES |  |  |  | 占流通股比例 |
+| 14 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

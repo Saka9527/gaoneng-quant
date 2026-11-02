@@ -1,0 +1,65 @@
+---
+title: "lc_perf_notice"
+description: "lc_perf_notice"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/lc_perf_notice.md */}
+
+- 说明: 中国股票业绩预告
+- 引擎: InnoDB
+- 约行数: 148030
+- 数据量: 142.75 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `org_id` | `varchar(20)` | YES |  |  |  | 机构id |
+| 6 | `org_name` | `varchar(100)` | YES |  |  |  | 机构名称 |
+| 7 | `announcement_date` | `date` | YES |  |  |  | 公告日期 |
+| 8 | `report_annual` | `date` | YES |  |  |  | 报告年度 |
+| 9 | `perf_type_code` | `varchar(12)` | YES |  |  |  | 业绩类型编码 |
+| 10 | `performance_type` | `varchar(60)` | YES |  |  |  | 业绩类型 |
+| 11 | `perfe_fore_content` | `mediumtext` | YES |  |  |  | 业绩预告内容 |
+| 12 | `perf_chg_reason` | `mediumtext` | YES |  |  |  | 业绩变化原因 |
+| 13 | `net_profit_chg_ratio_fore` | `decimal(18,4)` | YES |  |  |  | 预告净利润变动幅度 |
+| 14 | `fore_net_profit_chg_dl` | `decimal(18,4)` | YES |  |  |  | 预告净利润变动幅度下限(%) |
+| 15 | `fore_net_profit_chg_ul` | `decimal(18,4)` | YES |  |  |  | 预告净利润变动幅度上限(%) |
+| 16 | `perf_fore_abstract` | `varchar(400)` | YES |  |  |  | 业绩预告摘要 |
+| 17 | `fore_net_profit_dl` | `decimal(18,4)` | YES |  |  |  | 预告净利润下限(万元) |
+| 18 | `net_profit_amt_ul_fore` | `decimal(18,4)` | YES |  |  |  | 预告净利润上限(万元) |
+| 19 | `currency_code` | `varchar(12)` | YES |  |  |  | 货币代码 |
+| 20 | `currency_name` | `varchar(30)` | YES |  |  |  | 货币名称 |
+| 21 | `net_profit_atsopc_last_year` | `decimal(18,4)` | YES |  |  |  | 上年同期归属于母公司股东的净利润 |
+| 22 | `fore_oi_lower_limit` | `decimal(18,4)` | YES |  |  |  | 预计营业收入下限 |
+| 23 | `fore_oi_upper_limit` | `decimal(18,4)` | YES |  |  |  | 预计营业收入上限 |
+| 24 | `fore_deduct_np_ul` | `decimal(18,4)` | YES |  |  |  | 预计扣非后净利润上限 |
+| 25 | `fore_deduct_np_ll` | `decimal(18,4)` | YES |  |  |  | 预计扣非后净利润下限 |
+| 26 | `fore_deduct_np_change_ul` | `decimal(18,4)` | YES |  |  |  | 预计扣非后净利润变动幅度上限 |
+| 27 | `fore_deduct_np_change_ll` | `decimal(18,4)` | YES |  |  |  | 预计扣非后净利润变动幅度下限 |
+| 28 | `oi_last_year` | `decimal(18,4)` | YES |  |  |  | 上年同期营业收入 |
+| 29 | `fiscal_year` | `decimal(4,0)` | YES |  |  |  | 财政年度 |
+| 30 | `deduct_oi_upper_limit` | `decimal(18,4)` | YES |  |  |  | 扣除后营业收入上限 |
+| 31 | `deduct_oi_lower_limit` | `decimal(18,4)` | YES |  |  |  | 扣除后营业收入下限 |
+| 32 | `deduct_oi_last_year` | `decimal(18,4)` | YES |  |  |  | 上年同期扣除后营业收入 |
+| 33 | `deduct_np_last_year` | `decimal(18,4)` | YES |  |  |  | 上年同期扣非后净利润 |
+| 34 | `basic_eps_upper_limit` | `decimal(18,4)` | YES |  |  |  | 基本每股收益上限 |
+| 35 | `basic_eps_lower_limit` | `decimal(18,4)` | YES |  |  |  | 基本每股收益下限 |
+| 36 | `basic_eps_last_year` | `decimal(18,4)` | YES |  |  |  | 上年同期基本每股收益 |
+| 37 | `report_type_code` | `varchar(60)` | YES |  |  |  | 报告类型编码 |
+| 38 | `report_type_name` | `varchar(300)` | YES |  |  |  | 报告类型名称 |
+| 39 | `basic_eps_change_ul` | `decimal(18,4)` | YES |  |  |  | 基本每股收益变动幅度上限 |
+| 40 | `basic_eps_change_ll` | `decimal(18,4)` | YES |  |  |  | 基本每股收益变动幅度下限 |
+| 41 | `special_identifier` | `decimal(2,0)` | YES |  |  |  | 特殊标识 |
+| 42 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

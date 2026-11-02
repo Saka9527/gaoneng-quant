@@ -1,0 +1,50 @@
+---
+title: "行情缓存容量评估（Caffeine + 本地 Redis）"
+description: "运行中全部缓存的结构和占用见 cache-inventory.md(/guide/cache-inventory)。本文只测算日 K 这一层的 JSON / Redis 体积。"
+---
+
+{/* 同步自 java-quant-backtest/docs/cache-sizing.md */}
+
+运行中全部缓存的结构和占用见 [`cache-inventory.md`](/guide/cache-inventory)。本文只测算日 K 这一层的 JSON / Redis 体积。
+
+## 单标的体积（约）
+
+| 区间 | 交易日约 | JSON 体积约 | Redis 实占约（含开销） |
+|------|----------|-------------|------------------------|
+| 近 1 年 | ~250 | ~18 KB | ~30–40 KB |
+| **近 3 年（当前默认）** | **~750** | **~55 KB** | **~80–100 KB** |
+| 近 8 年 | ~2000 | ~145 KB | ~220–280 KB |
+
+估算口径：每根 bar JSON ≈ 70B（date+OHLCV）+ key/TTL 元数据。
+
+## 场景占用
+
+| 场景 | 标的数 | 默认 3 年 | 是否够用（本机 Redis） |
+|------|--------|----------|------------------------|
+| 个人调试热门池 | 50 | ~5 MB | 绰绰有余 |
+| 工作台常用 | 200 | ~20 MB | 够用 |
+| 全 A 预热日线 | ~5000 | ~400–500 MB | 建议 `maxmemory 1gb` + `allkeys-lru` |
+| 全 A × 8 年 | ~5000 | ~1.1–1.4 GB | 需扩内存或缩短 TTL/区间 |
+
+当前配置：
+
+- 本地 Caffeine：最多 256 条，约 256 × 100KB ≈ **25 MB** 上限
+- Redis TTL：24h
+- 本机 Redis（Windows 服务，默认无 maxmemory 限制）：**个人/联调完全够用**
+
+## 结论
+
+- **现在本地 Redis 够用**：回测工作台级缓存（几十～几百标的）只需几十 MB。
+- 只有「全市场预热长历史」才需要到 GB 级；那时再调 `maxmemory` 或改物化到 MySQL。
+
+## 运维
+
+```bat
+rem 服务默认已安装并自启（C:\Program Files\Redis）
+redis-cli ping
+redis-cli INFO memory
+```
+
+应用配置见 `application.yml` → `spring.data.redis` / `quant.cache.*`。  
+统计接口：`GET /api/v1/cache/stats`。  
+整机部署规格见 [`DEPLOY.md`](/guide/deploy)。

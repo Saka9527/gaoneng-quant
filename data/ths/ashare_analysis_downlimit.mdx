@@ -1,0 +1,50 @@
+---
+title: "ashare_analysis_downlimit"
+description: "ashare_analysis_downlimit"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/ashare_analysis_downlimit.md */}
+
+- 说明: 中国股票跌停分析
+- 引擎: InnoDB
+- 约行数: 114786
+- 数据量: 71.64 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建时间 |
+| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改时间 |
+| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录同步时间 |
+| 5 | `first_limit_down_time` | `varchar(20)` | YES |  |  |  | 首次跌停时间  |
+| 6 | `limit_down_date` | `date` | YES |  |  |  | 跌停日期 |
+| 7 | `limit_down_price` | `decimal(18,6)` | YES |  |  |  | 跌停价 |
+| 8 | `limit_down_turnover_ratio` | `decimal(18,4)` | YES |  |  |  | 跌停封成比 |
+| 9 | `limit_down_type` | `decimal(1,0)` | YES |  |  |  | 收盘是否跌停 |
+| 10 | `limit_down_volume` | `decimal(18,6)` | YES |  |  |  | 跌停封单量 |
+| 11 | `limit_down_volume_money` | `decimal(18,6)` | YES |  |  |  | 跌停封单金额 |
+| 12 | `open_times` | `decimal(4,0)` | YES |  |  |  | 开板次数 |
+| 13 | `reason` | `varchar(200)` | YES |  |  |  | 跌停原因 |
+| 14 | `reason_type` | `varchar(64)` | YES |  |  |  | 跌停类型 |
+| 15 | `revenue_ratio` | `decimal(18,6)` | YES |  |  |  | 换手率 |
+| 16 | `sec_code` | `varchar(40)` | YES |  |  |  | 股票代码 |
+| 17 | `sub_market` | `varchar(40)` | YES |  |  |  | 市场 |
+| 18 | `summ` | `mediumtext` | YES |  |  |  | 跌停分析 |
+| 19 | `title` | `mediumtext` | YES |  |  |  | 标题 |
+| 20 | `turnover_amount` | `decimal(18,6)` | YES |  |  |  | 成交额 |
+| 21 | `boards_for_days` | `varchar(64)` | YES |  |  |  | 几天几板 |
+| 22 | `turnover_num` | `decimal(18,6)` | YES |  |  |  | 成交量 |
+| 23 | `closing_price` | `decimal(18,6)` | YES |  |  |  | 收盘价 |
+| 24 | `cn_name` | `varchar(40)` | YES |  |  |  | 股票简称 |
+| 25 | `continue_limit_down_days` | `decimal(4,0)` | YES |  |  |  | 跌停连板数 |
+| 26 | `final_limit_down_time` | `varchar(20)` | YES |  |  |  | 最终跌停时间  |
+| 27 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

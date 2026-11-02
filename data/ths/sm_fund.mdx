@@ -1,0 +1,40 @@
+---
+title: "sm_fund"
+description: "sm_fund"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/sm_fund.md */}
+
+- 说明: 阳光私募产品信息表
+- 引擎: InnoDB
+- 约行数: 298480
+- 数据量: 89.64 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
+| 5 | `product_name` | `varchar(1000)` | YES |  |  |  | 基金名称 |
+| 6 | `record_encode` | `varchar(300)` | YES |  |  |  | 备案编码 |
+| 7 | `supervisor_code` | `varchar(20)` | YES |  |  |  | 管理人机构代码 |
+| 8 | `supervisor_name` | `varchar(600)` | YES |  |  |  | 管理人名称 |
+| 9 | `tactics_code_first` | `varchar(50)` | YES |  |  |  | 一级策略代码 |
+| 10 | `tactics_code_sec` | `varchar(50)` | YES |  |  |  | 二级策略代码 |
+| 11 | `tactics_first` | `varchar(256)` | YES |  |  |  | 一级策略名称 |
+| 12 | `tactics_sec` | `varchar(256)` | YES |  |  |  | 二级策略名称 |
+| 13 | `end_date` | `date` | YES |  |  |  | 终止日期 |
+| 14 | `established_date` | `date` | YES |  |  |  | 成立日期 |
+| 15 | `product_code` | `varchar(20)` | YES |  |  |  | 基金代码 |
+| 16 | `product_id` | `varchar(32)` | YES |  |  |  | 产品ID |
+| 17 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

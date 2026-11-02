@@ -1,0 +1,21 @@
+---
+title: "新增指标因子算法"
+description: "来源：docs/product/新增指标因子算法.docx。每条公式的逐步算法在同目录单独文档里。预热时由 factor-service 的 FormulaSignals 按日写入成分，编号是 calc_rising_channel、calc_pullback、calc_r..."
+---
+
+{/* 同步自 java-quant-backtest/docs/product/factors/README.md */}
+
+来源：`docs/product/新增指标因子算法.docx`。每条公式的逐步算法在同目录单独文档里。预热时由 `factor-service` 的 `FormulaSignals` 按日写入成分，编号是 `calc_rising_channel`、`calc_pullback`、`calc_rocket`、`calc_assist_above`、`calc_short_wave`、`calc_main_force`。回测只读这份内存成分，点击时不再算公式。它们不是买卖点规则。
+
+价格用与现有买卖点相同的前复权开高低收。任一输入不是有限数，或窗口不够，该中间量和当天信号都为假。比较两端有一端无效时，通达信条件为假。
+
+| 编号 | 名称 | 当天为真 |
+|------|------|----------|
+| 1 | [上升通道](/factor/rising-channel) | 牛线在生命线之上，最低价高于牛线 3%，牛线不下降 |
+| 2 | [回踩辅助线](/factor/pullback) | 趋势仍在，昨日回踩牛线，今日阳线站回牛线之上 |
+| 3 | [火箭信号区域](/factor/rocket) | `EMA(收盘,2)` 高于 `EMA(回归斜率×5+收盘,20)` |
+| 4 | [辅助金叉区域](/factor/assist-cross) | 牛线高于生命线。原文不是上穿 |
+| 5 | [短波金叉区域](/factor/short-wave) | 三重 EMA 的涨速 `J` 高于它的 2 日均线 |
+| 6 | [主力进场](/factor/main-force) | 筹码价差的变化率上升，且变化率大于 0 |
+
+牛线在 1、2、4 里相同：滞后 0 到 18 的权重是 20 到 2，滞后 19 不参与，滞后 20 的权重是 1，分母 210。

@@ -1,0 +1,93 @@
+---
+title: "同花顺库表结构：`lm_ths_db"
+description: "源库结构快照，54 张表。回测不直接扫这些全量表，精简镜像和本地文件见 ../TABLES.md(/data/tables)。"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/README.md */}
+
+源库结构快照，54 张表。回测不直接扫这些全量表，精简镜像和本地文件见 [`../TABLES.md`](/data/tables)。
+
+- Host: `rm-uf68ip7k7isrv895h7o.mysql.rds.aliyuncs.com:6306`（只读账号接入，文档不含密码）
+- 表数量: **54**
+- 完整 JSON: `schema.json`（`./schema.json`）
+- 单表详情: `tables/`（`./tables/`）
+
+## 表清单
+
+| 表名 | 说明 | 约行数 | 数据量MB | 引擎 |
+|------|------|--------|----------|------|
+| [`ashare_analysis_downlimit`](/data/ths/ashare_analysis_downlimit) | 中国股票跌停分析 | 114786 | 71.64 | InnoDB |
+| [`ashare_analysis_uplimit`](/data/ths/ashare_analysis_uplimit) | 中国股票涨停分析 | 268532 | 208.83 | InnoDB |
+| [`ashare_bshare_big_order`](/data/ths/ashare_bshare_big_order) | 中国股票个股大单买卖 | 14846845 | 5566.00 | InnoDB |
+| [`block_buster_trans_record`](/data/ths/block_buster_trans_record) | 中国股票大宗交易成交记录 | 328223 | 81.64 | InnoDB |
+| [`corp_basic_info`](/data/ths/corp_basic_info) | 公司基本资料 | 2325698 | 1861.98 | InnoDB |
+| [`corp_his_sw_ic`](/data/ths/corp_his_sw_ic) | 中国股票申万行业分类全量表 | 141185 | 16.55 | InnoDB |
+| [`corp_holder_account_table`](/data/ths/corp_holder_account_table) | 中国股票股东户数表 | 767598 | 71.63 | InnoDB |
+| [`corp_share_structure`](/data/ths/corp_share_structure) | 中国股票股本结构表 | 317516 | 53.63 | InnoDB |
+| [`exchange_opening_calendar`](/data/ths/exchange_opening_calendar) | 交易所开市日历表 | 758937 | 68.63 | InnoDB |
+| [`float_holder_list`](/data/ths/float_holder_list) | 中国股票流通股东名单 | 3976011 | 1378.00 | InnoDB |
+| [`fund_basic_info`](/data/ths/fund_basic_info) | 基金基本信息 | 8217 | 1760.97 | InnoDB |
+| [`fund_stock_daily_quotation`](/data/ths/fund_stock_daily_quotation) | 中国基金交易所日收盘行情 | 3345844 | 888.98 | InnoDB |
+| [`hotmoney_branch_daily_details`](/data/ths/hotmoney_branch_daily_details) | 中国股票龙虎榜营业部单日明细 | 2394720 | 701.98 | InnoDB |
+| [`hotmoney_daily_details`](/data/ths/hotmoney_daily_details) | 中国股票龙虎榜单日明细 | 246446 | 54.63 | InnoDB |
+| [`ind_sec_basic_info`](/data/ths/ind_sec_basic_info) | 中国指数证券基本资料 | 57611 | 41.58 | InnoDB |
+| [`industry_classi_standard`](/data/ths/industry_classi_standard) | 行业分类标准编码表 | 8454 | 2.52 | InnoDB |
+| [`lc_express_perf`](/data/ths/lc_express_perf) | 中国股票业绩快报 | 26562 | 40.59 | InnoDB |
+| [`lc_inner_holding_chg`](/data/ths/lc_inner_holding_chg) | 中国股票董监高及相关人持股变动 | 194828 | 35.58 | InnoDB |
+| [`lc_perf_notice`](/data/ths/lc_perf_notice) | 中国股票业绩预告 | 148030 | 142.75 | InnoDB |
+| [`listing_state_chg`](/data/ths/listing_state_chg) | 中国股票上市状态变动表 | 33763 | 4.52 | InnoDB |
+| [`ls_balance_sheet_ns`](/data/ths/ls_balance_sheet_ns) | 中国股票资产负债表(新准则) | 2587184 | 2123.00 | InnoDB |
+| [`ls_index_daily_quotation`](/data/ths/ls_index_daily_quotation) | 中国股票指数日收盘行情 | 61092733 | 17052.97 | InnoDB |
+| [`ls_index_his_stocks`](/data/ths/ls_index_his_stocks) | 中国股票指数历史成份股 | 2980134 | 307.91 | InnoDB |
+| [`ls_management_info`](/data/ths/ls_management_info) | 中国股票董监事高管持股及报酬 | 3175074 | 511.00 | InnoDB |
+| [`ls_sec_basic_info`](/data/ths/ls_sec_basic_info) | 中国股票基本资料 | 24652 | 13.52 | InnoDB |
+| [`ls_stock_daily_quotation`](/data/ths/ls_stock_daily_quotation) | 中国股票日收盘行情 | 37682475 | 6990.00 | InnoDB |
+| [`ls_stock_free_float_share`](/data/ths/ls_stock_free_float_share) | 中国股票自由流通股本 | 624260 | 57.63 | InnoDB |
+| [`mtss_detail`](/data/ths/mtss_detail) | 中国股票融资融券交易明细 | 6775724 | 1916.98 | InnoDB |
+| [`mtss_underlying_sec`](/data/ths/mtss_underlying_sec) | 中国股票融资融券标的证券 | 77233 | 14.52 | InnoDB |
+| [`org_holding_derivative_data`](/data/ths/org_holding_derivative_data) | 中国股票机构持股衍生数据 | 11210703 | 2318.98 | InnoDB |
+| [`personel_basic_info`](/data/ths/personel_basic_info) | 个人基本资料 | 1456645 | 1102.97 | InnoDB |
+| [`pr_appoint_disclosure_time`](/data/ths/pr_appoint_disclosure_time) | 中国股票定期报告预约披露时间表 | 453918 | 40.58 | InnoDB |
+| [`public_code_table`](/data/ths/public_code_table) | 公共编码表 | 36141 | 4.52 | InnoDB |
+| [`risk_warning_situation`](/data/ths/risk_warning_situation) | 中国股票风险预警情况 | 13404 | 3.52 | InnoDB |
+| [`rit_inte_info`](/data/ths/rit_inte_info) | 中国股票权息资料 | 55893 | 8.52 | InnoDB |
+| [`sec_basic_info`](/data/ths/sec_basic_info) | 证券基本资料 | 4533295 | 1520.98 | InnoDB |
+| [`shhk_list`](/data/ths/shhk_list) | 沪港通名单 | 6453 | 1.52 | InnoDB |
+| [`shhk_szhk_foreign_held_cost`](/data/ths/shhk_szhk_foreign_held_cost) | 沪港通及深港通外资持股成本 | 5611320 | 728.00 | InnoDB |
+| [`shsz_stock_up_and_dl_price`](/data/ths/shsz_stock_up_and_dl_price) | 中国股票涨跌停价格 | 11089339 | 949.00 | InnoDB |
+| [`sm_fund`](/data/ths/sm_fund) | 阳光私募产品信息表 | 298480 | 89.64 | InnoDB |
+| [`sq_cash_flow_statement_ns`](/data/ths/sq_cash_flow_statement_ns) | 中国股票单季度现金流量表(新准则) | 1675701 | 1084.00 | InnoDB |
+| [`sq_income_statement_ns`](/data/ths/sq_income_statement_ns) | 中国股票单季度利润表(新准则) | 1704951 | 1060.00 | InnoDB |
+| [`stk_corp_ic`](/data/ths/stk_corp_ic) | 中国股票行业板块成分表 | 11614 | 1.52 | InnoDB |
+| [`stk_dtl_hot_money_basic_info`](/data/ths/stk_dtl_hot_money_basic_info) | 中国股票龙虎榜游资基本信息 | 103 | 0.06 | InnoDB |
+| [`stk_dtl_hot_money_sd_info`](/data/ths/stk_dtl_hot_money_sd_info) | 中国股票龙虎榜游资营业部信息 | 774 | 0.14 | InnoDB |
+| [`stock_adjust_factor_table`](/data/ths/stock_adjust_factor_table) | 证券复权因子表 | 86479 | 11.52 | InnoDB |
+| [`stock_capital_flow`](/data/ths/stock_capital_flow) | 中国股票个股资金流向 | 14843625 | 2798.00 | InnoDB |
+| [`suspen_prompt_info`](/data/ths/suspen_prompt_info) | 中国股票停牌提示信息 | 137922 | 25.56 | InnoDB |
+| [`sw_index_his_stocks`](/data/ths/sw_index_his_stocks) | 申万指数成份股 | 291833 | 109.50 | InnoDB |
+| [`thematicindex_chg_record`](/data/ths/thematicindex_chg_record) | 中国股票专题概念指数变动表 | 183 | 0.08 | InnoDB |
+| [`thematicindex_stock_chg_record`](/data/ths/thematicindex_stock_chg_record) | 中国股票专题概念指数成分股变动表 | 2115226 | 266.86 | InnoDB |
+| [`ths_index_his_stocks`](/data/ths/ths_index_his_stocks) | 同花顺指数历史成份股 | 5343071 | 579.00 | InnoDB |
+| [`top10_float_hlolder_f9`](/data/ths/top10_float_hlolder_f9) | 中国股票F9十大流通股东 | 3177259 | 782.00 | InnoDB |
+| [`trans_pi_branch_detail`](/data/ths/trans_pi_branch_detail) | 中国股票交易公开信息营业部明细 | 2552991 | 387.00 | InnoDB |
+
+## 回测实际用到的源表
+
+下面这些已经精简进 `gngltdb`，再迁入本地 DuckDB。列和行数以镜像、DuckDB 文档为准，不按本目录的源表全量字段回测。
+
+| 源表 | 镜像 | 用途 |
+|------|------|------|
+| `ls_sec_basic_info` | 同名精简表 | 代码、简称 |
+| `ls_stock_daily_quotation` | 同名精简表 | 日 K |
+| `ls_index_daily_quotation` | 同名精简表，只保留主要对比指数 | 对比指数。源表约 17 GB，不整表拷贝 |
+| `stock_adjust_factor_table` | 同名精简表 | 前复权 |
+| `shsz_stock_up_and_dl_price` | `bt_limit_price` | 当日涨跌停价 |
+| `exchange_opening_calendar` | `bt_trade_calendar` | 上交所开市日 |
+| `suspen_prompt_info` | `bt_suspend` | 停牌区间 |
+| `risk_warning_situation` | `bt_st_hat` | 戴帽区间 |
+| `corp_his_sw_ic` | `bt_industry` | 申万一级 |
+| `ls_stock_free_float_share` | `bt_float_share` | 自由流通股本 |
+
+`rit_inte_info`、`sec_basic_info`、`listing_state_chg` 仍只有源表文档，回测没有读。上市日期因此不在本地，新股前几个交易日不设涨跌停的窗口也没有落地。总股本、市盈率、市净率同样没有镜像列。
+
+其余 40 余张源表（资金流、龙虎榜、财报、股东、基金等）只有本目录的结构快照，服务不读。

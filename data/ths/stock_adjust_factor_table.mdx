@@ -1,0 +1,34 @@
+---
+title: "stock_adjust_factor_table"
+description: "stock_adjust_factor_table"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/stock_adjust_factor_table.md */}
+
+- 说明: 证券复权因子表
+- 引擎: InnoDB
+- 约行数: 86479
+- 数据量: 11.52 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
+| 5 | `sec_id` | `varchar(30)` | YES |  |  |  | 证券ID |
+| 6 | `exright_date` | `date` | YES |  |  |  | 除权日期 |
+| 7 | `forward_af` | `decimal(30,18)` | YES |  |  |  | 向前复权因子 |
+| 8 | `backward_af` | `decimal(30,18)` | YES |  |  |  | 向后复权因子 |
+| 9 | `cum_back_adj_factor` | `decimal(30,18)` | YES |  |  |  | 累计向后复权因子 |
+| 10 | `is_reform` | `decimal(1,0)` | YES |  |  |  | 是否股改 |
+| 11 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

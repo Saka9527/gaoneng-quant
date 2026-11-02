@@ -1,0 +1,42 @@
+---
+title: "GN Quant"
+description: "高能量化回测服务的因子、回测、数据和 API 文档。"
+---
+
+面向桌面炒股客户端和产品工作台的量化回测服务。客户端只调 HTTP API。回测行情读本地 DuckDB，业务和行情镜像在 `gngltdb`，同花顺源库只读。
+
+<Columns cols={2}>
+  <Card title="因子研究" icon="sigma" href="/factor/overview">
+    字典因子、六条选股公式、预计算和跟踪字段。
+  </Card>
+  <Card title="回测流程" icon="chart-line" href="/backtest/flow">
+    组合回测与全市场向量扫描两条线。
+  </Card>
+  <Card title="数据字典" icon="database" href="/data/tables">
+    DuckDB、gngltdb 镜像和同花顺源库。
+  </Card>
+  <Card title="API" icon="braces" href="/api/overview">
+    8080 回测服务与 8081 选股成分服务。
+  </Card>
+</Columns>
+
+## 系统里有什么
+
+| 部分 | 职责 |
+| --- | --- |
+| `java-quant-backtest` :8080 | 产品页、组合回测、任务摘要 |
+| `factor-service` :8081 | 按区间返回每日选股成分 |
+| `data/market.duckdb` | 回测实际读取的日 K、复权、涨跌停、停牌、ST |
+| `gngltdb` | 可写业务表，以及同花顺行情的精简镜像 |
+| `lm_ths_db` | 同花顺源库。`quant.ths.mode=ths` 时直接读 |
+
+本服务负责行情读取、回测计算、结果摘要和产品壳。交易、账户和完整终端 UI 在桌面客户端。
+
+## 阅读顺序
+
+<Steps>
+  <Step title="启动服务">按 [快速开始](/quickstart) 把 8080 跑起来。</Step>
+  <Step title="看因子怎么定义">从 [因子研究简介](/factor/overview) 进入，公式细节在六条选股页。</Step>
+  <Step title="看一次回测怎么走">[回测流程](/backtest/flow) 写产品路径，[指标与买卖点](/backtest/signals) 写计算公式。</Step>
+  <Step title="查表和接口">[三套库](/data/tables) 与 [API 一览](/api/overview)。</Step>
+</Steps>

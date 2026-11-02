@@ -1,0 +1,48 @@
+---
+title: "2. 回踩辅助线（昨日回踩、今日重启）"
+description: "当天收盘标记。原文："
+---
+
+{/* 同步自 java-quant-backtest/docs/product/factors/02-回踩辅助线.md */}
+
+当天收盘标记。原文：
+
+```
+MID:=(3*CLOSE+LOW+OPEN+HIGH)/6;
+牛线:=(20*MID+19*REF(MID,1)+...+2*REF(MID,18)+REF(MID,20))/210;
+生命线:=MA(牛线,5);
+Cond_Trend := 牛线>生命线 AND 牛线>=REF(牛线,1);
+Cond_Yest_Dip := REF(LOW,1)<=REF(牛线,1)*(1+0.015);
+Today_Stand := CLOSE>牛线*(1+0.005);
+Cond_Today_Up := CLOSE>REF(CLOSE,1);
+Cond_Today_Yang := CLOSE>OPEN;
+XG: Cond_Trend AND Cond_Yest_Dip AND Today_Stand AND Cond_Today_Up AND Cond_Today_Yang;
+```
+
+牛线和生命线与 [上升通道](/factor/rising-channel) 相同。五个条件都要成立。昨日条件读 `i-1`，所以至少要有上一根 K 线，并且上一根牛线有效。生命线从下标 24 起有效。
+
+```java
+static boolean pullbackRestart(double[] open, double[] high, double[] low, double[] close, int i) {
+    if (i < 1) {
+        return false;
+    }
+    double[] mid = new double[close.length];
+    double[] bull = new double[close.length];
+    for (int t = 0; t < close.length; t++) {
+        mid[t] = (3 * close[t] + low[t] + open[t] + high[t]) / 6.0;
+        bull[t] = bull(mid, t); // 见 01-上升通道
+    }
+    double b = bull[i];
+    double b1 = bull[i - 1];
+    double life = life(bull, i); // 牛线的 5 日简单均线
+    if (!Double.isFinite(b) || !Double.isFinite(b1) || !Double.isFinite(life)) {
+        return false;
+    }
+    boolean trend = b > life && b >= b1;
+    boolean yestDip = low[i - 1] <= b1 * 1.015;
+    boolean stand = close[i] > b * 1.005;
+    boolean up = close[i] > close[i - 1];
+    boolean yang = close[i] > open[i];
+    return trend && yestDip && stand && up && yang;
+}
+```

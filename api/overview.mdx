@@ -1,0 +1,55 @@
+---
+title: "API 文档与 ApiPost 导入"
+description: "统一响应：{ \"success\", \"code\", \"message\", \"data\", \"timestamp\" }"
+---
+
+{/* 同步自 java-quant-backtest/docs/api/README.md */}
+
+## 在线文档
+
+| 入口 | URL |
+|------|-----|
+| Swagger UI | http://127.0.0.1:8080/swagger-ui.html |
+| OpenAPI JSON（实时） | http://127.0.0.1:8080/v3/api-docs |
+| 产品 UI | http://127.0.0.1:8080/product/ |
+
+统一响应：`{ "success", "code", "message", "data", "timestamp" }`  
+工作台请求头：`X-User-Id: demo_user`（演示登录，用于保存因子组合和回测记录）  
+可选鉴权：`X-API-Key`（配置 `quant.api-key` 后生效）
+
+## 仓库内快照（便于离线 / 导入）
+
+| 文件 | 用途 |
+|------|------|
+| [`page-api-map.md`](/api/page-map) | 页面功能和路径对照。改路径时先改这份 |
+| [`portfolio-meta.md`](/api/portfolio-meta) | 买入排序 14 项、卖出信号 38 项、涨跌停与 ST。OpenAPI 不展开这些枚举 |
+| [`portfolio-output.md`](/api/portfolio-output) | 回测输出：首屏字段、`bt_job.result_json`、任务视图、成交分页 |
+| [`factor-service.md`](/api/factor-service) | 选股服务 8081 的 3 个接口。该进程没有 Swagger |
+| `openapi.json`（`openapi.json`） | OpenAPI 3.0 快照，描述字段类型 |
+| `apipost.collection.json`（`apipost.collection.json`） | **Postman Collection v2.1**，ApiPost 一键导入 |
+
+刷新快照（需服务已启动）：
+
+```bash
+python -u scripts/export_api_docs.py
+```
+
+## ApiPost 导入步骤
+
+1. 打开 ApiPost → 项目 → **导入**
+2. 任选其一：
+   - **Postman**：选择 `docs/api/apipost.collection.json`（推荐）
+   - **OpenAPI**：选择 `docs/api/openapi.json`
+3. 环境变量：`baseUrl=http://127.0.0.1:8080`，`userId=demo_user`
+
+## 模块一览
+
+| 分组 | 前缀 | 说明 |
+|------|------|------|
+| 系统 / 行情 | `/api/v1/health`、`/ths/*`、`/cache/*` | 健康检查、搜索、缓存 |
+| 股票池 / 全市场 | `/api/v1/universe` | 文件股票池、预热、向量回测 |
+| 组合回测 | `/api/v1/portfolio` | 右侧面板交易模型，写入 `bt_job`；可带 `factorCombo` |
+| 因子组合 | `/api/v1/product/factor-combo` | 交并集预览 / 保存 / 列表 |
+| 选股因子 | `/api/v1/product` | 工作台因子列表；组合见上一行 |
+
+表结构入口：[`../TABLES.md`](/data/tables)。流程见 [`../BACKTEST_FLOW.md`](/backtest/flow)。

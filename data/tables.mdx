@@ -1,0 +1,20 @@
+---
+title: "表元数据放在哪"
+description: "三套库，三份文档。改列时改对应 DDL，再改这里指向的说明。"
+---
+
+{/* 同步自 java-quant-backtest/docs/TABLES.md */}
+
+三套库，三份文档。改列时改对应 DDL，再改这里指向的说明。
+
+| 库 | 角色 | 文档 | DDL |
+|----|------|------|-----|
+| `lm_ths_db` | 同花顺源库，54 张表的结构快照 | [`ths-db/README.md`](/data/ths/index)，单表在 `ths-db/tables/`，汇总 JSON 在 `ths-db/schema.json` | 源库，本仓库不建表 |
+| `gngltdb` | 可写业务表 + 精简行情镜像 | [`gngltdb/README.md`](/data/gngltdb/index)，单表在 `gngltdb/tables/` | `schema-gngltdb.sql`、`schema-product.sql`、`scripts/sync_ths_market_to_gngltdb.py` |
+| 本地 `data/market.duckdb` | 回测实际读取的行情 | [`duckdb/README.md`](/data/duckdb) | `DuckDbMarketStore` 的 `DDL` |
+
+源表文档里的行数、体积是当时 `information_schema` 的估算。回测用的行数以 DuckDB 文档里 2026-10-13 迁入后的计数为准。
+
+回测写进 `bt_job.result_json` 的字段，以及接口返回的净值、持仓、成交，见 [`api/portfolio-output.md`](/api/portfolio-output)。上面三套库是行情和业务表，不存逐笔成交。
+
+接口文档在 [`api/README.md`](/api/overview)。

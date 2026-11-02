@@ -1,0 +1,34 @@
+---
+title: "stk_dtl_hot_money_sd_info"
+description: "stk_dtl_hot_money_sd_info"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/stk_dtl_hot_money_sd_info.md */}
+
+- 说明: 中国股票龙虎榜游资营业部信息
+- 引擎: InnoDB
+- 约行数: 774
+- 数据量: 0.14 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `hot_money_name` | `varchar(100)` | YES |  |  |  | 游资名称 |
+| 6 | `activation_date` | `date` | YES |  |  |  | 启用日期 |
+| 7 | `hot_money_id` | `varchar(8)` | YES |  |  |  | 游资id |
+| 8 | `sale_dptmt_id` | `varchar(11)` | YES |  |  |  | 营业部机构id |
+| 9 | `sale_dptmt_name` | `varchar(500)` | YES |  |  |  | 营业部名称 |
+| 10 | `deactivate_date` | `date` | YES |  |  |  | 停用日期 |
+| 11 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

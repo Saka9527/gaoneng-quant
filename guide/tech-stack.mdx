@@ -1,0 +1,47 @@
+---
+title: "技术选型"
+description: "更新日期：2026-10-14。只记已经落地的选择。流程见 BACKTEST_FLOW.md(/backtest/flow)，表见 TABLES.md(/data/tables)。"
+---
+
+{/* 同步自 java-quant-backtest/docs/TECH_STACK.md */}
+
+更新日期：2026-10-14。只记已经落地的选择。流程见 [`BACKTEST_FLOW.md`](/backtest/flow)，表见 [`TABLES.md`](/data/tables)。
+
+## 运行形态
+
+两个 Spring Boot 进程，都是 Java 21、Spring Boot 3.3.5、Maven。
+
+| 进程 | 端口 | 职责 |
+|------|------|------|
+| `java-quant-backtest` | 8080 | 产品页、组合回测、任务摘要 |
+| `factor-service` | 8081 | 按区间返回每日选股成分 |
+
+产品页是同进程里的静态页（`/product/`），用 hash 路由。接口是 JSON。在线文档用 springdoc 2.6.0。用户用请求头 `X-User-Id`，可选 `X-API-Key`。
+
+回测在当前 HTTP 请求里跑完。净值、成交、期末持仓留在进程内存。`bt_job` 只存收益和耗时摘要。
+
+## 引擎
+
+组合撮合用自研 `PortfolioEngine`：昨收出信号，次日开盘成交，日频循环。不用 ta4j 的 `BarSeriesManager` 做账户。
+
+ta4j-core 0.16 只算均线死叉和均线顶背离。其余卖出信号在收盘价上一次写成 `boolean[]`。买入排序用准备好的分数，日循环不再重算。
+
+全市场向量扫 `VectorSmaCrossEngine` 只做双均线排名，不走组合撮合，不写任务。
+
+## 数据
+
+| 层 | 选型 | 用途 |
+|----|------|------|
+| 回测读取 | 本地 DuckDB `data/market.duckdb`（JDBC 1.4.2.0） | 日 K、复权、涨跌停、停牌、ST 区间、行业、流通股本 |
+| 镜像 | MySQL `gngltdb` | DuckDB 的迁入来源，也是任务和产品表 |
+| 源库 | MySQL `lm_ths_db`，只读 | 同花顺原始表。`quant.ths.mode=ths` 时直接读 |
+| 日 K 缓存 | Caffeine + Redis | 只缓存日 K，键 `quant:bars:`，24 小时 |
+| 选股成分 | `membership.bin` 启动时装入内存 | 区间交并。页面预览仍读 `gn_factor_signal` 最新一日 |
+
+DuckDB 不可用时，辅助数据回退读 MySQL 镜像。启动不自动重迁（`quant.duckdb.migrate=false`）。
+
+密码用环境变量 `APP_DB_PASSWORD`、`THS_DB_PASSWORD`，不写进文档。
+
+## 明确不用
+
+盘口和分钟线、订单模块、成交明细表、异步回测队列、用 ta4j 做整段组合账户。总市值、市盈率、市净率本地没有列，排序不编造分数。

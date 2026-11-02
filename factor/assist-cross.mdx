@@ -1,0 +1,30 @@
+---
+title: "4. 辅助金叉区域"
+description: "当天收盘标记。原文输出名是「当日智能辅助金叉」，条件是位置而不是上穿："
+---
+
+{/* 同步自 java-quant-backtest/docs/product/factors/04-辅助金叉区域.md */}
+
+当天收盘标记。原文输出名是「当日智能辅助金叉」，条件是位置而不是上穿：
+
+```
+MID:=(3*CLOSE+LOW+OPEN+HIGH)/6;
+牛线:=(20*MID+19*REF(MID,1)+...+2*REF(MID,18)+REF(MID,20))/210;
+生命线:=MA(牛线,5);
+当日智能辅助金叉:牛线>生命线;
+```
+
+牛线、生命线与 [上升通道](/factor/rising-channel) 相同。牛线高于生命线的每一天都为真，不要求前一天牛线在生命线之下。生命线从下标 24 起有效。
+
+```java
+static boolean assistAboveLife(double[] open, double[] high, double[] low, double[] close, int i) {
+    double[] mid = new double[close.length];
+    double[] bull = new double[close.length];
+    for (int t = 0; t < close.length; t++) {
+        mid[t] = (3 * close[t] + low[t] + open[t] + high[t]) / 6.0;
+        bull[t] = bull(mid, t); // 滞后 19 不参与，分母 210
+    }
+    double life = life(bull, i); // 牛线的 5 日简单均线
+    return Double.isFinite(bull[i]) && Double.isFinite(life) && bull[i] > life;
+}
+```

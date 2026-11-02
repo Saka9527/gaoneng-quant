@@ -1,0 +1,29 @@
+---
+title: "gn_factor_signal"
+description: "索引：idx_gn_fs_factor_date (factor_id, trade_date)，idx_gn_fs_code (sec_code)。"
+---
+
+{/* 同步自 java-quant-backtest/docs/gngltdb/tables/gn_factor_signal.md */}
+
+- 说明: 因子信号池。页面「预览选股」只取各因子最新一个 `trade_date`。选股服务的三年成分在 `membership.bin`，不在查询时扫这张表
+- DDL: `schema-product.sql`
+- 引擎: InnoDB
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `id` | bigint PK | 自增 |
+| `factor_id` | varchar(64) | `gn_factor.factor_id` |
+| `trade_date` | date | 信号日 |
+| `sec_code` | varchar(16) | 证券代码 |
+| `sec_name` | varchar(64) | 简称 |
+| `last_price` | decimal(12,4) | 最新价 |
+| `change_pct` | decimal(12,4) | 涨跌幅 |
+| `amount` | decimal(18,2) | 成交额 |
+| `turnover` | decimal(12,4) | 换手 |
+| `market_cap` | decimal(18,2) | 市值 |
+| `pe` | decimal(12,4) | 市盈率 |
+| `volume_ratio` | decimal(12,4) | 量比 |
+| `industry` | varchar(64) | 行业 |
+| `market` | varchar(16) | `SH` / `SZ` |
+
+索引：`idx_gn_fs_factor_date (factor_id, trade_date)`，`idx_gn_fs_code (sec_code)`。

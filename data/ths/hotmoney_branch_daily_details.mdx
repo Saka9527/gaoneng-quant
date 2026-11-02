@@ -1,0 +1,42 @@
+---
+title: "hotmoney_branch_daily_details"
+description: "hotmoney_branch_daily_details"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/hotmoney_branch_daily_details.md */}
+
+- 说明: 中国股票龙虎榜营业部单日明细
+- 引擎: InnoDB
+- 约行数: 2394720
+- 数据量: 701.98 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
+| 5 | `code` | `varchar(32)` | YES |  |  |  | 股票代码 |
+| 6 | `secname` | `varchar(200)` | YES |  |  |  | 证券名称 |
+| 7 | `enddate` | `varchar(40)` | YES |  |  |  | 截止日期 |
+| 8 | `list_reason` | `varchar(200)` | YES |  |  |  | 上榜原因 |
+| 9 | `trade_rank_sn` | `decimal(10,0)` | YES |  |  |  | 买卖排名序号 |
+| 10 | `rank_type` | `varchar(200)` | YES |  |  |  | 排名类型 |
+| 11 | `branch_name` | `varchar(200)` | YES |  |  |  | 营业部名称 |
+| 12 | `buy_amount` | `decimal(20,4)` | YES |  |  |  | 买入额(万元) |
+| 13 | `sell_amount` | `decimal(20,4)` | YES |  |  |  | 卖出额(万元) |
+| 14 | `net_amount` | `decimal(20,4)` | YES |  |  |  | 净额(万元) |
+| 15 | `prop_of_ba_to_tt` | `decimal(20,4)` | YES |  |  |  | 占总成交额比例(%) |
+| 16 | `prop_of_sa_to_tt` | `decimal(20,4)` | YES |  |  |  | 占总成交额比例(%) |
+| 17 | `info_type_code` | `varchar(20)` | YES |  |  |  | 信息类别编码 |
+| 18 | `rank_cls` | `decimal(3,0)` | YES |  |  |  | 排名类型编码 |
+| 19 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

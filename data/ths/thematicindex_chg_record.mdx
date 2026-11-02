@@ -1,0 +1,35 @@
+---
+title: "thematicindex_chg_record"
+description: "thematicindex_chg_record"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/thematicindex_chg_record.md */}
+
+- 说明: 中国股票专题概念指数变动表
+- 引擎: InnoDB
+- 约行数: 183
+- 数据量: 0.08 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建时间 |
+| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改时间 |
+| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录同步时间 |
+| 5 | `change_time` | `datetime(6)` | YES |  |  |  | 更新时间 |
+| 6 | `reason` | `varchar(1000)` | YES |  |  |  | 变更理由 |
+| 7 | `index_code` | `varchar(255)` | YES |  |  |  | 指数代码 |
+| 8 | `change_type` | `varchar(255)` | YES |  |  |  | 变更类型 |
+| 9 | `concept_explain` | `longtext` | YES |  |  |  | 概念解析 |
+| 10 | `concept_id` | `varchar(20)` | YES |  |  |  | 概念ID |
+| 11 | `concept_name` | `varchar(255)` | YES |  |  |  | 概念名 |
+| 12 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

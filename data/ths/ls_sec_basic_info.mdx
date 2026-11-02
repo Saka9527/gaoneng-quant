@@ -1,0 +1,58 @@
+---
+title: "ls_sec_basic_info"
+description: "ls_sec_basic_info"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/ls_sec_basic_info.md */}
+
+- 说明: 中国股票基本资料
+- 引擎: InnoDB
+- 约行数: 24652
+- 数据量: 13.52 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
+| 5 | `issue_org_id` | `varchar(11)` | YES | MUL |  |  | 发行机构id |
+| 6 | `listed_board_code` | `varchar(12)` | YES |  |  |  | 上市板编码 |
+| 7 | `listed_board_name` | `varchar(30)` | YES |  |  |  | 上市板名称 |
+| 8 | `listed_date` | `datetime` | YES |  |  |  | 上市日期 |
+| 9 | `listed_status` | `varchar(60)` | YES |  |  |  | 上市状态 |
+| 10 | `listed_status_code` | `varchar(12)` | YES |  |  |  | 上市状态编码 |
+| 11 | `phonetic_short_name` | `varchar(50)` | YES |  |  |  | 拼音简称 |
+| 12 | `sec_code` | `varchar(40)` | YES | MUL |  |  | 证券代码 |
+| 13 | `sec_full_name` | `varchar(400)` | YES |  |  |  | 证券全称 |
+| 14 | `sec_full_name_en` | `varchar(200)` | YES |  |  |  | 证券英文全称 |
+| 15 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券id |
+| 16 | `sec_issuer_id` | `varchar(20)` | YES |  |  |  | 证券发行主体id |
+| 17 | `sec_short_name_cn` | `varchar(200)` | YES |  |  |  | 证券简称(中文) |
+| 18 | `sec_short_name_en` | `varchar(100)` | YES |  |  |  | 证券简称(英文) |
+| 19 | `sec_type` | `varchar(60)` | YES |  |  |  | 证券类别 |
+| 20 | `sec_type_code` | `varchar(12)` | YES |  |  |  | 证券类别编码 |
+| 21 | `stop_listing_date` | `date` | YES |  |  |  | 终止上市日期 |
+| 22 | `td_currency_code` | `varchar(12)` | YES |  |  |  | 交易货币代码 |
+| 23 | `td_currency_name` | `varchar(30)` | YES |  |  |  | 交易货币名称 |
+| 24 | `td_mkt` | `varchar(60)` | YES |  |  |  | 交易市场 |
+| 25 | `td_mkt_encode` | `varchar(12)` | YES |  |  |  | 交易市场编码 |
+| 26 | `thscode` | `varchar(32)` | YES | MUL |  |  | 同花顺代码 |
+| 27 | `cusip` | `varchar(12)` | YES |  |  |  | 美国统一证券识别编码 |
+| 28 | `is_delisted` | `decimal(1,0)` | YES |  |  |  | 是否摘牌 |
+| 29 | `isin` | `varchar(32)` | YES |  |  |  | 全球证券分类识别码 |
+| 30 | `is_listing` | `decimal(1,0)` | YES |  |  |  | 是否上市 |
+| 31 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `idx_issue_org_id` | issue_org_id | 否 | BTREE |
+| `idx_qry` | issue_org_id,td_currency_code,is_listing,isvalid,td_mkt_encode,sec_type | 否 | BTREE |
+| `idx_sec_code` | sec_code | 否 | BTREE |
+| `idx_thscode` | thscode | 否 | BTREE |
+| `PRIMARY` | seq | 是 | BTREE |

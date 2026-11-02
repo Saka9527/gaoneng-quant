@@ -1,0 +1,71 @@
+---
+title: "行情镜像（THS → gngltdb）"
+description: "全量拷贝过大且指数表查询易超时，因此镜像策略为精简近 N 年（默认 3 年）全 A + 主要对比指数。"
+---
+
+{/* 同步自 java-quant-backtest/docs/market-mirror.md */}
+
+## 源表体量（lm_ths_db，information_schema 估算）
+
+| 表 | 约行数 | 约体积 |
+|----|--------|--------|
+| `ls_stock_daily_quotation` | **3779 万** | **~7.0 GB** |
+| `ls_index_daily_quotation` | **6112 万** | **~17.1 GB** |
+| `stock_adjust_factor_table` | 8.7 万 | ~12 MB |
+| `ls_sec_basic_info` | 2.5 万 | ~14 MB |
+| **合计** | — | **~24 GB** |
+
+全量拷贝过大且指数表查询易超时，因此镜像策略为**精简近 N 年（默认 3 年）全 A + 主要对比指数**。
+
+估算：5223 × ~750 交易日 ≈ **390 万** 股票日 K（约数百 MB～1GB 级，视列宽而定）。
+
+## 同步
+
+```bash
+# 只同步近三年全 A 股票日 K（跳过指数大表）
+python -u scripts/sync_ths_market_to_gngltdb.py --years 3 --batch 40 --skip-index --skip-adjust --skip-stats
+
+# 全量含指数/复权（指数表很大，易超时）
+python -u scripts/sync_ths_market_to_gngltdb.py --years 3 --batch 40
+
+# 调试小样本 / 续跑
+python -u scripts/sync_ths_market_to_gngltdb.py --years 3 --limit 100
+python -u scripts/sync_ths_market_to_gngltdb.py --years 3 --offset 1000 --skip-index --skip-adjust --skip-stats
+```
+
+写入 `gngltdb` 同名精简表（仅回测所需列 + 主键）。
+
+建议顺序：先股票日 K → 再复权因子（`--skip-stock --skip-index`）→ 最后指数（按代码逐只，易超时）。
+
+快捷（仅指数 + 复权）：
+
+```bash
+python -u scripts/sync_indexes_and_adjust.py
+```
+
+待优化清单见 [`OPTIMIZATION.md`](/internal/optimization)。  
+服务器资源与部署规格见 [`DEPLOY.md`](/guide/deploy)。
+
+## 应用读镜像
+
+`application.yml`：
+
+```yaml
+quant.ths.mode: mirror   # ths=远端同花顺; mirror=gngltdb 副本
+```
+
+## 预热与验证
+
+```bash
+# 预热股票池进 Redis/内存
+curl -X POST http://127.0.0.1:8080/api/v1/universe/market-warmup \
+  -H "Content-Type: application/json" \
+  -d "{\"universeId\":\"all_a\",\"lookbackYears\":3,\"limit\":50}"
+
+# 组合回测（应看到 loadMs 显著下降）
+curl -X POST http://127.0.0.1:8080/api/v1/portfolio/run \
+  -H "Content-Type: application/json" \
+  -d "{\"warmupLimit\":50,\"lookbackYears\":3,\"benchmarkCode\":\"000300\"}"
+
+curl http://127.0.0.1:8080/api/v1/cache/stats
+```

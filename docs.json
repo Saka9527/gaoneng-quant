@@ -1,0 +1,220 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "GN Quant",
+  "description": "高能量化回测、因子研究与数据字典。",
+  "colors": {
+    "primary": "#1B4D89",
+    "light": "#3B82F6",
+    "dark": "#1E3A5F"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "指南",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "开始",
+            "pages": [
+              "index",
+              "quickstart",
+              "guide/tech-stack",
+              "guide/tech-design",
+              "guide/deploy"
+            ]
+          },
+          {
+            "group": "运行",
+            "pages": [
+              "guide/cache-sizing",
+              "guide/cache-inventory"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "因子研究",
+        "icon": "sigma",
+        "groups": [
+          {
+            "group": "因子研究",
+            "root": "factor/overview",
+            "pages": [
+              "factor/guide",
+              "factor/operators",
+              "factor/catalog",
+              {
+                "group": "选股公式",
+                "pages": [
+                  "factor/formulas",
+                  "factor/rising-channel",
+                  "factor/pullback",
+                  "factor/rocket",
+                  "factor/assist-cross",
+                  "factor/short-wave",
+                  "factor/main-force"
+                ]
+              },
+              "factor/authoring",
+              "factor/publish",
+              "factor/library",
+              "factor/precompute",
+              "factor/tracking",
+              "factor/lifecycle",
+              "factor/advanced"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "回测",
+        "icon": "chart-line",
+        "groups": [
+          {
+            "group": "回测",
+            "pages": [
+              "backtest/flow",
+              "backtest/signals",
+              "backtest/universe-bench",
+              "api/portfolio-meta",
+              "api/portfolio-output"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "数据",
+        "icon": "database",
+        "groups": [
+          {
+            "group": "行情",
+            "pages": [
+              "data/tables",
+              "data/duckdb",
+              "data/mirror"
+            ]
+          },
+          {
+            "group": "业务库 gngltdb",
+            "root": "data/gngltdb/index",
+            "expanded": false,
+            "pages": [
+              "data/gngltdb/bt_float_share",
+              "data/gngltdb/bt_industry",
+              "data/gngltdb/bt_job",
+              "data/gngltdb/bt_limit_price",
+              "data/gngltdb/bt_portfolio_strategy",
+              "data/gngltdb/bt_st_hat",
+              "data/gngltdb/bt_suspend",
+              "data/gngltdb/bt_trade_calendar",
+              "data/gngltdb/gn_factor",
+              "data/gngltdb/gn_factor_combo",
+              "data/gngltdb/gn_factor_signal",
+              "data/gngltdb/ls_index_daily_quotation",
+              "data/gngltdb/ls_sec_basic_info",
+              "data/gngltdb/ls_stock_daily_quotation",
+              "data/gngltdb/stock_adjust_factor_table"
+            ]
+          },
+          {
+            "group": "同花顺源库",
+            "root": "data/ths/index",
+            "expanded": false,
+            "pages": [
+              "data/ths/ashare_analysis_downlimit",
+              "data/ths/ashare_analysis_uplimit",
+              "data/ths/ashare_bshare_big_order",
+              "data/ths/block_buster_trans_record",
+              "data/ths/corp_basic_info",
+              "data/ths/corp_his_sw_ic",
+              "data/ths/corp_holder_account_table",
+              "data/ths/corp_share_structure",
+              "data/ths/exchange_opening_calendar",
+              "data/ths/float_holder_list",
+              "data/ths/fund_basic_info",
+              "data/ths/fund_stock_daily_quotation",
+              "data/ths/hotmoney_branch_daily_details",
+              "data/ths/hotmoney_daily_details",
+              "data/ths/ind_sec_basic_info",
+              "data/ths/industry_classi_standard",
+              "data/ths/lc_express_perf",
+              "data/ths/lc_inner_holding_chg",
+              "data/ths/lc_perf_notice",
+              "data/ths/listing_state_chg",
+              "data/ths/ls_balance_sheet_ns",
+              "data/ths/ls_index_daily_quotation",
+              "data/ths/ls_index_his_stocks",
+              "data/ths/ls_management_info",
+              "data/ths/ls_sec_basic_info",
+              "data/ths/ls_stock_daily_quotation",
+              "data/ths/ls_stock_free_float_share",
+              "data/ths/mtss_detail",
+              "data/ths/mtss_underlying_sec",
+              "data/ths/org_holding_derivative_data",
+              "data/ths/personel_basic_info",
+              "data/ths/pr_appoint_disclosure_time",
+              "data/ths/public_code_table",
+              "data/ths/risk_warning_situation",
+              "data/ths/rit_inte_info",
+              "data/ths/sec_basic_info",
+              "data/ths/shhk_list",
+              "data/ths/shhk_szhk_foreign_held_cost",
+              "data/ths/shsz_stock_up_and_dl_price",
+              "data/ths/sm_fund",
+              "data/ths/sq_cash_flow_statement_ns",
+              "data/ths/sq_income_statement_ns",
+              "data/ths/stk_corp_ic",
+              "data/ths/stk_dtl_hot_money_basic_info",
+              "data/ths/stk_dtl_hot_money_sd_info",
+              "data/ths/stock_adjust_factor_table",
+              "data/ths/stock_capital_flow",
+              "data/ths/suspen_prompt_info",
+              "data/ths/sw_index_his_stocks",
+              "data/ths/thematicindex_chg_record",
+              "data/ths/thematicindex_stock_chg_record",
+              "data/ths/ths_index_his_stocks",
+              "data/ths/top10_float_hlolder_f9",
+              "data/ths/trans_pi_branch_detail"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API",
+        "icon": "braces",
+        "pages": [
+          "api/overview",
+          "api/page-map",
+          "api/factor-service"
+        ]
+      },
+      {
+        "tab": "产品",
+        "icon": "layout-dashboard",
+        "groups": [
+          {
+            "group": "需求",
+            "pages": [
+              "product/factor-dictionary",
+              "product/strategy-board",
+              "product/follows"
+            ]
+          },
+          {
+            "group": "内部备忘",
+            "expanded": false,
+            "pages": [
+              "internal/gap",
+              "internal/codesign",
+              "internal/ta4j",
+              "internal/optimization",
+              "internal/questions",
+              "internal/skills"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+---
+title: "hotmoney_daily_details"
+description: "hotmoney_daily_details"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/hotmoney_daily_details.md */}
+
+- 说明: 中国股票龙虎榜单日明细
+- 引擎: InnoDB
+- 约行数: 246446
+- 数据量: 54.63 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
+| 5 | `sell_amount` | `decimal(20,4)` | YES |  |  |  | 卖出额(万元) |
+| 6 | `list_reason` | `varchar(200)` | YES |  |  |  | 上榜原因 |
+| 7 | `prop_of_ba_to_tt` | `decimal(20,4)` | YES |  |  |  | 占总成交额比例(%) |
+| 8 | `prop_of_sa_to_tt` | `decimal(20,4)` | YES |  |  |  | 占总成交额比例(%) |
+| 9 | `turnover_ratio` | `decimal(12,4)` | YES |  |  |  | 换手率(%) |
+| 10 | `code` | `varchar(32)` | YES |  |  |  | 股票代码 |
+| 11 | `secname` | `varchar(200)` | YES |  |  |  | 证券名称 |
+| 12 | `enddate` | `varchar(40)` | YES |  |  |  | 截止日期 |
+| 13 | `close_price` | `decimal(10,4)` | YES |  |  |  | 收盘价 |
+| 14 | `chg_ratio` | `decimal(10,4)` | YES |  |  |  | 涨跌幅(%) |
+| 15 | `total_volume` | `decimal(20,4)` | YES |  |  |  | 总成交量(万股) |
+| 16 | `total_turnover` | `decimal(20,4)` | YES |  |  |  | 总成交额(万元) |
+| 17 | `hotmoney_turnover` | `decimal(20,4)` | YES |  |  |  | 龙虎榜成交额(万元) |
+| 18 | `buy_amount` | `decimal(20,4)` | YES |  |  |  | 买入额(万元) |
+| 19 | `info_type_code` | `varchar(20)` | YES |  |  |  | 信息类别编码 |
+| 20 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

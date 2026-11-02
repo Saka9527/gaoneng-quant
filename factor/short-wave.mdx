@@ -1,0 +1,45 @@
+---
+title: "5. 短波金叉区域"
+description: "当天收盘标记。原文："
+---
+
+{/* 同步自 java-quant-backtest/docs/product/factors/05-短波金叉区域.md */}
+
+当天收盘标记。原文：
+
+```
+VAR1:=(2*CLOSE+HIGH+LOW)/4;
+VAR2:=EMA(EMA(EMA(VAR1,4),4),4);
+J:=(VAR2-REF(VAR2,1))/REF(VAR2,1)*100;
+D:=MA(J,2);
+K:=MA(J,1);
+短线波段金叉区域:K>D;
+```
+
+`EMA` 用通达信递推，见 [火箭信号区域](/factor/rocket)：第一根有效值做种子，之后 `(2*X+(N-1)*上一根)/(N+1)`。三层都是周期 4，从第一根有限的 `VAR1` 连续算下去。
+
+`MA(J,1)` 就是 `J` 本身。`K>D` 等价于 `J` 大于自己的 2 日均线，也就是今天的 `J` 大于昨天的 `J`。`REF(VAR2,1)` 为 0 时 `J` 无效，当天信号为假。`D` 要两根有效 `J`，所以最早从第二根有效 `J` 的下一天起才可能为真。
+
+```java
+static boolean shortWaveZone(double[] high, double[] low, double[] close, int i) {
+    double[] var1 = new double[close.length];
+    for (int t = 0; t < close.length; t++) {
+        var1[t] = (2 * close[t] + high[t] + low[t]) / 4.0;
+    }
+    double[] var2 = ema(ema(ema(var1, 4), 4), 4);
+    double[] j = new double[close.length];
+    Arrays.fill(j, Double.NaN);
+    for (int t = 1; t < close.length; t++) {
+        double prev = var2[t - 1];
+        if (Double.isFinite(var2[t]) && Double.isFinite(prev) && prev != 0) {
+            j[t] = (var2[t] - prev) / prev * 100.0;
+        }
+    }
+    if (i < 1 || !Double.isFinite(j[i]) || !Double.isFinite(j[i - 1])) {
+        return false;
+    }
+    double k = j[i];           // MA(J,1)
+    double d = (j[i] + j[i - 1]) / 2.0; // MA(J,2)
+    return k > d;
+}
+```

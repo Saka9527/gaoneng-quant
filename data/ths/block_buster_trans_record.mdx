@@ -1,0 +1,39 @@
+---
+title: "block_buster_trans_record"
+description: "block_buster_trans_record"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/block_buster_trans_record.md */}
+
+- 说明: 中国股票大宗交易成交记录
+- 引擎: InnoDB
+- 约行数: 328223
+- 数据量: 81.64 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `publish_seq_num_otd` | `decimal(5,0)` | YES |  |  |  | 当日发布序号 |
+| 6 | `sec_id` | `varchar(60)` | YES |  |  |  | 证券id |
+| 7 | `td_date` | `date` | YES |  |  |  | 交易日期 |
+| 8 | `trans_price` | `decimal(20,4)` | YES |  |  |  | 成交价 |
+| 9 | `currency_code` | `varchar(12)` | YES |  |  |  | 货币代码 |
+| 10 | `vol` | `decimal(20,4)` | YES |  |  |  | 成交量 |
+| 11 | `trans_amt` | `decimal(20,4)` | YES |  |  |  | 成交金额 |
+| 12 | `buy_branch_org_name` | `varchar(500)` | YES |  |  |  | 买入营业部名称 |
+| 13 | `sell_branch_org_name` | `varchar(500)` | YES |  |  |  | 卖出营业部名称 |
+| 14 | `buy_branch_org_id` | `varchar(60)` | YES |  |  |  | 买入营业部机构id |
+| 15 | `sell_branch_org_id` | `varchar(60)` | YES |  |  |  | 卖出营业部机构id |
+| 16 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

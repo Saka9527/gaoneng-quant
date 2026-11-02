@@ -1,0 +1,33 @@
+---
+title: "stk_dtl_hot_money_basic_info"
+description: "stk_dtl_hot_money_basic_info"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/stk_dtl_hot_money_basic_info.md */}
+
+- 说明: 中国股票龙虎榜游资基本信息
+- 引擎: InnoDB
+- 约行数: 103
+- 数据量: 0.06 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `hot_money_name` | `varchar(100)` | YES |  |  |  | 游资名称 |
+| 6 | `is_exit` | `decimal(1,0)` | YES |  |  |  | 是否退场 |
+| 7 | `hot_money_id` | `varchar(8)` | YES |  |  |  | 游资id |
+| 8 | `opt_style_label` | `varchar(500)` | YES |  |  |  | 操作风格标签 |
+| 9 | `hm_info_introduction` | `varchar(1000)` | YES |  |  |  | 游资信息简介 |
+| 10 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

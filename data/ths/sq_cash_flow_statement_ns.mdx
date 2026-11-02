@@ -1,0 +1,158 @@
+---
+title: "sq_cash_flow_statement_ns"
+description: "sq_cash_flow_statement_ns"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/sq_cash_flow_statement_ns.md */}
+
+- 说明: 中国股票单季度现金流量表(新准则)
+- 引擎: InnoDB
+- 约行数: 1675701
+- 数据量: 1084.00 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `chg_seq` | `decimal(3,0)` | YES |  |  |  | 变动序号 |
+| 6 | `announ_seq` | `decimal(20,0)` | YES |  |  |  | 公告序号 |
+| 7 | `org_id` | `varchar(20)` | YES |  |  |  | 机构id |
+| 8 | `org_name` | `varchar(200)` | YES |  |  |  | 机构名称 |
+| 9 | `sd` | `date` | YES |  |  |  | 起始日期 |
+| 10 | `ed` | `date` | YES |  |  |  | 截止日期 |
+| 11 | `statement_type_code` | `varchar(12)` | YES |  |  |  | 报表类型编码 |
+| 12 | `statement_type` | `varchar(40)` | YES |  |  |  | 报表类型 |
+| 13 | `statement_format_code` | `varchar(12)` | YES |  |  |  | 报表格式编码 |
+| 14 | `statement_format` | `varchar(40)` | YES |  |  |  | 报表格式 |
+| 15 | `sas_code` | `varchar(12)` | YES |  |  |  | 报表会计准则编码 |
+| 16 | `sas` | `varchar(40)` | YES |  |  |  | 报表会计准则 |
+| 17 | `data_source_code` | `varchar(12)` | YES |  |  |  | 数据来源代码 |
+| 18 | `data_source` | `varchar(40)` | YES |  |  |  | 数据来源 |
+| 19 | `statement_source_explain` | `varchar(100)` | YES |  |  |  | 报表来源说明 |
+| 20 | `is_statement_complete` | `decimal(1,0)` | YES |  |  |  | 报表是否完整 |
+| 21 | `currency_code` | `varchar(12)` | YES |  |  |  | 货币代码 |
+| 22 | `is_audited` | `decimal(1,0)` | YES |  |  |  | 是否审计 |
+| 23 | `announcement_date` | `date` | YES |  |  |  | 公告日期 |
+| 24 | `cash_received_of_sales_service` | `decimal(18,4)` | YES |  |  |  | 销售商品、提供劳务收到的现金 |
+| 25 | `refund_of_tax_and_levies` | `decimal(18,4)` | YES |  |  |  | 收到的税费返还 |
+| 26 | `cash_received_of_other_fa` | `decimal(18,4)` | YES |  |  |  | 收到其他与经营活动有关的现金 |
+| 27 | `deposit_and_interbank_net_add` | `decimal(18,4)` | YES |  |  |  | 客户存款和同业存放款项净增加额 |
+| 28 | `borrowing_net_add_central_bank` | `decimal(18,4)` | YES |  |  |  | 向中央银行借款净增加额 |
+| 29 | `lending_net_add_other_org` | `decimal(18,4)` | YES |  |  |  | 向其他金融机构拆入资金净增加额 |
+| 30 | `cash_received_of_interest_etc` | `decimal(18,4)` | YES |  |  |  | 收取利息、手续费及佣金的现金 |
+| 31 | `cash_received_from_orig_ic` | `decimal(18,4)` | YES |  |  |  | 收到原保险合同保费取得的现金 |
+| 32 | `net_cash_received_from_rein` | `decimal(18,4)` | YES |  |  |  | 收到再保业务现金净额 |
+| 33 | `naa_assured_saving_and_invest` | `decimal(18,4)` | YES |  |  |  | 保户储金及投资款净增加额 |
+| 34 | `naa_of_disposal_fnncl_assets` | `decimal(18,4)` | YES |  |  |  | 处置交易性金融资产净增加额 |
+| 35 | `borrowing_net_increase_amt` | `decimal(18,4)` | YES |  |  |  | 拆入资金净增加额 |
+| 36 | `net_add_in_repur_capital` | `decimal(18,4)` | YES |  |  |  | 回购业务资金净增加额 |
+| 37 | `oa_net_ci_si` | `decimal(18,4)` | YES |  |  |  | 经营活动现金流入特殊科目 |
+| 38 | `sub_total_of_ci_from_oa` | `decimal(18,4)` | YES |  |  |  | 经营活动现金流入小计 |
+| 39 | `goods_buy_and_service_cash_pay` | `decimal(18,4)` | YES |  |  |  | 购买商品、接受劳务支付的现金 |
+| 40 | `cash_paid_to_staff_etc` | `decimal(18,4)` | YES |  |  |  | 支付给职工以及为职工支付的现金 |
+| 41 | `payments_of_all_taxes` | `decimal(18,4)` | YES |  |  |  | 支付的各项税费 |
+| 42 | `other_cash_paid_related_to_oa` | `decimal(18,4)` | YES |  |  |  | 支付其他与经营活动有关的现金 |
+| 43 | `loan_and_advancenet_add` | `decimal(18,4)` | YES |  |  |  | 客户贷款及垫款净增加额 |
+| 44 | `naa_of_cb_and_interbank` | `decimal(18,4)` | YES |  |  |  | 存放中央银行和同业款项净增加额 |
+| 45 | `cash_paid_for_interests_etc` | `decimal(18,4)` | YES |  |  |  | 支付利息、手续费及佣金的现金 |
+| 46 | `cash_of_orig_ic_indemnity` | `decimal(18,4)` | YES |  |  |  | 支付原保险合同赔付款项的现金 |
+| 47 | `cash_paid_for_fees_and_commi` | `decimal(18,4)` | YES |  |  |  | 支付手续费及佣金的现金 |
+| 48 | `cash_paid_for_pd` | `decimal(18,4)` | YES |  |  |  | 支付保单红利的现金 |
+| 49 | `oa_net_cos_si` | `decimal(18,4)` | YES |  |  |  | 经营活动现金流出特殊科目 |
+| 50 | `sub_total_of_cos_from_oa` | `decimal(18,4)` | YES |  |  |  | 经营活动现金流出小计 |
+| 51 | `ncf_from_oa` | `decimal(18,4)` | YES |  |  |  | 经营活动产生的现金流量净额 |
+| 52 | `cash_received_of_dspsl_invest` | `decimal(18,4)` | YES |  |  |  | 收回投资收到的现金 |
+| 53 | `invest_income_cash_received` | `decimal(18,4)` | YES |  |  |  | 取得投资收益收到的现金 |
+| 54 | `net_cash_of_disposal_assets` | `decimal(18,4)` | YES |  |  |  | 处置固定资产、无形资产和其他长期资产收回的现金净额 |
+| 55 | `net_cash_of_disposal_branch` | `decimal(18,4)` | YES |  |  |  | 处置子公司及其他营业单位收到的现金净额 |
+| 56 | `cash_received_of_other_ia` | `decimal(18,4)` | YES |  |  |  | 收到其他与投资活动有关的现金 |
+| 57 | `ia_ci_si` | `decimal(18,4)` | YES |  |  |  | 投资活动现金流入特殊科目 |
+| 58 | `sub_total_of_ci_from_ia` | `decimal(18,4)` | YES |  |  |  | 投资活动现金流入小计 |
+| 59 | `cash_paid_for_assets` | `decimal(18,4)` | YES |  |  |  | 购建固定资产、无形资产和其他长期资产支付的现金 |
+| 60 | `invest_paid_cash` | `decimal(18,4)` | YES |  |  |  | 投资支付的现金 |
+| 61 | `net_cash_amt_from_branch` | `decimal(18,4)` | YES |  |  |  | 取得子公司及其他营业单位支付的现金净额 |
+| 62 | `other_cash_paid_related_to_ia` | `decimal(18,4)` | YES |  |  |  | 支付其他与投资活动有关的现金 |
+| 63 | `net_add_in_pledge_loans` | `decimal(18,4)` | YES |  |  |  | 质押贷款净增加额 |
+| 64 | `ia_cos_si` | `decimal(18,4)` | YES |  |  |  | 投资活动现金流出特殊科目 |
+| 65 | `sub_total_of_cos_from_ia` | `decimal(18,4)` | YES |  |  |  | 投资活动现金流出小计 |
+| 66 | `ncf_from_ia` | `decimal(18,4)` | YES |  |  |  | 投资活动产生的现金流量净额 |
+| 67 | `cash_received_of_absorb_invest` | `decimal(18,4)` | YES |  |  |  | 吸收投资收到的现金 |
+| 68 | `cash_received_from_investor` | `decimal(18,4)` | YES |  |  |  | 其中：子公司吸收少数股东投资收到的现金 |
+| 69 | `cash_received_of_borrowing` | `decimal(18,4)` | YES |  |  |  | 取得借款收到的现金 |
+| 70 | `cash_received_of_othr_fa` | `decimal(18,4)` | YES |  |  |  | 收到其他与筹资活动有关的现金 |
+| 71 | `cash_received_from_bond_issue` | `decimal(18,4)` | YES |  |  |  | 发行债券收到的现金 |
+| 72 | `ci_from_fa_si` | `decimal(18,4)` | YES |  |  |  | 筹资活动现金流入特殊科目 |
+| 73 | `sub_total_of_ci_from_fa` | `decimal(18,4)` | YES |  |  |  | 筹资活动现金流入小计 |
+| 74 | `cash_pay_for_debt` | `decimal(18,4)` | YES |  |  |  | 偿还债务支付的现金 |
+| 75 | `cash_paid_of_distribution` | `decimal(18,4)` | YES |  |  |  | 分配股利、利润或偿付利息支付的现金 |
+| 76 | `branch_paid_to_minority_holder` | `decimal(18,4)` | YES |  |  |  | 其中：子公司支付给少数股东的股利 |
+| 77 | `other_cash_paid_relating_to_fa` | `decimal(18,4)` | YES |  |  |  | 支付其他与筹资活动有关的现金 |
+| 78 | `cos_from_fa_si` | `decimal(18,4)` | YES |  |  |  | 筹资活动现金流出特殊科目 |
+| 79 | `sub_total_of_cos_from_fa` | `decimal(18,4)` | YES |  |  |  | 筹资活动现金流出小计 |
+| 80 | `ncf_from_fa` | `decimal(18,4)` | YES |  |  |  | 筹资活动产生的现金流量净额 |
+| 81 | `effect_of_exchange_chg_on_cce` | `decimal(18,4)` | YES |  |  |  | 汇率变动对现金及现金等价物的影响 |
+| 82 | `net_increase_in_cce` | `decimal(18,4)` | YES |  |  |  | 现金及现金等价物净增加额 |
+| 83 | `initial_balance_of_cce` | `decimal(18,4)` | YES |  |  |  | 加：期初现金及现金等价物余额 |
+| 84 | `final_balance_of_cce` | `decimal(18,4)` | YES |  |  |  | 期末现金及现金等价物余额 |
+| 85 | `np` | `decimal(18,4)` | YES |  |  |  | 净利润 |
+| 86 | `asset_ir` | `decimal(18,4)` | YES |  |  |  | 加：资产减值准备 |
+| 87 | `depreciation_etc` | `decimal(18,4)` | YES |  |  |  | 固定资产折旧、油气资产折耗、生产性生物资产折旧 |
+| 88 | `intangible_assets_amortized` | `decimal(18,4)` | YES |  |  |  | 无形资产摊销 |
+| 89 | `lt_deferred_expenses_amrtzt` | `decimal(18,4)` | YES |  |  |  | 长期待摊费用摊销 |
+| 90 | `loss_of_disposal_assets` | `decimal(18,4)` | YES |  |  |  | 处置固定资产、无形资产和其他长期资产的损失 |
+| 91 | `fixed_assets_scrap_loss` | `decimal(18,4)` | YES |  |  |  | 固定资产报废损失 |
+| 92 | `loss_from_fv_chg` | `decimal(18,4)` | YES |  |  |  | 公允价值变动损失 |
+| 93 | `financing_expenses` | `decimal(18,4)` | YES |  |  |  | 财务费用 |
+| 94 | `invest_loss` | `decimal(18,4)` | YES |  |  |  | 投资损失 |
+| 95 | `dt_assets_decrease` | `decimal(18,4)` | YES |  |  |  | 递延所得税资产减少 |
+| 96 | `dt_liab_increase` | `decimal(18,4)` | YES |  |  |  | 递延所得税负债增加 |
+| 97 | `inventory_decrease` | `decimal(18,4)` | YES |  |  |  | 存货的减少 |
+| 98 | `operating_items_decrease` | `decimal(18,4)` | YES |  |  |  | 经营性应收项目的减少 |
+| 99 | `increase_of_operating_item` | `decimal(18,4)` | YES |  |  |  | 经营性应付项目的增加 |
+| 100 | `othr` | `decimal(18,4)` | YES |  |  |  | 其他 |
+| 101 | `add_info_si` | `decimal(18,4)` | YES |  |  |  | 补充资料特殊科目 |
+| 102 | `ncf_from_oa_im` | `decimal(18,4)` | YES |  |  |  | 间接法-经营活动产生的现金流量净额 |
+| 103 | `debt_tranfer_to_capital` | `decimal(18,4)` | YES |  |  |  | 债务转为资本 |
+| 104 | `cb_due_within1y` | `decimal(18,4)` | YES |  |  |  | 一年内到期的可转换公司债券 |
+| 105 | `finance_lease_fixed_assets` | `decimal(18,4)` | YES |  |  |  | 融资租入固定资产 |
+| 106 | `ending_balance_of_cash` | `decimal(18,4)` | YES |  |  |  | 现金的期末余额 |
+| 107 | `cash_balance_bop` | `decimal(18,4)` | YES |  |  |  | 减：现金的期初余额 |
+| 108 | `final_balance_of_ce` | `decimal(18,4)` | YES |  |  |  | 加：现金等价物的期末余额 |
+| 109 | `initial_balance_of_ce` | `decimal(18,4)` | YES |  |  |  | 减：现金等价物的期初余额 |
+| 110 | `net_increase_in_cce_im` | `decimal(18,4)` | YES |  |  |  | 间接法-现金及现金等价物净增加额 |
+| 111 | `is_original_value` | `decimal(1,0)` | YES |  |  |  | 是否是原始值 |
+| 112 | `oa_net_ci_bi` | `decimal(18,4)` | YES |  |  |  | 经营活动现金流入平衡科目 |
+| 113 | `oa_net_cos_bi` | `decimal(18,4)` | YES |  |  |  | 经营活动现金流出平衡科目 |
+| 114 | `ia_ci_bi` | `decimal(18,4)` | YES |  |  |  | 投资活动现金流入平衡科目 |
+| 115 | `ia_cos_bi` | `decimal(18,4)` | YES |  |  |  | 投资活动现金流出平衡科目 |
+| 116 | `ci_from_fa_bi` | `decimal(18,4)` | YES |  |  |  | 筹资活动现金流入平衡科目 |
+| 117 | `cos_from_fa_bi` | `decimal(18,4)` | YES |  |  |  | 筹资活动现金流出平衡科目 |
+| 118 | `net_increase_in_cce_si` | `decimal(18,4)` | YES |  |  |  | 现金及现金等价物净增加额特殊科目 |
+| 119 | `net_increase_in_cce_bi` | `decimal(18,4)` | YES |  |  |  | 现金及现金等价物净增加额平衡科目 |
+| 120 | `add_info_bi` | `decimal(18,4)` | YES |  |  |  | 补充资料平衡科目 |
+| 121 | `deferred_expense_reduce` | `decimal(18,4)` | YES |  |  |  | 待摊费用减少 |
+| 122 | `increase_in_accrued_expenses` | `decimal(18,4)` | YES |  |  |  | 预提费用增加 |
+| 123 | `oa_ncf_special_balance` | `decimal(18,4)` | YES |  |  |  | 经营活动产生的现金流量净额特殊科目 |
+| 124 | `ncf_from_ia_si` | `decimal(18,4)` | YES |  |  |  | 投资活动产生的现金流量净额特殊科目 |
+| 125 | `ncf_from_fa_si` | `decimal(18,4)` | YES |  |  |  | 筹资活动产生的现金流量净额特殊科目 |
+| 126 | `cce_net_special_bi_im` | `decimal(18,4)` | YES |  |  |  | 间接法-现金及现金等价物净增加额特殊科目 |
+| 127 | `cce_net_add_bi_im` | `decimal(18,4)` | YES |  |  |  | 间接法-现金及现金等价物净增加额平衡科目 |
+| 128 | `final_cce_balance_si` | `decimal(18,4)` | YES |  |  |  | 期末现金及现金等价物余额特殊科目 |
+| 129 | `final_cce_balance_bi` | `decimal(18,4)` | YES |  |  |  | 期末现金及现金等价物余额平衡科目 |
+| 130 | `flf_net_decrease_amt` | `decimal(18,4)` | YES |  |  |  | 融出资金净减少额 |
+| 131 | `acting_sec_received_net_cash` | `decimal(18,4)` | YES |  |  |  | 代理买卖证券收到的现金净额 |
+| 132 | `flf_net_increase_amt` | `decimal(18,4)` | YES |  |  |  | 融出资金净增加额 |
+| 133 | `acting_td_sec_paid_net_cash` | `decimal(18,4)` | YES |  |  |  | 代理买卖证券支付的现金净额 |
+| 134 | `exchange_loss` | `decimal(18,4)` | YES |  |  |  | 汇兑损失 |
+| 135 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `PRIMARY` | seq | 是 | BTREE |

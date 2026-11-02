@@ -1,0 +1,57 @@
+---
+title: "文件股票池 + 全市场一次回测"
+description: "日期：2026-10-11"
+---
+
+{/* 同步自 java-quant-backtest/docs/universe-bench.md */}
+
+日期：2026-10-11
+
+## 架构结论
+
+| 路径 | 适用 | 量级 |
+|------|------|------|
+| **`market-warmup` + `market-backtest`** | **全市场一次** | 预热一次 I/O；之后计算 **毫秒～数十毫秒** |
+| `POST /api/v1/portfolio/run` | 组合交易模型 | 预热后秒级；结果写入 `bt_job` |
+
+毫秒级指的是：**面板已在内存后的向量计算**。全 A 冷启动拉数仍是分钟级，与引擎无关。
+
+## 全 A 文件
+
+- 导出：`scripts/export_all_a.py`
+- 文件：`data/universe/all_a_codes.txt`（约 **5223** 只）
+
+## 用法
+
+```bash
+# 1) 预热（只做一次；可 limit 小样本）
+curl -s -X POST http://127.0.0.1:8080/api/v1/universe/market-warmup \
+  -H "Content-Type: application/json" \
+  -d "{\"universeId\":\"all_a\",\"lookbackYears\":3,\"limit\":50}"
+
+# 2) 全市场向量回测（看 computeMs）
+curl -s -X POST http://127.0.0.1:8080/api/v1/universe/market-backtest \
+  -H "Content-Type: application/json" \
+  -d "{\"universeId\":\"all_a\",\"shortMa\":20,\"longMa\":60}"
+```
+
+返回字段：`computeMs`（纯计算）、`wallMs`、`avgReturn`、`top`/`bottom`。
+
+## 实现要点
+
+- 列式驻留：`CompactSeries(code, dates, open, close)` 组成 `MarketPanel`
+- 引擎：`VectorSmaCrossEngine`（滚动 SMA，并行 `IntStream`）
+- 不落库、预热命中 Redis 时不查证券表
+
+## 组合交易模型（选股回测右侧面板）
+
+接口前缀：`/api/v1/portfolio`
+
+| 接口 | 说明 |
+|------|------|
+| `GET /meta` | 时间预设、对比指数、择时/仓位枚举与默认值 |
+| `POST /run` | 按配置跑多标的组合回测 |
+| `GET /jobs/{jobId}` | 查询已落库任务 |
+| `POST/GET /strategies` | 保存/列出策略 |
+
+完整流程见 [`BACKTEST_FLOW.md`](/backtest/flow)。

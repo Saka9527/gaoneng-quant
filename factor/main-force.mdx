@@ -1,0 +1,116 @@
+---
+title: "6. 主力进场"
+description: "当天收盘标记。原文里参与输出的是最后一行，前面的 跟庄量化8、跟庄量化11 只定义了中间量，条件没有用到它们。"
+---
+
+{/* 同步自 java-quant-backtest/docs/product/factors/06-主力进场.md */}
+
+当天收盘标记。原文里参与输出的是最后一行，前面的 `跟庄量化8`、`跟庄量化11` 只定义了中间量，条件没有用到它们。
+
+```
+跟庄量化1:=90+(100-90)/2;          // 95
+跟庄量化2:=(100-90)/2;             // 5
+跟庄量化3:=COST(95);
+跟庄量化4:=COST(5);
+跟庄量化5:=(跟庄量化3-跟庄量化4)/(跟庄量化3+跟庄量化4)*100/2;
+跟庄量化6:=MA(跟庄量化5,3);
+跟庄量化9:=EMA(EMA(C,9),9);
+跟庄量化10:=(跟庄量化9-REF(跟庄量化9,1))/REF(跟庄量化9,1)*500;
+主力大幅锁筹:跟庄量化10>REF(跟庄量化10,1)+2 AND 跟庄量化10>0;
+```
+
+`COST` 用未复权最高、最低、收盘和同花顺 `turnover_ratio`。筹码是真实成交价上的分布，不能用前复权价。`跟庄量化9` 的两层 `EMA(C,9)` 用前复权收盘，递推口径与 [火箭信号区域](/factor/rocket) 相同。
+
+`turnover_ratio` 按百分数。换手比例 `turn = min(max(turnover_ratio, 0), 100) / 100`。缺失或算出来不是有限数时，这一天既不衰减旧筹码，也不加入新筹码。
+
+筹码按 0.01 元一档。每一天先把已有筹码乘以 `1 - turn`，再把质量 `turn` 铺到当天价格区间。最高价等于最低价时，全部落在收盘价这一档。否则在最低价到最高价之间做三角形，顶点在 `(最高+最低+收盘)/3`：顶点左侧从 0 线性升到 1，右侧从 1 线性降到 0，再归一化。
+
+`COST(n)` 把筹码从低价加到高价，累计比例第一次达到 `n%` 的那一档价格。没有筹码，或 `COST(95)+COST(5)` 为 0 时，价差无效。
+
+输出不读价差。价差、它的 3 日均线，以及原文里的 `跟庄量化8`（价差均线抬高且 20 日收盘均线抬高时为 −100，否则为 0）都不是「主力大幅锁筹」的条件。上穿 0 的 `CROSS` 同样不参与。条件只看变化率：今天比昨天至少大 2，并且今天大于 0。变化率要连续两根有效，前一根 `EMA` 为 0 时当天无效。
+
+```java
+/** 原文定义了价差，输出条件不读它。分母为 0 时无效。 */
+static double chipSpread(double cost95, double cost5) {
+    double den = cost95 + cost5;
+    if (!Double.isFinite(cost95) || !Double.isFinite(cost5) || den == 0) {
+        return Double.NaN;
+    }
+    return (cost95 - cost5) / den * 50.0;
+}
+
+static boolean mainForceLock(double[] adjClose, double[] rawHigh, double[] rawLow,
+                             double[] rawClose, double[] turnoverPct, int i) {
+    double[] ema9 = ema(ema(adjClose, 9), 9);
+    double[] speed = new double[adjClose.length];
+    Arrays.fill(speed, Double.NaN);
+    for (int t = 1; t < adjClose.length; t++) {
+        double prev = ema9[t - 1];
+        if (Double.isFinite(ema9[t]) && Double.isFinite(prev) && prev != 0) {
+            speed[t] = (ema9[t] - prev) / prev * 500.0;
+        }
+    }
+    if (i < 1 || !Double.isFinite(speed[i]) || !Double.isFinite(speed[i - 1])) {
+        return false;
+    }
+    return speed[i] > speed[i - 1] + 2 && speed[i] > 0;
+}
+
+/** 按交易日顺序调用。chips 的键是价格（元）乘 100 后的整数档。 */
+static void addDay(TreeMap<Integer, Double> chips, double high, double low, double close, double turnoverPct) {
+    if (!Double.isFinite(turnoverPct)) {
+        return;
+    }
+    double turn = Math.min(Math.max(turnoverPct, 0), 100) / 100.0;
+    if (turn == 0) {
+        return;
+    }
+    for (var e : chips.entrySet()) {
+        e.setValue(e.getValue() * (1 - turn));
+    }
+    int lo = (int) Math.round(low * 100);
+    int hi = (int) Math.round(high * 100);
+    if (hi < lo) {
+        int swap = lo;
+        lo = hi;
+        hi = swap;
+    }
+    if (lo == hi) {
+        chips.merge((int) Math.round(close * 100), turn, Double::sum);
+        return;
+    }
+    int peak = (int) Math.round((high + low + close) / 3.0 * 100);
+    peak = Math.min(hi, Math.max(lo, peak));
+    double weightSum = 0;
+    double[] w = new double[hi - lo + 1];
+    for (int p = lo; p <= hi; p++) {
+        double weight = p <= peak
+                ? (peak == lo ? 1 : (p - lo) / (double) (peak - lo))
+                : (hi == peak ? 1 : (hi - p) / (double) (hi - peak));
+        w[p - lo] = weight;
+        weightSum += weight;
+    }
+    for (int p = lo; p <= hi; p++) {
+        chips.merge(p, turn * w[p - lo] / weightSum, Double::sum);
+    }
+}
+
+static double cost(TreeMap<Integer, Double> chips, double percent) {
+    double total = 0;
+    for (double v : chips.values()) {
+        total += v;
+    }
+    if (total <= 0) {
+        return Double.NaN;
+    }
+    double target = total * percent / 100.0;
+    double cum = 0;
+    for (var e : chips.entrySet()) {
+        cum += e.getValue();
+        if (cum >= target) {
+            return e.getKey() / 100.0;
+        }
+    }
+    return chips.lastKey() / 100.0;
+}
+```

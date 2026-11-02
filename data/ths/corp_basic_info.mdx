@@ -1,0 +1,77 @@
+---
+title: "corp_basic_info"
+description: "corp_basic_info"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/corp_basic_info.md */}
+
+- 说明: 公司基本资料
+- 引擎: InnoDB
+- 约行数: 2325698
+- 数据量: 1861.98 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `business_reg_num` | `varchar(500)` | YES |  |  |  | 工商登记号 |
+| 6 | `charged_accountant` | `varchar(500)` | YES |  |  |  | 经办会计师 |
+| 7 | `charged_lawyer` | `varchar(500)` | YES |  |  |  | 经办律师 |
+| 8 | `cn_regional_identifier` | `decimal(1,0)` | YES |  |  |  | 中国地区标识 |
+| 9 | `corp_ed` | `date` | YES |  |  |  | 公司终止日期 |
+| 10 | `corp_nature` | `varchar(300)` | YES |  |  |  | 企业性质 |
+| 11 | `currency_encode` | `varchar(60)` | YES |  |  |  | 货币编码 |
+| 12 | `currency_name` | `varchar(300)` | YES |  |  |  | 货币名称 |
+| 13 | `district_encode` | `varchar(200)` | YES |  |  |  | 地区编码 |
+| 14 | `domestic_listing_identifier` | `varchar(1)` | YES |  |  |  | 境内上市标识 |
+| 15 | `email` | `varchar(500)` | YES |  |  |  | 电子信箱 |
+| 16 | `established_date` | `date` | YES |  |  |  | 成立日期 |
+| 17 | `fax` | `varchar(500)` | YES |  |  |  | 联系传真 |
+| 18 | `general_manager` | `varchar(500)` | YES |  |  |  | 总经理 |
+| 19 | `law_firm_id` | `varchar(60)` | YES |  |  |  | 律师事务所id |
+| 20 | `law_firm_name` | `varchar(300)` | YES |  |  |  | 律师事务所名称 |
+| 21 | `legal_representative` | `varchar(500)` | YES |  |  |  | 法人代表 |
+| 22 | `office_address_cn` | `varchar(1000)` | YES |  |  |  | 办公地址(中文) |
+| 23 | `org_code` | `varchar(500)` | YES |  |  |  | 组织机构代码 |
+| 24 | `org_id` | `varchar(11)` | YES | MUL |  |  | 机构id |
+| 25 | `org_name_cn` | `varchar(500)` | YES |  |  |  | 机构名称(中文) |
+| 26 | `org_short_name_cn` | `varchar(500)` | YES |  |  |  | 机构简称(中文) |
+| 27 | `org_short_name_en` | `varchar(500)` | YES |  |  |  | 机构简称(英文) |
+| 28 | `org_type` | `varchar(300)` | YES |  |  |  | 机构类别 |
+| 29 | `org_website` | `varchar(1000)` | YES |  |  |  | 机构网址 |
+| 30 | `postcode` | `varchar(100)` | YES |  |  |  | 邮政编码 |
+| 31 | `reg_address_cn` | `varchar(1000)` | YES |  |  |  | 注册地址(中文) |
+| 32 | `reg_asset` | `decimal(22,6)` | YES |  |  |  | 注册资金 |
+| 33 | `sec_representative` | `varchar(500)` | YES |  |  |  | 证券事务代表 |
+| 34 | `secretary` | `varchar(500)` | YES |  |  |  | 董事会秘书 |
+| 35 | `staff_num` | `decimal(18,0)` | YES |  |  |  | 员工人数 |
+| 36 | `tax_reg_num` | `varchar(500)` | YES |  |  |  | 税务登记号 |
+| 37 | `telephone` | `varchar(500)` | YES |  |  |  | 联系电话 |
+| 38 | `accounting_firm_id` | `varchar(60)` | YES |  |  |  | 会计师事务所id |
+| 39 | `unified_social_credit_code` | `varchar(500)` | YES |  |  |  | 统一社会信用代码 |
+| 40 | `accounting_firm_name` | `varchar(300)` | YES |  |  |  | 会计师事务所名称 |
+| 41 | `announcement_date` | `date` | YES |  |  |  | 公告日期 |
+| 42 | `annual_close_date` | `varchar(100)` | YES |  |  |  | 年结日 |
+| 43 | `reg_region` | `varchar(300)` | YES |  |  |  | 注册国家或地区 |
+| 44 | `hk_reg_num` | `varchar(100)` | YES |  |  |  | 香港商业登记号码 |
+| 45 | `main_operation_business` | `mediumtext` | YES |  |  |  | 主营业务 |
+| 46 | `office_address_en` | `mediumtext` | YES |  |  |  | 办公地址(英文) |
+| 47 | `operating_scope` | `mediumtext` | YES |  |  |  | 经营范围 |
+| 48 | `org_name_en` | `mediumtext` | YES |  |  |  | 机构名称(英文) |
+| 49 | `reg_address_en` | `mediumtext` | YES |  |  |  | 注册地址(英文) |
+| 50 | `board_manage_analysis` | `longtext` | YES |  |  |  | 董事会经营分析 |
+| 51 | `establishment_history` | `longtext` | YES |  |  |  | 成立情况与历史沿革 |
+| 52 | `org_cn_introduction` | `longtext` | YES |  |  |  | 机构简介(中文) |
+| 53 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `idx_org_id` | org_id,isvalid | 否 | BTREE |
+| `PRIMARY` | seq | 是 | BTREE |

@@ -1,0 +1,75 @@
+---
+title: "3. 火箭信号区域"
+description: "当天收盘标记。原文："
+---
+
+{/* 同步自 java-quant-backtest/docs/product/factors/03-火箭信号区域.md */}
+
+当天收盘标记。原文：
+
+```
+买线:=EMA(C,2);
+卖线:=EMA(SLOPE(C,30)*5+C,20);
+火箭信号区域:买线>卖线;
+```
+
+`C` 是前复权收盘。这里的 `EMA` 按通达信递推，第一根有效值就作为种子，不用本仓库 `CloseSellMath` 里「前 N 根简单平均做种子」的口径。
+
+```
+EMA_t = (2 * X_t + (N - 1) * EMA_{t-1}) / (N + 1)
+```
+
+`SLOPE(C,30)` 是最近 30 根收盘对时间的最小二乘斜率。时间序号取 `0 … 29`，序号平移不改变斜率。分母是常数 `30 * Σk² − (Σk)²`，`k` 从 0 到 29。斜率从下标 29 起有效。卖线的输入在斜率无效时也无效，EMA 从第一根有效输入重新起算。
+
+```java
+static double[] ema(double[] x, int n) {
+    double[] out = new double[x.length];
+    Arrays.fill(out, Double.NaN);
+    for (int i = 0; i < x.length; i++) {
+        if (!Double.isFinite(x[i])) {
+            continue;
+        }
+        if (i == 0 || !Double.isFinite(out[i - 1])) {
+            out[i] = x[i];
+        } else {
+            out[i] = (2 * x[i] + (n - 1) * out[i - 1]) / (n + 1.0);
+        }
+    }
+    return out;
+}
+
+/** 最近 n 根收盘的回归斜率。i < n-1 时无效。 */
+static double slope(double[] close, int i, int n) {
+    if (i < n - 1) {
+        return Double.NaN;
+    }
+    double sumY = 0;
+    double sumXy = 0;
+    for (int k = 0; k < n; k++) {
+        double y = close[i - n + 1 + k];
+        if (!Double.isFinite(y)) {
+            return Double.NaN;
+        }
+        sumY += y;
+        sumXy += k * y;
+    }
+    double sumX = (n - 1.0) * n / 2.0;
+    double sumX2 = (n - 1.0) * n * (2.0 * n - 1) / 6.0;
+    double den = n * sumX2 - sumX * sumX;
+    return (n * sumXy - sumX * sumY) / den;
+}
+
+static boolean rocketZone(double[] close, int i) {
+    double[] buy = ema(close, 2);
+    double[] slopePlus = new double[close.length];
+    Arrays.fill(slopePlus, Double.NaN);
+    for (int t = 0; t < close.length; t++) {
+        double s = slope(close, t, 30);
+        if (Double.isFinite(s) && Double.isFinite(close[t])) {
+            slopePlus[t] = s * 5 + close[t];
+        }
+    }
+    double[] sell = ema(slopePlus, 20);
+    return Double.isFinite(buy[i]) && Double.isFinite(sell[i]) && buy[i] > sell[i];
+}
+```

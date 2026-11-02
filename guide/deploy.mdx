@@ -1,0 +1,177 @@
+---
+title: "部署与服务器资源"
+description: "更新日期：2026-10-11"
+---
+
+{/* 同步自 java-quant-backtest/docs/DEPLOY.md */}
+
+更新日期：2026-10-11  
+适用版本：`java-quant-backtest` 单体 API（Spring Boot 3.3 / JDK 21）
+
+## 1. 组件清单
+
+| 组件 | 必需 | 说明 |
+|------|------|------|
+| **JDK 21** + 本服务 JAR | 是 | HTTP API / 产品 UI / 回测引擎 |
+| **MySQL 8**（`gngltdb`） | 是 | 业务表 `bt_*` / `gn_*`；`quant.ths.mode=mirror` 时兼作行情副本 |
+| **Redis 6+** | 强烈建议 | 单票日线 JSON 缓存；无 Redis 时冷路径更慢 |
+| 同花顺库 `lm_ths_db` | 可选 | `mode=ths` 直读，或仅作镜像同步源 |
+| Python 3.10+ | 运维可选 | `scripts/sync_ths_market_to_gngltdb.py` 增量/全量同步 |
+
+默认端口：`8080`。环境变量：`APP_DB_PASSWORD`、`THS_DB_PASSWORD`、`REDIS_HOST`、`REDIS_PORT`、`QUANT_THS_MODE`、`QUANT_UNIVERSE_DIR`。
+
+---
+
+## 2. 数据量基线（当前实测）
+
+口径：全 A 文件股票池约 **5223** 只 × 近 **3** 年（约 **750** 交易日）。
+
+| 数据 | 行数 / 规模 | 磁盘 / 内存粗估 |
+|------|-------------|-----------------|
+| 镜像 `ls_stock_daily_quotation` | **~377 万** | **约 0.6–1.2 GB**（含主键 + `td_date` 索引；InnoDB） |
+| 镜像 `stock_adjust_factor_table` | **~5.6 万** | **&lt; 20 MB** |
+| 镜像 `ls_sec_basic_info` | **~5223** | **&lt; 5 MB** |
+| 镜像 `ls_index_daily_quotation` | 0（尚未同步） | 6 只主要指数近 3 年约 **数 MB～十几 MB** |
+| 业务表 `bt_*` / `gn_*` | 小 | **预留 1–5 GB**（任务 JSON 会涨） |
+| 源库 `lm_ths_db` 相关表 | — | 全量约 **~24 GB**（勿整库拷贝，见 [`market-mirror.md`](/data/mirror)） |
+| JVM `MarketPanel`（全 A 预热） | 5223 序列 | 数组约 **80–160 MB**（open+close+date）；`closeBytes` 约 **30 MB** |
+| Redis 全 A 日线缓存 | ~5000 key | **约 400–500 MB**（见 [`cache-sizing.md`](/guide/cache-sizing)） |
+| Caffeine 本地 | max 512 | **约 ≤50 MB** |
+
+> `information_schema` 的 `DATA_LENGTH` / `TABLE_ROWS` 对刚灌入的 InnoDB 常严重偏小，以 `COUNT(*)` + 上表估算为准。
+
+---
+
+## 3. 推荐规格（按场景）
+
+### 3.1 联调 / 开发（镜像已在远端 RDS，本机只跑 API）
+
+| 角色 | CPU | 内存 | 磁盘 | 备注 |
+|------|-----|------|------|------|
+| 应用机 | 2 vCPU | **4 GB** | 20 GB | JDK 堆建议 `-Xms512m -Xmx2g`；可不做全 A 预热 |
+| Redis（本机或旁路） | — | **512 MB～1 GB** | — | `maxmemory 512mb` + `allkeys-lru` 可起步 |
+| MySQL | 共用现有 RDS | — | — | 出网到 RDS 即可 |
+
+适合：单票回测、小股票池（`warmupLimit`/`limit`≤200）、产品 UI 联调。
+
+### 3.2 推荐生产（`mirror` + 全 A 预热 + 组合回测）— **默认按此规划**
+
+| 角色 | CPU | 内存 | 磁盘 | 备注 |
+|------|-----|------|------|------|
+| **应用** | **4 vCPU** | **8 GB** | **40 GB** | 堆 **`-Xms2g -Xmx4g`**；预热并行 `quant.panel.load-parallelism=3` |
+| **Redis** | 1–2 vCPU | **2 GB**（`maxmemory 1gb`～`2gb`） | 10 GB | 全 A 缓存 + 余量；TTL 24h |
+| **MySQL（gngltdb）** | **2～4 vCPU** | **4～8 GB** | **≥ 40 GB** SSD | 镜像 ~1 GB + 业务余量 + binlog；IOPS 影响预热耗时 |
+
+**单机一体化（App + Redis + MySQL 同机）建议：8 vCPU / 16 GB / 80 GB SSD。**
+
+依据：
+
+- 全 A 预热实测约 **30 s** 量级（镜像库、并行 3）；之后向量回测毫秒级，组合回测秒级。
+- 堆需容纳：Spring + Panel（~0.2 GB）+ 预热/组合临时缓冲 + Caffeine；4 GB 堆较稳妥。
+- Redis 全 A 约占 0.5 GB，生产建议 **≥1 GB maxmemory**。
+
+### 3.3 直连同花顺（`quant.ths.mode=ths`）
+
+| 角色 | 建议 | 说明 |
+|------|------|------|
+| 应用 | 4 vCPU / 8 GB | 与 3.2 相同；预热更依赖远端延迟 |
+| MySQL 本地 | 可仅放 `bt_*`/`gn_*`（小库） | 行情不落本地 |
+| 网络 | 稳定访问 THS RDS | 指数大表易超时；仍建议逐步切 `mirror` |
+| Redis | 同 3.2 | 降低重复拉数 |
+
+不推荐在生产长期直读 THS 做全市场预热。
+
+### 3.4 扩容参考
+
+| 变化 | 额外资源 |
+|------|----------|
+| 历史 3 年 → 8 年 | MySQL 镜像约 ×2.5；Redis 约 **1.1–1.4 GB**；堆建议 **6～8 GB** |
+| 股票池 5k → 兼做多 Panel | 每份 Panel ~0.1–0.2 GB 堆；避免同时常驻多份全市场 |
+| 并发组合回测 ↑ | CPU 线性；连接池 `ths.maximum-pool-size` 默认 10，勿盲目加大 |
+| 同步任务机（Python） | **2 vCPU / 2 GB** 即可；与 API 分机可避免抢 IO |
+
+---
+
+## 4. 进程与 JVM 建议
+
+```bash
+# 构建
+mvn -q -DskipTests package
+
+# 运行（生产示例）
+java -Xms2g -Xmx4g \
+  -XX:+UseG1GC \
+  -Dquant.ths.mode=mirror \
+  -jar target/java-quant-backtest-1.0.0-SNAPSHOT.jar
+```
+
+| 配置项 | 默认 | 部署建议 |
+|--------|------|----------|
+| `server.port` | 8080 | 按需 |
+| `quant.ths.mode` | `mirror` | 生产用 mirror |
+| `quant.ths.maximum-pool-size` | 10 | 预热并行 3～4 时够用 |
+| `quant.app-db.maximum-pool-size` | 5 | 轻量写库 |
+| `quant.panel.load-parallelism` | 3 | 远端库勿过大，易超时 |
+| `quant.cache.local-max-entries` | 512 | 全 A 以 Panel/Redis 为主 |
+| Redis Lettuce pool | max-active 8 | 一般够用 |
+
+启动后建议：
+
+```bash
+# 全 A 预热（首次或镜像更新后）
+curl -s -X POST http://127.0.0.1:8080/api/v1/universe/market-warmup \
+  -H "Content-Type: application/json" \
+  -d "{\"universeId\":\"all_a\",\"lookbackYears\":3}"
+
+curl -s http://127.0.0.1:8080/api/v1/health
+curl -s http://127.0.0.1:8080/api/v1/universe/market-panel
+curl -s http://127.0.0.1:8080/api/v1/cache/stats
+```
+
+---
+
+## 5. Redis 运维要点
+
+```conf
+maxmemory 1gb
+maxmemory-policy allkeys-lru
+```
+
+- 工作台级（几十～几百标的）：**512 MB** 足够。  
+- 全 A 预热缓存：**1 GB** 起步，8 年历史提到 **2 GB**。  
+- 健康检查：`redis-cli ping` / `INFO memory`；应用 `GET /api/v1/cache/stats`。
+
+---
+
+## 6. MySQL 运维要点
+
+- 库：`gngltdb`（读写账号）；镜像表与业务表同库即可。  
+- 字符集：`utf8mb4`。  
+- 磁盘：镜像近 3 年全 A **按 2 GB 预留**（含碎片/binlog 余量），业务另加 **≥5 GB**。  
+- 同步：见 [`market-mirror.md`](/data/mirror)；生产勿对指数大表无筛选全量 COPY。  
+- 备份：业务表按日；镜像表可重建，优先备份 `bt_job` / 产品表。
+
+---
+
+## 7. 网络与安全
+
+| 项 | 要求 |
+|----|------|
+| 入站 | `8080`（或前置 Nginx/网关 TLS） |
+| 出站 | MySQL（6306/3306）、Redis |
+| 鉴权 | 可选 `quant.api-key` → 头 `X-API-Key`；产品演示头 `X-User-Id` |
+| 密钥 | 勿把密码写进镜像；用环境变量覆盖 `application.yml` 默认值 |
+
+---
+
+## 8. 一页对照（默认生产）
+
+| 资源 | 规格 |
+|------|------|
+| 应用 | **4C / 8G / 40G**，堆 **4G**，JDK 21 |
+| Redis | **1～2G** 内存（`maxmemory ≥1gb`） |
+| MySQL | **2～4C / 4～8G / ≥40G**，gngltdb 镜像约 **1GB 级** + 业务余量 |
+| 一体机 | **8C / 16G / 80G SSD** |
+| 软件依赖 | MySQL 8、Redis 6+、JDK 21 |
+
+更细的缓存测算见 [`cache-sizing.md`](/guide/cache-sizing)；全市场耗时见 [`universe-bench.md`](/backtest/universe-bench)。

@@ -1,0 +1,47 @@
+---
+title: "float_holder_list"
+description: "float_holder_list"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/float_holder_list.md */}
+
+- 说明: 中国股票流通股东名单
+- 引擎: InnoDB
+- 约行数: 3976011
+- 数据量: 1378.00 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES | MUL |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `held_ratio` | `decimal(9,4)` | YES |  |  |  | 持有比例 |
+| 6 | `holder_ctgry` | `varchar(60)` | YES |  |  |  | 股东类别 |
+| 7 | `holder_id` | `varchar(20)` | YES |  |  |  | 股东id |
+| 8 | `holder_name` | `varchar(500)` | YES |  |  |  | 股东名称 |
+| 9 | `holder_rank` | `decimal(10,0)` | YES |  |  |  | 股东名次 |
+| 10 | `holder_type_code` | `varchar(12)` | YES |  |  |  | 股东类别编码 |
+| 11 | `is_holder_org` | `decimal(1,0)` | YES |  |  |  | 股东是否机构 |
+| 12 | `pledge_num` | `decimal(18,0)` | YES |  |  |  | 质押数量 |
+| 13 | `publish_date` | `date` | YES |  |  |  | 公布日期 |
+| 14 | `share_ctgry` | `varchar(80)` | YES |  |  |  | 股份类别 |
+| 15 | `share_pledge_frozen_num` | `decimal(12,0)` | YES |  |  |  | 股份质押冻结数量 |
+| 16 | `share_type_code` | `varchar(40)` | YES |  |  |  | 股份类别编码 |
+| 17 | `corp_code` | `varchar(20)` | YES | MUL |  |  | 公司代码 |
+| 18 | `top10_holders_rr_expalin` | `mediumtext` | YES |  |  |  | 前10名股东之间存在关联关系或一致行动人的说明 |
+| 19 | `ed` | `date` | YES |  |  |  | 截止日期 |
+| 20 | `frozen_num` | `decimal(18,0)` | YES |  |  |  | 冻结数量 |
+| 21 | `held_num` | `decimal(18,0)` | YES |  |  |  | 持有数量 |
+| 22 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `idx_corp_code` | corp_code | 否 | BTREE |
+| `idx_ctime` | ctime | 否 | BTREE |
+| `PRIMARY` | seq | 是 | BTREE |

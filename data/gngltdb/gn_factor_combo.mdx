@@ -1,0 +1,20 @@
+---
+title: "gn_factor_combo"
+description: "相关 API：POST /api/v1/product/factor-combo/preview|save，GET /api/v1/product/factor-combo。"
+---
+
+{/* 同步自 java-quant-backtest/docs/gngltdb/tables/gn_factor_combo.md */}
+
+- 说明: 用户保存的因子词典动态组合（交/并集 + 条件 JSON）
+- DDL: `schema-product.sql`
+
+| 列 | 类型 | 说明 |
+|----|------|------|
+| `combo_id` | varchar(64) PK | 组合 ID |
+| `user_id` | varchar(64) | 演示用户 / `X-User-Id` |
+| `name` | varchar(128) | 显示名 |
+| `config_json` | mediumtext | `FactorCombo` JSON（baseUniverseId / combineMode / factors） |
+| `created_at` | datetime(3) | 创建时间 |
+
+相关 API：`POST /api/v1/product/factor-combo/preview|save`，`GET /api/v1/product/factor-combo`。
+组合回测请求体可带 `factorCombo`，由 `PortfolioBacktestService.resolveCodes` 优先解析。

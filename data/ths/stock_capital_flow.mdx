@@ -1,0 +1,50 @@
+---
+title: "stock_capital_flow"
+description: "stock_capital_flow"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/stock_capital_flow.md */}
+
+- 说明: 中国股票个股资金流向
+- 引擎: InnoDB
+- 约行数: 14843625
+- 数据量: 2798.00 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `sec_id` | `varchar(64)` | YES | MUL |  |  | 证券id |
+| 6 | `large_buy_amt` | `decimal(18,4)` | YES |  |  |  | 买入金额_特大单 |
+| 7 | `td_date` | `date` | YES | MUL |  |  | 交易日期 |
+| 8 | `capital_inflow` | `decimal(18,4)` | YES |  |  |  | 资金流入 |
+| 9 | `capital_outflow` | `decimal(18,4)` | YES |  |  |  | 资金流出 |
+| 10 | `capital_net_inflow` | `decimal(18,4)` | YES |  |  |  | 资金净流入 |
+| 11 | `large_net_buy_amt` | `decimal(18,4)` | YES |  |  |  | 特大单净买入金额 |
+| 12 | `big_buy_amt` | `decimal(18,4)` | YES |  |  |  | 买入金额_大单 |
+| 13 | `middle_buy_amt` | `decimal(18,4)` | YES |  |  |  | 买入金额_中单 |
+| 14 | `small_buy_amt` | `decimal(18,4)` | YES |  |  |  | 买入金额_小单 |
+| 15 | `large_sell_amt` | `decimal(18,4)` | YES |  |  |  | 卖出金额_特大单 |
+| 16 | `big_sell_amt` | `decimal(18,4)` | YES |  |  |  | 卖出金额_大单 |
+| 17 | `small_net_buy_amt` | `decimal(18,4)` | YES |  |  |  | 小单净买入金额 |
+| 18 | `middle_sell_amt` | `decimal(18,4)` | YES |  |  |  | 卖出金额_中单 |
+| 19 | `small_sell_amt` | `decimal(18,4)` | YES |  |  |  | 卖出金额_小单 |
+| 20 | `big_net_buy_amt` | `decimal(18,4)` | YES |  |  |  | 大单净买入金额 |
+| 21 | `middle_net_buy_amt` | `decimal(18,4)` | YES |  |  |  | 中单净买入金额 |
+| 22 | `isvalid` | `decimal(1,0)` | YES | MUL | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `idx_isvalid` | isvalid | 否 | BTREE |
+| `idx_sec_td_valid` | sec_id,td_date,isvalid | 否 | BTREE |
+| `idx_stock_capital_flow_sec_date_valid` | sec_id,td_date,isvalid,capital_net_inflow | 否 | BTREE |
+| `idx_td_date` | td_date | 否 | BTREE |
+| `PRIMARY` | seq | 是 | BTREE |
+| `sec_id_td_date_key` | sec_id,td_date | 否 | BTREE |

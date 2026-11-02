@@ -1,0 +1,21 @@
+---
+title: "stock_adjust_factor_table`（gngltdb 镜像）"
+description: "涨跌停公布价不乘这个因子。"
+---
+
+{/* 同步自 java-quant-backtest/docs/gngltdb/tables/stock_adjust_factor_table.md */}
+
+- 说明: 复权因子。回测默认用 `forward_af` 对开盘、收盘做前复权
+- 源表: [`../../ths-db/tables/stock_adjust_factor_table.md`](/data/ths/stock_adjust_factor_table)
+- 迁入 DuckDB: `adjust`。`cum_back_adj_factor`→`cum_back`
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `sec_id` | varchar(64) | 与 `ls_sec_basic_info.sec_id` 对应，和 `exright_date` 组成主键 |
+| `exright_date` | date | 除权日 |
+| `forward_af` | decimal(20,10) | 前复权因子 |
+| `backward_af` | decimal(20,10) | 后复权因子 |
+| `cum_back_adj_factor` | decimal(20,10) | 累计后复权因子 |
+| `isvalid` | tinyint | 默认 1 |
+
+涨跌停公布价不乘这个因子。

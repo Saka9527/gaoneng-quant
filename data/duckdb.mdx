@@ -1,0 +1,49 @@
+---
+title: "本地行情文件 `data/market.duckdb"
+description: "回测读行情的第一路径。文件由 DuckDbMarketStore 从 gngltdb 镜像一次性迁入，建表语句在该类的 DDL。quant.duckdb.migrate 为 false 时启动不会重迁。"
+---
+
+{/* 同步自 java-quant-backtest/docs/duckdb/README.md */}
+
+回测读行情的第一路径。文件由 `DuckDbMarketStore` 从 `gngltdb` 镜像一次性迁入，建表语句在该类的 `DDL`。`quant.duckdb.migrate` 为 false 时启动不会重迁。
+
+JDBC 使用 `jdbc:duckdb:` 加正斜杠路径。不要在 URL 后加 `access_mode=READ_ONLY`。
+
+2026-10-13 迁入后的本地文件约 200,552,448 字节，行数如下。
+
+| DuckDB 表 | 行数 | MySQL 镜像来源 | 回测里怎么用 |
+|-----------|-----:|----------------|--------------|
+| `security` | 5,223 | `ls_sec_basic_info` | 代码、简称。简称含 ST 只在勾选「排除 ST」时载入 |
+| `bars` | 3,774,065 | `ls_stock_daily_quotation` | 开高低收、成交量。组合撮合默认前复权后只用开盘和收盘 |
+| `adjust` | 56,503 | `stock_adjust_factor_table` | `forward_af` 做前复权。涨跌停价仍是未复权公布价 |
+| `index_bars` | 4,446 | `ls_index_daily_quotation` | 对比指数，默认沪深 300 `000300` |
+| `limit_price` | 3,772,711 | `bt_limit_price` | 当日 `ul_price` / `dl_price`。有公布价就用公布价判断开盘是否封板 |
+| `calendar` | 1,770 | `bt_trade_calendar` | 交易日 |
+| `industry` | 5,223 | `bt_industry` | 行业，用于同行业持仓上限 |
+| `suspend` | 1,333 | `bt_suspend` | 停牌区间。复牌日当天可交易 |
+| `st_hat` | 20 | `bt_st_hat` | 戴帽区间。每次加载辅助数据都会读，用来决定缺公布价时的板幅 |
+| `float_share` | 150,343 | `bt_float_share` | 自由流通股本。只有买入排序选了成交额、换手或流通市值才读 |
+
+## 列
+
+`security`：`sec_id`，`sec_code`，`sec_short_name_cn`，`thscode`，`td_mkt_encode`
+
+`bars`：`sec_code`，`td_date`，`open_price`，`high_price`，`low_price`，`close_price`，`volume`。索引 `idx_bars_code_date (sec_code, td_date)`。镜像里的 `high_trans` / `low_trans` / `latest_trans` / `trans_vol` 迁入时改成这四个行情列名。
+
+`adjust`：`sec_id`，`exright_date`，`forward_af`，`backward_af`，`cum_back`（镜像列 `cum_back_adj_factor`）
+
+`index_bars`：`index_code`，`td_date`，`open_index`，`high_index`，`low_index`，`close_index`，`volume`，`sec_id`，`index_short_name`。收盘在镜像里叫 `latest_index`，成交量叫 `vol`。
+
+`limit_price`：`sec_code`，`td_date`，`ul_price`，`dl_price`。索引 `idx_limit_code_date (sec_code, td_date)`。价格未复权。
+
+`calendar`：`td_date`
+
+`industry`：`sec_code`，`industry_code`，`industry_name`
+
+`suspend`：`sec_code`，`suspen_date`，`resump_date`。停牌区间含开始日，不含复牌日。
+
+`st_hat`：`sec_code`，`start_date`，`end_date`。旧镜像若只有 `implementation_date`，迁入时起止都写成该日。
+
+`float_share`：`sec_code`，`end_date`，`free_float_shares`
+
+DuckDB 没有主键。同一代码、同一日期若镜像里重复，文件里也会重复。

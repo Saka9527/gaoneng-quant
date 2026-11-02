@@ -1,0 +1,23 @@
+---
+title: "ls_stock_daily_quotation`（gngltdb 镜像）"
+description: "主键 (sec_code, td_date)。索引 idx_td_date (td_date)。"
+---
+
+{/* 同步自 java-quant-backtest/docs/gngltdb/tables/ls_stock_daily_quotation.md */}
+
+- 说明: 近三年全 A 日 K 的回测用列。源库约 3779 万行，镜像只保留同步窗口内的股票
+- 源表: [`../../ths-db/tables/ls_stock_daily_quotation.md`](/data/ths/ls_stock_daily_quotation)
+- 迁入 DuckDB: `bars`。`high_trans`→`high_price`，`low_trans`→`low_price`，`latest_trans`→`close_price`，`trans_vol`→`volume`
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `sec_code` | varchar(16) | 与 `td_date` 组成主键 |
+| `td_date` | date | 交易日 |
+| `open_price` | decimal(20,6) | 开盘，未复权 |
+| `high_trans` | decimal(20,6) | 最高 |
+| `low_trans` | decimal(20,6) | 最低 |
+| `latest_trans` | decimal(20,6) | 收盘 |
+| `trans_vol` | decimal(24,4) | 成交量 |
+| `isvalid` | tinyint | 默认 1 |
+
+主键 `(sec_code, td_date)`。索引 `idx_td_date (td_date)`。

@@ -1,0 +1,92 @@
+---
+title: "组合回测枚举（`GET /api/v1/portfolio/meta`）"
+description: "OpenAPI 快照只描述字段类型。买入排序和卖出信号的可选项以这个接口的 data.buyPriority、data.sellSignal 为准，代码在 BuyPriority 和 TradeSignalCatalog。"
+---
+
+{/* 同步自 java-quant-backtest/docs/api/portfolio-meta.md */}
+
+OpenAPI 快照只描述字段类型。买入排序和卖出信号的可选项以这个接口的 `data.buyPriority`、`data.sellSignal` 为准，代码在 `BuyPriority` 和 `TradeSignalCatalog`。
+
+默认值和下拉项存在业务库表 `bt_trade_model`。服务启动时读进内存；表是空的才写入下面这套内置值，之后改表再重启即可，不会覆盖已改过的行。买卖信号的规则清单仍由代码注册，表里只保存当前选中的编号。
+
+内置默认（首次装库）：买入 `CHANGE_DESC`，卖出 `MA_DEATH`，`sellOnIndicator` true，`excludeSt` false，`limitRules` true，对比指数 `000300`。`scope=default` 的 `item_key` 是参数名，`item_value` 是默认值。其它 `scope` 是下拉分组。
+
+未知卖出 id 回落到 `MA_DEATH`。未知买入排序回落到 `CHANGE_DESC`。
+
+## 买入排序 `buyPriority`（14）
+
+日循环只读准备好的分数。成交额、换手用同花顺日行情原值。流通市值、总市值用股本表股数乘未复权收盘。市盈率、市净率没有源列，分数为空。
+
+| id | 名称 | 分数从哪来 |
+|----|------|------------|
+| `SIGNAL` | 指标信号强度 | 预计算强度 |
+| `COMPOSITE` | 综合 | 预计算强度 |
+| `MA` | MA | 开跑前写成一列 |
+| `ALLOC_UNIT` | 配置单位大小 | 预计算强度 |
+| `POSITION_DESC` | 每笔仓位从大到小 | 预计算强度 |
+| `TOTAL_CAP_ASC` | 总市值由小到大 | 总股本 × 未复权收盘 |
+| `TOTAL_CAP_DESC` | 总市值由大到小 | 总股本 × 未复权收盘 |
+| `AMOUNT_DESC` | 成交额由大到小 | 日行情 `trans_amt_rmb` |
+| `TURNOVER_DESC` | 换手率由大到小 | 日行情 `turnover_ratio` |
+| `PB_ASC` | 市净率由小到大 | 无本地列 |
+| `PE_ASC` | 市盈率由小到大 | 无本地列 |
+| `FLOAT_CAP_ASC` | 流通市值由小到大 | 流通 A 股 × 未复权收盘 |
+| `CHANGE_DESC` | 涨幅由大到小 | 开盘 / 前收 |
+| `CHANGE_ASC` | 涨幅由小到大 | 开盘 / 前收 |
+
+`AMOUNT_DESC`、`TURNOVER_DESC`、`FLOAT_CAP_ASC`、`TOTAL_CAP_ASC`、`TOTAL_CAP_DESC` 会读未复权行情。流通市值下限同样用流通 A 股和未复权收盘。
+
+## 卖出信号 `sellSignal`（38）
+
+只计算选中的那一条。`sellOnIndicator` 为 false 时不计算卖出标记，只按持股周期平仓。
+
+公式、周期、信号日和成交日见 [`../SIGNAL_LOGIC.md`](/backtest/signals)。指标类 35 条在收盘价上一次写成 `boolean[]`。`MA_DEATH` 用请求里的短、长均线做一次滚动计算。`MA_TOP_DIV` 仍走 ta4j。`HOLD_PERIOD` 不预计算，信号恒为 false。
+
+| id | 名称 | 口径 |
+|----|------|------|
+| `RSI_TURN_DOWN` | RSI拐头向下 | RSI6 拐头向下 |
+| `RSI_GT_70` | RSI>70 | RSI6 > 70 |
+| `RSI_DEATH` | RSI死叉 | RSI6 下穿 RSI12 |
+| `BOLL_BREAK_MID` | BOLL突破中轨 | 收盘上穿中轨，N=20，k=2 |
+| `BOLL_BREAK_UP` | BOLL突破上轨 | 收盘上穿上轨 |
+| `KDJ_DEATH` | KDJ死叉 | K 下穿 D，N=9，M=3 |
+| `KDJ_TOP_DIV` | KDJ顶背离 | 20 根内价格新高、K 没有 |
+| `KDJ_TURN_DOWN` | KDJ拐头向下 | K 拐头向下 |
+| `KDJ_OVERBOUGHT` | KDJ超买 | K > 80 |
+| `PX_CROSS_BOLL_MID` | 股价下穿BOLL中轨 | 收盘下穿中轨 |
+| `PX_CROSS_BOLL_LOW` | 股价下穿BOLL下轨 | 收盘下穿下轨 |
+| `PX_CROSS_MA` | 股价下穿均线 | 收盘下穿 MA20 |
+| `MACD_DEATH` | MACD死叉 | DIF 下穿 DEA，12/26/9 |
+| `MACD_TOP_DIV` | MACD顶背离 | 20 根内价格新高、DIF 没有 |
+| `MACD_TURN_DOWN` | MACD拐头向下 | DIF 拐头向下 |
+| `MACD_SHIFT_DOWN` | MACD下移 | DIF 小于前一根 |
+| `MA_BEAR_ALIGN` | 均线空头排列 | MA5 &lt; MA10 &lt; MA20 &lt; MA60 |
+| `KDJ_BEAR_ALIGN` | KDJ死叉排列 | J &lt; K &lt; D |
+| `MACD_TURN_AWAY` | MACD拐头离开 | 柱仍大于 0 且拐头向下 |
+| `MACD_CROSS_ZERO` | MACD下穿0轴 | DIF 下穿 0 |
+| `MACD_LT_ZERO` | MACD&lt;0 | DIF &lt; 0 |
+| `BEAR_BAR` | 阴线下跌 | 收盘 &lt; 开盘，且收盘 &lt; 前收 |
+| `BEAR_DROP_5` | 阴线下跌5日 | 阴线，且收盘低于 5 日前收盘 |
+| `BEAR_DROP_10` | 阴线下跌10日 | 同上，10 日 |
+| `BEAR_DROP_13` | 阴线下跌13日 | 同上，13 日 |
+| `BEAR_DROP_15` | 阴线下跌15日 | 同上，15 日 |
+| `BEAR_DROP_20` | 阴线下跌20日 | 同上，20 日 |
+| `MA5_CROSS_30` | MA5下穿30日 | MA5 下穿 MA30 |
+| `MA5_CROSS_10` | MA5下穿10日 | MA5 下穿 MA10 |
+| `MA5_CROSS_60` | MA5下穿60日 | MA5 下穿 MA60 |
+| `MA5_CROSS_20` | MA5下穿20日 | MA5 下穿 MA20 |
+| `MA_BREAK_30` | MA跌破30日线 | 收盘跌破 MA30 |
+| `MA_BREAK_20` | MA跌破20日线 | 收盘跌破 MA20 |
+| `MA_BREAK_10` | MA跌破10日线 | 收盘跌破 MA10 |
+| `MA_BREAK_5` | MA跌破5日线 | 收盘跌破 MA5 |
+| `MA_DEATH` | MA死叉日线 | 短均线下穿长均线，默认项 |
+| `MA_TOP_DIV` | MA顶背离日线 | ta4j |
+| `HOLD_PERIOD` | 仅持股周期卖出 | 只按持股天数平仓 |
+
+## 涨跌停与 ST
+
+`limitRules` 默认 true。停牌日不能成交。有当日公布价时，开盘达到或超过涨停不能买，开盘达到或低于跌停不能卖。
+
+没有公布价时按板块生效日和该股 `st_hat` 区间取板幅：主板 1996-12-16 起 10%，主板 ST 区间自 1998-04-22 起 5%；创业板 2009-10-30 至 2020-08-24 前 10%（ST 区间 5%），2020-08-24 起 20%（含 ST）；科创板 2019-07-22 起 20%（含 ST）；北交所 2021-11-15 起 30%（含 ST）。规则生效前或认不出的代码不拦截。当前简称里的 ST 不拿来回填历史板幅。
+
+`excludeSt` 默认 false。勾上之后，戴帽区间或当前简称含 ST 的股票不再买入。

@@ -1,0 +1,22 @@
+---
+title: "bt_st_hat"
+description: "主键 (sec_code, start_date)。索引 idx_range (sec_code, start_date, end_date)。"
+---
+
+{/* 同步自 java-quant-backtest/docs/gngltdb/tables/bt_st_hat.md */}
+
+- 说明: 风险警示戴帽区间。缺涨跌停公布价时，用区间判断该日是不是 ST 板幅。当前简称里的 ST 不写进这张表
+- 源表: `risk_warning_situation`，见 [`../../ths-db/tables/risk_warning_situation.md`](/data/ths/risk_warning_situation)
+- 迁入 DuckDB: `st_hat`（只保留代码和起止日）
+- 旧表若只有 `implementation_date`，同步脚本会改成区间；迁 DuckDB 时起止都写成该日
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `sec_code` | varchar(16) | 与 `start_date` 组成主键 |
+| `start_date` | date | 戴帽开始，含当日 |
+| `end_date` | date | 戴帽结束，含当日 |
+| `hat_type` | varchar(500) | 警示类型。DuckDB 不保留 |
+
+主键 `(sec_code, start_date)`。索引 `idx_range (sec_code, start_date, end_date)`。
+
+2026-10-13 迁入 DuckDB 后 `st_hat` 为 20 行。辅助数据每次加载都会读区间，不依赖「排除 ST」开关。

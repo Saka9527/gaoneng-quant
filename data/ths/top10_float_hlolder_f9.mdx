@@ -1,0 +1,53 @@
+---
+title: "top10_float_hlolder_f9"
+description: "top10_float_hlolder_f9"
+---
+
+{/* 同步自 java-quant-backtest/docs/ths-db/tables/top10_float_hlolder_f9.md */}
+
+- 说明: 中国股票F9十大流通股东
+- 引擎: InnoDB
+- 约行数: 3177259
+- 数据量: 782.00 MB（索引约 0.00 MB）
+- 字符集: utf8mb4_0900_ai_ci
+
+## 字段
+
+| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
+|---|------|------|----|----|------|------|------|
+| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
+| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
+| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
+| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
+| 5 | `td_code` | `varchar(32)` | YES |  |  |  | 交易代码 |
+| 6 | `sec_name` | `varchar(200)` | YES |  |  |  | 证券名称 |
+| 7 | `corp_code` | `varchar(20)` | YES |  |  |  | 公司代码 |
+| 8 | `report_period` | `date` | YES |  |  |  | 报告期 |
+| 9 | `holder_id` | `varchar(20)` | YES | MUL |  |  | 股东id |
+| 10 | `holder_ctgry` | `varchar(12)` | YES |  |  |  | 股东类别 |
+| 11 | `holder_name` | `varchar(200)` | YES |  |  |  | 股东名称 |
+| 12 | `share_ctgry` | `varchar(80)` | YES |  |  |  | 股份类别 |
+| 13 | `is_holder_org` | `decimal(1,0)` | YES |  |  |  | 股东是否机构 |
+| 14 | `held_num` | `decimal(18,0)` | YES |  |  |  | 持有数量 |
+| 15 | `held_ratio` | `decimal(9,4)` | YES |  |  |  | 持有比例 |
+| 16 | `held_num_lrr` | `decimal(18,0)` | YES |  |  |  | 持有数量环比上期 |
+| 17 | `held_ratio_lrr` | `decimal(9,4)` | YES |  |  |  | 持有比例环比上期 |
+| 18 | `held_num_lrr_chg` | `decimal(18,0)` | YES |  |  |  | 持有数量环比变动 |
+| 19 | `held_ratio_lrr_chg` | `decimal(9,4)` | YES |  |  |  | 持有比例环比变动 |
+| 20 | `lrr_chg` | `varchar(200)` | YES |  |  |  | 环比变动情况 |
+| 21 | `held_num_yoy` | `decimal(18,0)` | YES |  |  |  | 持有数量同比上期 |
+| 22 | `held_ratio_yoy` | `decimal(9,4)` | YES |  |  |  | 持有比例同比上期 |
+| 23 | `held_num_yoy_chg` | `decimal(18,0)` | YES |  |  |  | 持有数量同比变动 |
+| 24 | `held_ratio_yoy_chg` | `decimal(9,4)` | YES |  |  |  | 持有比例同比变动 |
+| 25 | `yoy_chg` | `varchar(200)` | YES |  |  |  | 同比变动清理 |
+| 26 | `holder_type` | `varchar(200)` | YES |  |  |  | 股东性质 |
+| 27 | `isvalid` | `decimal(1,0)` | YES | MUL | 1 |  | 是否有效 |
+
+## 索引
+
+| 索引名 | 列 | 唯一 | 类型 |
+|--------|----|------|------|
+| `idx_holderid_tdcode_isvalid_reportperiod` | holder_id,td_code,isvalid,report_period | 否 | BTREE |
+| `idx_isvalid_ctime_tdcode_seq` | isvalid,ctime,td_code,seq | 否 | BTREE |
+| `idx_seq` | seq | 否 | BTREE |
+| `PRIMARY` | seq | 是 | BTREE |

@@ -1,0 +1,19 @@
+---
+title: "bt_suspend"
+description: "主键 (sec_code, suspen_date)。索引 idx_suspen (suspen_date)。"
+---
+
+{/* 同步自 java-quant-backtest/docs/gngltdb/tables/bt_suspend.md */}
+
+- 说明: 停牌区间。停牌日不能买卖，复牌日当天可以
+- 源表: `suspen_prompt_info`，见 [`../../ths-db/tables/suspen_prompt_info.md`](/data/ths/suspen_prompt_info)
+- 迁入 DuckDB: `suspend`（不保留原因）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `sec_code` | varchar(16) | 与 `suspen_date` 组成主键 |
+| `suspen_date` | date | 停牌开始，含当日 |
+| `resump_date` | date | 复牌日。区间含开始、不含复牌日；空表示尚未复牌 |
+| `suspen_reason` | varchar(400) | 原因。DuckDB 不保留 |
+
+主键 `(sec_code, suspen_date)`。索引 `idx_suspen (suspen_date)`。
