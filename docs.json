@@ -11,6 +11,16 @@
   "interaction": {
     "drilldown": false
   },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["curl", "python", "java"],
+      "prefill": true
+    },
+    "url": "full"
+  },
   "navigation": {
     "tabs": [
       {
@@ -181,12 +191,25 @@
       {
         "tab": "API",
         "icon": "code",
-        "pages": [
-          "api/overview",
-          "api/page-map",
-          "api/factor-service",
-          "api/portfolio-meta",
-          "api/portfolio-output"
+        "groups": [
+          {
+            "group": " ",
+            "pages": [
+              "api/overview",
+              "api/page-map",
+              "api/portfolio-meta",
+              "api/portfolio-output",
+              "api/factor-service"
+            ]
+          },
+          {
+            "group": "回测服务",
+            "openapi": "api/openapi.json"
+          },
+          {
+            "group": "选股服务",
+            "openapi": "api/factor-service.openapi.json"
+          }
         ]
       }
     ]

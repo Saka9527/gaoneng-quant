@@ -1,0 +1,2706 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Quant Backtest Service",
+    "description": "量化回测单体服务 API（桌面客户端 / 产品工作台）。\n\n- 统一响应：`{ success, code, message, data, timestamp }`\n- 演示用户头：`X-User-Id`\n- 文档快照与 ApiPost 集合：`docs/api/`（`python scripts/export_api_docs.py` 刷新）\n- 导入 ApiPost：`docs/api/apipost.collection.json` 或 `openapi.json`\n",
+    "contact": {
+      "name": "java-quant-backtest"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080",
+      "description": "本地"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Portfolio Backtest",
+      "description": "多标的组合回测（时间区间/对比指数/买卖择时/仓位控制）",
+      "x-group": "组合回测"
+    },
+    {
+      "name": "System",
+      "description": "健康检查 / 证券搜索 / 缓存",
+      "x-group": "系统"
+    },
+    {
+      "name": "Product Quant UI",
+      "description": "策略榜单 / 因子字典 / 我的关注",
+      "x-group": "产品"
+    },
+    {
+      "name": "Factor Combo",
+      "description": "因子词典交并集组合选股",
+      "x-group": "因子组合"
+    },
+    {
+      "name": "Universe Files",
+      "description": "文件股票池 / 因子成分股 / 全市场向量回测",
+      "x-group": "股票池"
+    }
+  ],
+  "paths": {
+    "/api/v1/product/admin/strategies/{strategyId}": {
+      "put": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "后台策略修改（杭州策略名称不可改）",
+        "operationId": "adminUpdate",
+        "parameters": [
+          {
+            "name": "strategyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminStrategyUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/adminUpdate",
+          "metadata": {
+            "title": "后台策略修改（杭州策略名称不可改）",
+            "sidebarTitle": "后台策略修改（杭州策略名称不可改）"
+          }
+        }
+      }
+    },
+    "/api/v1/universe/market-warmup": {
+      "post": {
+        "tags": [
+          "Universe Files"
+        ],
+        "summary": "预热全市场/因子池面板到内存",
+        "operationId": "marketWarmup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarketWarmupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/universe-files/marketWarmup",
+          "metadata": {
+            "title": "预热全市场/因子池面板到内存",
+            "sidebarTitle": "预热全市场/因子池面板到内存"
+          }
+        }
+      }
+    },
+    "/api/v1/universe/market-backtest": {
+      "post": {
+        "tags": [
+          "Universe Files"
+        ],
+        "summary": "对已预热面板做全市场向量化双均线（毫秒级）",
+        "operationId": "marketBacktest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarketBacktestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/universe-files/marketBacktest",
+          "metadata": {
+            "title": "对已预热面板做全市场向量化双均线（毫秒级）",
+            "sidebarTitle": "对已预热面板做全市场向量化双均线（毫秒级）"
+          }
+        }
+      }
+    },
+    "/api/v1/product/strategies/{strategyId}/push": {
+      "post": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "成交信号推送开关",
+        "operationId": "push",
+        "parameters": [
+          {
+            "name": "strategyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/push",
+          "metadata": {
+            "title": "成交信号推送开关",
+            "sidebarTitle": "成交信号推送开关"
+          }
+        }
+      }
+    },
+    "/api/v1/product/follow": {
+      "post": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "关注/取消关注",
+        "operationId": "follow",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/follow",
+          "metadata": {
+            "title": "关注/取消关注",
+            "sidebarTitle": "关注/取消关注"
+          }
+        }
+      }
+    },
+    "/api/v1/product/follow/pin": {
+      "post": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "置顶/取消置顶",
+        "operationId": "pin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/pin",
+          "metadata": {
+            "title": "置顶/取消置顶",
+            "sidebarTitle": "置顶/取消置顶"
+          }
+        }
+      }
+    },
+    "/api/v1/product/factor-combo/save": {
+      "post": {
+        "tags": [
+          "Factor Combo"
+        ],
+        "summary": "保存动态因子组合",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/factor-combo/save",
+          "metadata": {
+            "title": "保存动态因子组合",
+            "sidebarTitle": "保存动态因子组合"
+          }
+        }
+      }
+    },
+    "/api/v1/product/factor-combo/refresh-sectors": {
+      "post": {
+        "tags": [
+          "Factor Combo"
+        ],
+        "summary": "从 lm_ths_db 刷新板块/行业成分信号",
+        "operationId": "refreshSectors",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/factor-combo/refreshSectors",
+          "metadata": {
+            "title": "从 lm_ths_db 刷新板块/行业成分信号",
+            "sidebarTitle": "从 lm_ths_db 刷新板块/行业成分信号"
+          }
+        }
+      }
+    },
+    "/api/v1/product/factor-combo/preview": {
+      "post": {
+        "tags": [
+          "Factor Combo"
+        ],
+        "summary": "预览因子组合今日估选",
+        "operationId": "preview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FactorCombo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/factor-combo/preview",
+          "metadata": {
+            "title": "预览因子组合今日估选",
+            "sidebarTitle": "预览因子组合今日估选"
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/submit": {
+      "post": {
+        "tags": [
+          "Portfolio Backtest"
+        ],
+        "summary": "异步提交组合回测；轮询 GET /jobs/{jobId}",
+        "operationId": "submit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioTradeConfig"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseBacktestJobView"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/portfolio-backtest/submit",
+          "metadata": {
+            "title": "异步提交组合回测；轮询 GET /jobs/{jobId}",
+            "sidebarTitle": "异步提交组合回测；轮询 GET /jobs/{jobId}"
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/strategies": {
+      "get": {
+        "tags": [
+          "Portfolio Backtest"
+        ],
+        "summary": "我的已保存策略，含最近收益摘要",
+        "operationId": "list_2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/portfolio-backtest/list_2",
+          "metadata": {
+            "title": "我的已保存策略，含最近收益摘要",
+            "sidebarTitle": "我的已保存策略，含最近收益摘要"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Portfolio Backtest"
+        ],
+        "summary": "保存策略并立刻回测，写入最近收益和持仓",
+        "operationId": "save_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/portfolio-backtest/save_1",
+          "metadata": {
+            "title": "保存策略并立刻回测，写入最近收益和持仓",
+            "sidebarTitle": "保存策略并立刻回测，写入最近收益和持仓"
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/run": {
+      "post": {
+        "tags": [
+          "Portfolio Backtest"
+        ],
+        "summary": "同步组合回测；摘要写入 bt_job，响应含全部成交，成交不落库",
+        "operationId": "run",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortfolioTradeConfig"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/portfolio-backtest/run",
+          "metadata": {
+            "title": "同步组合回测；摘要写入 bt_job，响应含全部成交，成交不落库",
+            "sidebarTitle": "同步组合回测；摘要写入 bt_job，响应含全部成交，成交不落库"
+          }
+        }
+      }
+    },
+    "/api/v1/universe": {
+      "get": {
+        "tags": [
+          "Universe Files"
+        ],
+        "summary": "列出可用股票池（全A + factors/*.txt）",
+        "operationId": "list",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListUniverseInfo"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/universe-files/list",
+          "metadata": {
+            "title": "列出可用股票池（全A + factors/*.txt）",
+            "sidebarTitle": "列出可用股票池（全A + factors/*.txt）"
+          }
+        }
+      }
+    },
+    "/api/v1/universe/{universeId}": {
+      "get": {
+        "tags": [
+          "Universe Files"
+        ],
+        "summary": "查看股票池详情与样例代码",
+        "operationId": "detail",
+        "parameters": [
+          {
+            "name": "universeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/universe-files/detail",
+          "metadata": {
+            "title": "查看股票池详情与样例代码",
+            "sidebarTitle": "查看股票池详情与样例代码"
+          }
+        }
+      }
+    },
+    "/api/v1/universe/{universeId}/codes": {
+      "get": {
+        "tags": [
+          "Universe Files"
+        ],
+        "summary": "读取股票池全部代码（来自文件，按 mtime 缓存）",
+        "operationId": "codes",
+        "parameters": [
+          {
+            "name": "universeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListString"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/universe-files/codes",
+          "metadata": {
+            "title": "读取股票池全部代码（来自文件，按 mtime 缓存）",
+            "sidebarTitle": "读取股票池全部代码（来自文件，按 mtime 缓存）"
+          }
+        }
+      }
+    },
+    "/api/v1/universe/market-panel": {
+      "get": {
+        "tags": [
+          "Universe Files"
+        ],
+        "summary": "查看已预热的全市场面板",
+        "operationId": "marketPanelStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/universe-files/marketPanelStatus",
+          "metadata": {
+            "title": "查看已预热的全市场面板",
+            "sidebarTitle": "查看已预热的全市场面板"
+          }
+        }
+      }
+    },
+    "/api/v1/ths/status": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "同花顺数据源状态",
+        "operationId": "thsStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/system/thsStatus",
+          "metadata": {
+            "title": "同花顺数据源状态",
+            "sidebarTitle": "同花顺数据源状态"
+          }
+        }
+      }
+    },
+    "/api/v1/ths/securities": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "同花顺证券搜索（代码/名称）",
+        "operationId": "searchThs",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListThsSecurity"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/system/searchThs",
+          "metadata": {
+            "title": "同花顺证券搜索（代码/名称）",
+            "sidebarTitle": "同花顺证券搜索（代码/名称）"
+          }
+        }
+      }
+    },
+    "/api/v1/product/watchlist": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "我的关注（因子+策略）",
+        "operationId": "watchlist",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWatchlistPage"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/watchlist",
+          "metadata": {
+            "title": "我的关注（因子+策略）",
+            "sidebarTitle": "我的关注（因子+策略）"
+          }
+        }
+      }
+    },
+    "/api/v1/product/strategies": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "策略榜单列表",
+        "operationId": "strategies",
+        "parameters": [
+          {
+            "name": "sellType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListStrategyCard"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/strategies",
+          "metadata": {
+            "title": "策略榜单列表",
+            "sidebarTitle": "策略榜单列表"
+          }
+        }
+      }
+    },
+    "/api/v1/product/strategies/{strategyId}": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "策略详情",
+        "operationId": "strategyDetail",
+        "parameters": [
+          {
+            "name": "strategyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseStrategyDetail"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/strategyDetail",
+          "metadata": {
+            "title": "策略详情",
+            "sidebarTitle": "策略详情"
+          }
+        }
+      }
+    },
+    "/api/v1/product/search": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "全局搜索（因子/策略/股票回测）",
+        "operationId": "search",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListSearchHit"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/search",
+          "metadata": {
+            "title": "全局搜索（因子/策略/股票回测）",
+            "sidebarTitle": "全局搜索（因子/策略/股票回测）"
+          }
+        }
+      }
+    },
+    "/api/v1/product/rebalance-messages": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "调仓消息（已开启推送的策略，近一年）",
+        "operationId": "rebalanceMessages",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/rebalanceMessages",
+          "metadata": {
+            "title": "调仓消息（已开启推送的策略，近一年）",
+            "sidebarTitle": "调仓消息（已开启推送的策略，近一年）"
+          }
+        }
+      }
+    },
+    "/api/v1/product/me": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "个人中心聚合（关注/推送/回测/浏览/调仓）",
+        "operationId": "me",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePersonalCenter"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/me",
+          "metadata": {
+            "title": "个人中心聚合（关注/推送/回测/浏览/调仓）",
+            "sidebarTitle": "个人中心聚合（关注/推送/回测/浏览/调仓）"
+          }
+        }
+      }
+    },
+    "/api/v1/product/factors": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "因子列表（推荐/独家/板块）",
+        "operationId": "factors",
+        "parameters": [
+          {
+            "name": "l1",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "l2",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "change"
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListFactorCard"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/factors",
+          "metadata": {
+            "title": "因子列表（推荐/独家/板块）",
+            "sidebarTitle": "因子列表（推荐/独家/板块）"
+          }
+        }
+      }
+    },
+    "/api/v1/product/factors/{factorId}": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "因子详情",
+        "operationId": "factorDetail",
+        "parameters": [
+          {
+            "name": "factorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseFactorDetail"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/factorDetail",
+          "metadata": {
+            "title": "因子详情",
+            "sidebarTitle": "因子详情"
+          }
+        }
+      }
+    },
+    "/api/v1/product/factors/{factorId}/hover": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "因子悬浮详情",
+        "operationId": "factorHover",
+        "parameters": [
+          {
+            "name": "factorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseFactorHover"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/factorHover",
+          "metadata": {
+            "title": "因子悬浮详情",
+            "sidebarTitle": "因子悬浮详情"
+          }
+        }
+      }
+    },
+    "/api/v1/product/factor-combo": {
+      "get": {
+        "tags": [
+          "Factor Combo"
+        ],
+        "summary": "我的已存因子组合",
+        "operationId": "list_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/factor-combo/list_1",
+          "metadata": {
+            "title": "我的已存因子组合",
+            "sidebarTitle": "我的已存因子组合"
+          }
+        }
+      }
+    },
+    "/api/v1/product/admin/strategies": {
+      "get": {
+        "tags": [
+          "Product Quant UI"
+        ],
+        "summary": "后台策略列表",
+        "operationId": "adminStrategies",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListAdminStrategyRow"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/product-quant-ui/adminStrategies",
+          "metadata": {
+            "title": "后台策略列表",
+            "sidebarTitle": "后台策略列表"
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/strategies/{strategyId}": {
+      "get": {
+        "tags": [
+          "Portfolio Backtest"
+        ],
+        "summary": "读取已保存策略的配置、收益曲线和期末持仓",
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "strategyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/portfolio-backtest/get",
+          "metadata": {
+            "title": "读取已保存策略的配置、收益曲线和期末持仓",
+            "sidebarTitle": "读取已保存策略的配置、收益曲线和期末持仓"
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/meta": {
+      "get": {
+        "tags": [
+          "Portfolio Backtest"
+        ],
+        "summary": "回测交易模型配置枚举与默认值（对应选股回测右侧面板）",
+        "operationId": "meta",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/portfolio-backtest/meta",
+          "metadata": {
+            "title": "回测交易模型配置枚举与默认值（对应选股回测右侧面板）",
+            "sidebarTitle": "回测交易模型配置枚举与默认值（对应选股回测右侧面板）"
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/jobs/{jobId}": {
+      "get": {
+        "tags": [
+          "Portfolio Backtest"
+        ],
+        "summary": "查询组合回测任务（含异步进度 stage/progressPct）",
+        "operationId": "job",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseBacktestJobView"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/portfolio-backtest/job",
+          "metadata": {
+            "title": "查询组合回测任务（含异步进度 stage/progressPct）",
+            "sidebarTitle": "查询组合回测任务（含异步进度 stage/progressPct）"
+          }
+        }
+      }
+    },
+    "/api/v1/portfolio/jobs/{jobId}/trades": {
+      "get": {
+        "tags": [
+          "Portfolio Backtest"
+        ],
+        "summary": "分页查询成交明细（只读本次进程内存）",
+        "operationId": "trades",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/portfolio-backtest/trades",
+          "metadata": {
+            "title": "分页查询成交明细（只读本次进程内存）",
+            "sidebarTitle": "分页查询成交明细（只读本次进程内存）"
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "健康检查",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/system/health",
+          "metadata": {
+            "title": "健康检查",
+            "sidebarTitle": "健康检查"
+          }
+        }
+      }
+    },
+    "/api/v1/cache/stats": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "行情缓存统计（Caffeine + Redis）",
+        "operationId": "cacheStats",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseObject"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "href": "/api-reference/system/cacheStats",
+          "metadata": {
+            "title": "行情缓存统计（Caffeine + Redis）",
+            "sidebarTitle": "行情缓存统计（Caffeine + Redis）"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdminStrategyUpdate": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "string"
+          },
+          "introHtml": {
+            "type": "string"
+          },
+          "videoUrl": {
+            "type": "string"
+          },
+          "videoCoverUrl": {
+            "type": "string"
+          },
+          "displayOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sellType": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ApiResponseMapStringObject": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "MarketWarmupRequest": {
+        "type": "object",
+        "properties": {
+          "universeId": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lookbackYears": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "forwardAdjust": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MarketBacktestRequest": {
+        "type": "object",
+        "properties": {
+          "universeId": {
+            "type": "string"
+          },
+          "shortMa": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "longMa": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "feeRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "slippage": {
+            "type": "number",
+            "format": "double"
+          },
+          "parallel": {
+            "type": "boolean"
+          },
+          "keepAll": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FactorCombo": {
+        "type": "object",
+        "properties": {
+          "baseUniverseId": {
+            "type": "string"
+          },
+          "combineMode": {
+            "type": "string"
+          },
+          "factors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FactorCondition"
+            }
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FactorCondition": {
+        "type": "object",
+        "properties": {
+          "factorId": {
+            "type": "string"
+          },
+          "op": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "min": {
+            "type": "number",
+            "format": "double"
+          },
+          "max": {
+            "type": "number",
+            "format": "double"
+          },
+          "percentileLow": {
+            "type": "number",
+            "format": "double"
+          },
+          "percentileHigh": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "SaveBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "config": {
+            "$ref": "#/components/schemas/FactorCombo"
+          }
+        }
+      },
+      "PortfolioTradeConfig": {
+        "type": "object",
+        "properties": {
+          "universeId": {
+            "type": "string"
+          },
+          "candidateCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lookbackYears": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "forwardAdjust": {
+            "type": "boolean"
+          },
+          "benchmarkCode": {
+            "type": "string"
+          },
+          "buyTiming": {
+            "type": "string"
+          },
+          "buyPriority": {
+            "type": "string"
+          },
+          "buySignal": {
+            "type": "string"
+          },
+          "sellOnIndicator": {
+            "type": "boolean"
+          },
+          "sellSignal": {
+            "type": "string"
+          },
+          "holdingPeriodDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "initialCash": {
+            "type": "number",
+            "format": "double"
+          },
+          "feeRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "slippage": {
+            "type": "number",
+            "format": "double"
+          },
+          "stampTaxRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "positionMode": {
+            "type": "string"
+          },
+          "positionRatio": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxStockWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxHoldings": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxDailyBuys": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "shortMa": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "longMa": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warmupLimit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tPlusOne": {
+            "type": "boolean"
+          },
+          "limitRules": {
+            "type": "boolean"
+          },
+          "rebalance": {
+            "type": "string"
+          },
+          "excludeSt": {
+            "type": "boolean"
+          },
+          "momentumTopPct": {
+            "type": "number",
+            "format": "double"
+          },
+          "minFloatMktCapYi": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxSameIndustry": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "factorCombo": {
+            "$ref": "#/components/schemas/FactorCombo"
+          }
+        }
+      },
+      "ApiResponseBacktestJobView": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/BacktestJobView"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "BacktestJobView": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "clientRequestId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "finishedAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "error": {
+            "type": "string"
+          },
+          "result": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "stage": {
+            "type": "string"
+          },
+          "progressPct": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SaveRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "config": {
+            "$ref": "#/components/schemas/PortfolioTradeConfig"
+          }
+        }
+      },
+      "ApiResponseListUniverseInfo": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UniverseInfo"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "UniverseInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "relativePath": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mtimeMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseListString": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseListThsSecurity": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ThsSecurity"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ThsSecurity": {
+        "type": "object",
+        "properties": {
+          "secId": {
+            "type": "string"
+          },
+          "secCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "thsCode": {
+            "type": "string"
+          },
+          "marketCode": {
+            "type": "string"
+          },
+          "assetType": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseWatchlistPage": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/WatchlistPage"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "FactorCard": {
+        "type": "object",
+        "properties": {
+          "factorId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "categoryL1": {
+            "type": "string"
+          },
+          "categoryL2": {
+            "type": "string"
+          },
+          "signalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dayChangePct": {
+            "type": "number",
+            "format": "double"
+          },
+          "followed": {
+            "type": "boolean"
+          },
+          "pinned": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "typeLabel": {
+            "type": "string"
+          }
+        }
+      },
+      "NavPoint": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "StrategyCard": {
+        "type": "object",
+        "properties": {
+          "strategyId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "sellType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sellTypeLabel": {
+            "type": "string"
+          },
+          "retSinceCreate": {
+            "type": "number",
+            "format": "double"
+          },
+          "retAnnual": {
+            "type": "number",
+            "format": "double"
+          },
+          "retToday": {
+            "type": "number",
+            "format": "double"
+          },
+          "winRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "profitLossRatio": {
+            "type": "string"
+          },
+          "followed": {
+            "type": "boolean"
+          },
+          "pinned": {
+            "type": "boolean"
+          },
+          "pushEnabled": {
+            "type": "boolean"
+          },
+          "curve": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NavPoint"
+            }
+          },
+          "benchCurve": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NavPoint"
+            }
+          }
+        }
+      },
+      "WatchlistPage": {
+        "type": "object",
+        "properties": {
+          "factors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FactorCard"
+            }
+          },
+          "strategies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StrategyCard"
+            }
+          },
+          "emptyHint": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseListStrategyCard": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StrategyCard"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseStrategyDetail": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/StrategyDetail"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "DistItem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weightPct": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "PositionRow": {
+        "type": "object",
+        "properties": {
+          "secCode": {
+            "type": "string"
+          },
+          "secName": {
+            "type": "string"
+          },
+          "weightPct": {
+            "type": "number",
+            "format": "double"
+          },
+          "costPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "lastPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "pnlPct": {
+            "type": "number",
+            "format": "double"
+          },
+          "industry": {
+            "type": "string"
+          }
+        }
+      },
+      "RebalanceRow": {
+        "type": "object",
+        "properties": {
+          "rebalanceAt": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "secCode": {
+            "type": "string"
+          },
+          "secName": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "weightPct": {
+            "type": "number",
+            "format": "double"
+          },
+          "remark": {
+            "type": "string"
+          }
+        }
+      },
+      "StrategyDetail": {
+        "type": "object",
+        "properties": {
+          "strategyId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "hangzhouName": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "introHtml": {
+            "type": "string"
+          },
+          "videoUrl": {
+            "type": "string"
+          },
+          "videoCoverUrl": {
+            "type": "string"
+          },
+          "sellType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sellTypeLabel": {
+            "type": "string"
+          },
+          "followed": {
+            "type": "boolean"
+          },
+          "pushEnabled": {
+            "type": "boolean"
+          },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "curve": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NavPoint"
+            }
+          },
+          "benchCurve": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NavPoint"
+            }
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PositionRow"
+            }
+          },
+          "rebalances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RebalanceRow"
+            }
+          },
+          "industryDist": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DistItem"
+            }
+          },
+          "contribProfit": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DistItem"
+            }
+          },
+          "contribLoss": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DistItem"
+            }
+          }
+        }
+      },
+      "ApiResponseListSearchHit": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchHit"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SearchHit": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseListMapStringObject": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponsePersonalCenter": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PersonalCenter"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PersonalCenter": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "factorFollowCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "strategyFollowCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pushCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "backtestCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxFactorFollow": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxStrategyFollow": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxPush": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "factors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FactorCard"
+            }
+          },
+          "strategies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StrategyCard"
+            }
+          },
+          "recentJobs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            }
+          },
+          "rebalanceMessages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            }
+          },
+          "recentBrowse": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FactorCard"
+            }
+          }
+        }
+      },
+      "ApiResponseListFactorCard": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FactorCard"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseFactorDetail": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FactorDetail"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "FactorDetail": {
+        "type": "object",
+        "properties": {
+          "factorId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "categoryL1": {
+            "type": "string"
+          },
+          "categoryL2": {
+            "type": "string"
+          },
+          "typeLabel": {
+            "type": "string"
+          },
+          "followed": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "dayChangePct": {
+            "type": "number",
+            "format": "double"
+          },
+          "signalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stageReturns": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "equityCurve": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NavPoint"
+            }
+          },
+          "benchCurve": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NavPoint"
+            }
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FactorSignalRow"
+            }
+          },
+          "industryDist": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DistItem"
+            }
+          },
+          "marketDist": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DistItem"
+            }
+          }
+        }
+      },
+      "FactorSignalRow": {
+        "type": "object",
+        "properties": {
+          "secCode": {
+            "type": "string"
+          },
+          "secName": {
+            "type": "string"
+          },
+          "lastPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "changePct": {
+            "type": "number",
+            "format": "double"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "turnover": {
+            "type": "number",
+            "format": "double"
+          },
+          "marketCap": {
+            "type": "number",
+            "format": "double"
+          },
+          "pe": {
+            "type": "number",
+            "format": "double"
+          },
+          "volumeRatio": {
+            "type": "number",
+            "format": "double"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "market": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseFactorHover": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FactorHover"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "FactorHover": {
+        "type": "object",
+        "properties": {
+          "factorId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "signalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dayChangePct": {
+            "type": "number",
+            "format": "double"
+          },
+          "followed": {
+            "type": "boolean"
+          },
+          "leaders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LeaderStock"
+            }
+          }
+        }
+      },
+      "LeaderStock": {
+        "type": "object",
+        "properties": {
+          "secCode": {
+            "type": "string"
+          },
+          "secName": {
+            "type": "string"
+          },
+          "changePct": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "AdminStrategyRow": {
+        "type": "object",
+        "properties": {
+          "strategyId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "hangzhouName": {
+            "type": "string"
+          },
+          "displayOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          },
+          "videoUrl": {
+            "type": "string"
+          },
+          "videoCoverUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseListAdminStrategyRow": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminStrategyRow"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseObject": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "UserId": {
+        "type": "apiKey",
+        "description": "演示登录用户，默认 demo_user",
+        "name": "X-User-Id",
+        "in": "header",
+        "x-default": "demo_user"
+      }
+    }
+  },
+  "security": [
+    {
+      "UserId": []
+    }
+  ]
+}

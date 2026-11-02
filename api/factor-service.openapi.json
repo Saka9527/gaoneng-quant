@@ -1,0 +1,303 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "选股成分服务",
+    "description": "独立进程 factor-service，默认 8081。响应是裸 JSON，没有回测服务那层 success / code / message / data / timestamp。浏览器不调用。",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8081",
+      "description": "本地"
+    }
+  ],
+  "tags": [
+    {
+      "name": "constituents",
+      "x-group": "成分"
+    }
+  ],
+  "paths": {
+    "/api/v1/constituents": {
+      "post": {
+        "tags": ["constituents"],
+        "operationId": "constituents",
+        "x-mint": {
+          "href": "/api-reference/constituents/constituents",
+          "metadata": {
+            "title": "按因子组合取每日成分",
+            "sidebarTitle": "每日成分"
+          }
+        },
+        "summary": "按因子组合取每日成分",
+        "description": "按区间和因子组合做每日成分的交或并。最多 10 条因子。参数不合法返回 400，快照未就绪返回 503。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConstituentRequest"
+              },
+              "example": {
+                "from": "2024-01-02",
+                "to": "2024-01-05",
+                "combo": {
+                  "baseUniverseId": "all_a",
+                  "combineMode": "INTERSECT",
+                  "factors": [
+                    {
+                      "factorId": "example",
+                      "op": "HIT"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "每个交易日的成分代码",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConstituentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数不合法",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "成分快照未装入",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/membership/status": {
+      "get": {
+        "tags": ["constituents"],
+        "operationId": "membershipStatus",
+        "x-mint": {
+          "href": "/api-reference/constituents/membership-status",
+          "metadata": {
+            "title": "成分快照状态",
+            "sidebarTitle": "快照状态"
+          }
+        },
+        "summary": "成分快照状态",
+        "description": "快照默认是 factor-service/data/membership.bin，启动时装入内存。",
+        "responses": {
+          "200": {
+            "description": "当前进程里的快照状态",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/membership/rebuild": {
+      "post": {
+        "tags": ["constituents"],
+        "operationId": "membershipRebuild",
+        "x-mint": {
+          "href": "/api-reference/constituents/membership-rebuild",
+          "metadata": {
+            "title": "重建成分快照",
+            "sidebarTitle": "重建快照"
+          }
+        },
+        "summary": "重建成分快照",
+        "description": "无请求体。用库里的 gn_factor_signal 重写 membership.bin 并重新装入内存。不要为了核对文档调用，重建会覆盖三年快照。",
+        "responses": {
+          "200": {
+            "description": "重建后的快照状态，字段与 status 相同",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipStatus"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "快照不可用",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConstituentRequest": {
+        "type": "object",
+        "required": ["from", "to", "combo"],
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date",
+            "description": "起始交易日，YYYY-MM-DD"
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "description": "结束交易日，YYYY-MM-DD"
+          },
+          "combo": {
+            "$ref": "#/components/schemas/FactorCombo"
+          }
+        }
+      },
+      "FactorCombo": {
+        "type": "object",
+        "properties": {
+          "baseUniverseId": {
+            "type": "string",
+            "description": "股票池。缺省为 all_a"
+          },
+          "combineMode": {
+            "type": "string",
+            "enum": ["INTERSECT", "UNION"],
+            "description": "因子之间取交集或并集。缺省为 INTERSECT"
+          },
+          "factors": {
+            "type": "array",
+            "maxItems": 10,
+            "items": {
+              "$ref": "#/components/schemas/FactorCondition"
+            }
+          }
+        }
+      },
+      "FactorCondition": {
+        "type": "object",
+        "required": ["factorId"],
+        "properties": {
+          "factorId": {
+            "type": "string"
+          },
+          "op": {
+            "type": "string",
+            "enum": ["HIT", "LT", "GT", "BETWEEN", "PERCENTILE"],
+            "description": "HIT 只看是否入选。其余算子用 field，缺省 change_pct"
+          },
+          "field": {
+            "type": "string"
+          },
+          "min": {
+            "type": "number"
+          },
+          "max": {
+            "type": "number"
+          },
+          "percentileLow": {
+            "type": "number"
+          },
+          "percentileHigh": {
+            "type": "number"
+          }
+        }
+      },
+      "ConstituentResponse": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string"
+                },
+                "codes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "MembershipStatus": {
+        "type": "object",
+        "properties": {
+          "ready": {
+            "type": "boolean",
+            "description": "快照是否已装入"
+          },
+          "factors": {
+            "type": "integer",
+            "description": "因子个数"
+          },
+          "rows": {
+            "type": "integer",
+            "format": "int64",
+            "description": "成分行数"
+          },
+          "factorDays": {
+            "type": "integer",
+            "description": "因子×交易日个数"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "lastBuildMs": {
+            "type": "integer",
+            "format": "int64",
+            "description": "本次进程内重建耗时。启动加载为 0"
+          },
+          "path": {
+            "type": "string",
+            "description": "快照文件路径"
+          }
+        }
+      },
+      "ErrorBody": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

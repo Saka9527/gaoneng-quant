@@ -188,6 +188,83 @@ def write_ported(src_root: Path, dest_map: dict[str, str]) -> None:
         print(f"wrote {dest_rel}")
 
 
+TAG_LABELS = {
+    "System": "系统",
+    "Universe Files": "股票池",
+    "Portfolio Backtest": "组合回测",
+    "Factor Combo": "因子组合",
+    "Product Quant UI": "产品",
+}
+
+
+def _rename_wildcard_content(node: object) -> None:
+    if isinstance(node, dict):
+        content = node.get("content")
+        if isinstance(content, dict) and "*/*" in content and "application/json" not in content:
+            content["application/json"] = content.pop("*/*")
+        for value in node.values():
+            _rename_wildcard_content(value)
+    elif isinstance(node, list):
+        for item in node:
+            _rename_wildcard_content(item)
+
+
+def prepare_openapi(spec: dict) -> dict:
+    """Docs-only adjustments. The exported snapshot stays the source of truth."""
+    for tag in spec.get("tags", []):
+        label = TAG_LABELS.get(tag.get("name"))
+        if label:
+            tag["x-group"] = label
+    schemes = spec.setdefault("components", {}).setdefault("securitySchemes", {})
+    user = schemes.setdefault(
+        "UserId",
+        {
+            "type": "apiKey",
+            "name": "X-User-Id",
+            "in": "header",
+            "description": "演示登录用户，默认 demo_user",
+        },
+    )
+    user["x-default"] = "demo_user"
+    spec["security"] = [{"UserId": []}]
+    _rename_wildcard_content(spec)
+    # Windows cannot create the generated page file when a summary contains *, ?, or :.
+    # Pin each page to its operationId so the filename stays safe.
+    for path, item in spec.get("paths", {}).items():
+        if not isinstance(item, dict):
+            continue
+        for method, operation in item.items():
+            if method.startswith("x-") or not isinstance(operation, dict):
+                continue
+            operation_id = operation.get("operationId")
+            if not operation_id:
+                continue
+            tag = (operation.get("tags") or ["endpoint"])[0]
+            folder = tag.lower().replace(" ", "-")
+            summary = operation.get("summary") or operation_id
+            operation["x-mint"] = {
+                "href": f"/api-reference/{folder}/{operation_id}",
+                "metadata": {
+                    "title": summary,
+                    "sidebarTitle": summary,
+                },
+            }
+    return spec
+
+
+def write_openapi(src_root: Path) -> None:
+    source = src_root / "api" / "openapi.json"
+    if not source.is_file():
+        raise SystemExit(f"missing OpenAPI snapshot: {source}")
+    spec = json.loads(source.read_text(encoding="utf-8"))
+    dest = ROOT / "api" / "openapi.json"
+    dest.write_text(
+        json.dumps(prepare_openapi(spec), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    print("wrote api/openapi.json")
+
+
 def page_list(prefix: str, dest_map: dict[str, str]) -> list[str]:
     return sorted(
         dest[: -len(".mdx")]
@@ -209,6 +286,11 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
         "description": "高能量化回测、因子研究与数据字典。",
         "colors": {"primary": "#1B4D89", "light": "#3B82F6", "dark": "#1E3A5F"},
         "interaction": {"drilldown": False},
+        "api": {
+            "playground": {"display": "interactive"},
+            "examples": {"languages": ["curl", "python", "java"], "prefill": True},
+            "url": "full",
+        },
         "navigation": {
             "tabs": [
                 {
@@ -303,12 +385,25 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                 {
                     "tab": "API",
                     "icon": "code",
-                    "pages": [
-                        "api/overview",
-                        "api/page-map",
-                        "api/factor-service",
-                        "api/portfolio-meta",
-                        "api/portfolio-output",
+                    "groups": [
+                        {
+                            "group": nest,
+                            "pages": [
+                                "api/overview",
+                                "api/page-map",
+                                "api/portfolio-meta",
+                                "api/portfolio-output",
+                                "api/factor-service",
+                            ],
+                        },
+                        {
+                            "group": "回测服务",
+                            "openapi": "api/openapi.json",
+                        },
+                        {
+                            "group": "选股服务",
+                            "openapi": "api/factor-service.openapi.json",
+                        },
                     ],
                 },
             ]
@@ -327,6 +422,7 @@ def main() -> None:
     src_root = Path(sys.argv[1]).resolve()
     dest_map = build_dest_map(src_root)
     write_ported(src_root, dest_map)
+    write_openapi(src_root)
     write_docs_json(dest_map)
 
 
