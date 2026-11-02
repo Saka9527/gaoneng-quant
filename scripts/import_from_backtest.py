@@ -281,7 +281,7 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                 },
                 {
                     "tab": "API",
-                    "icon": "braces",
+                    "icon": "code",
                     "pages": [
                         "api/overview",
                         "api/page-map",
