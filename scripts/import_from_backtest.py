@@ -148,16 +148,76 @@ def split_title(text: str, fallback: str) -> tuple[str, str]:
     return title, body
 
 
+def readable(text: str) -> str:
+    text = LINK_RE.sub(r"\1", text)
+    text = re.sub(r"[`*]", "", text)
+    return " ".join(text.split())
+
+
+def plain_prose(text: str) -> str:
+    return re.sub(r"\s+", "", readable(text))
+
+
 def description_from(body: str, title: str) -> str:
     for line in body.splitlines():
         stripped = line.strip()
         if not stripped or stripped.startswith(("#", "|", "-", ">", "```")):
             continue
-        plain = re.sub(r"[`*\[\]]", "", stripped)
+        plain = readable(stripped)
         if len(plain) > 140:
             plain = plain[:137] + "..."
         return plain
     return title
+
+
+def strip_repeated_description(body: str, description: str) -> tuple[str, str]:
+    """Drop a body paragraph that Mintlify already shows as the page description."""
+    target = plain_prose(description)
+    if not target:
+        return body, description
+    prefix = plain_prose(description[:-3]) if description.endswith("...") else ""
+    lines = body.splitlines(keepends=True)
+    blocks: list[list[str]] = []
+    current: list[str] = []
+    in_fence = False
+    for line in lines:
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            current.append(line)
+            continue
+        if not in_fence and not line.strip():
+            if current:
+                blocks.append(current)
+                current = []
+            blocks.append([line])
+            continue
+        current.append(line)
+    if current:
+        blocks.append(current)
+
+    updated = description
+    kept: list[str] = []
+    for block in blocks:
+        text = "".join(block)
+        stripped = text.strip()
+        if not stripped or stripped.startswith(("```", "#", "|", "-", ">", "<", "!")):
+            kept.append(text)
+            continue
+        folded = plain_prose(text)
+        truncated = bool(prefix) and folded.startswith(prefix) and len(folded) > len(prefix)
+        if folded == target or truncated:
+            if truncated:
+                updated = readable(text)
+            continue
+        first, sep, rest = text.partition("\n")
+        if sep and plain_prose(first) == target:
+            kept.append(rest)
+            continue
+        kept.append(text)
+    new_body = re.sub(r"\n{3,}", "\n\n", "".join(kept))
+    if body.endswith("\n") and not new_body.endswith("\n"):
+        new_body += "\n"
+    return new_body, updated
 
 
 def write_ported(src_root: Path, dest_map: dict[str, str]) -> None:
@@ -171,6 +231,7 @@ def write_ported(src_root: Path, dest_map: dict[str, str]) -> None:
         body = rewrite_links(body, source, src_root, dest_map)
         body = escape_mdx(body)
         description = description_from(body, title)
+        body, description = strip_repeated_description(body, description)
         sidebar = SIDEBAR.get(dest_rel)
         sidebar_line = f"sidebarTitle: {yaml_quote(sidebar)}\n" if sidebar else ""
         page = (

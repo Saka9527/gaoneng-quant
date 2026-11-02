@@ -15,6 +15,4 @@ description: "主键 (sec_code, start_date)。索引 idx_range (sec_code, start_
 | `end_date` | date | 戴帽结束，含当日 |
 | `hat_type` | varchar(500) | 警示类型。DuckDB 不保留 |
 
-主键 `(sec_code, start_date)`。索引 `idx_range (sec_code, start_date, end_date)`。
-
 2026-10-13 迁入 DuckDB 后 `st_hat` 为 20 行。辅助数据每次加载都会读区间，不依赖「排除 ST」开关。
