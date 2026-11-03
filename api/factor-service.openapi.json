@@ -20,7 +20,9 @@
   "paths": {
     "/api/v1/constituents": {
       "post": {
-        "tags": ["constituents"],
+        "tags": [
+          "constituents"
+        ],
         "operationId": "constituents",
         "x-mint": {
           "href": "/api-reference/constituents/constituents",
@@ -30,7 +32,6 @@
           }
         },
         "summary": "按因子组合取每日成分",
-        "description": "按区间和因子组合做每日成分的交或并。最多 10 条因子。参数不合法返回 400，快照未就绪返回 503。",
         "requestBody": {
           "required": true,
           "content": {
@@ -91,7 +92,9 @@
     },
     "/api/v1/membership/status": {
       "get": {
-        "tags": ["constituents"],
+        "tags": [
+          "constituents"
+        ],
         "operationId": "membershipStatus",
         "x-mint": {
           "href": "/api-reference/constituents/membership-status",
@@ -101,7 +104,6 @@
           }
         },
         "summary": "成分快照状态",
-        "description": "快照默认是 factor-service/data/membership.bin，启动时装入内存。",
         "responses": {
           "200": {
             "description": "当前进程里的快照状态",
@@ -118,7 +120,9 @@
     },
     "/api/v1/membership/rebuild": {
       "post": {
-        "tags": ["constituents"],
+        "tags": [
+          "constituents"
+        ],
         "operationId": "membershipRebuild",
         "x-mint": {
           "href": "/api-reference/constituents/membership-rebuild",
@@ -128,7 +132,6 @@
           }
         },
         "summary": "重建成分快照",
-        "description": "无请求体。用库里的 gn_factor_signal 重写 membership.bin 并重新装入内存。不要为了核对文档调用，重建会覆盖三年快照。",
         "responses": {
           "200": {
             "description": "重建后的快照状态，字段与 status 相同",
@@ -158,7 +161,11 @@
     "schemas": {
       "ConstituentRequest": {
         "type": "object",
-        "required": ["from", "to", "combo"],
+        "required": [
+          "from",
+          "to",
+          "combo"
+        ],
         "properties": {
           "from": {
             "type": "string",
@@ -171,7 +178,12 @@
             "description": "结束交易日，YYYY-MM-DD"
           },
           "combo": {
-            "$ref": "#/components/schemas/FactorCombo"
+            "description": "因子组合",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FactorCombo"
+              }
+            ]
           }
         }
       },
@@ -184,7 +196,10 @@
           },
           "combineMode": {
             "type": "string",
-            "enum": ["INTERSECT", "UNION"],
+            "enum": [
+              "INTERSECT",
+              "UNION"
+            ],
             "description": "因子之间取交集或并集。缺省为 INTERSECT"
           },
           "factors": {
@@ -192,36 +207,51 @@
             "maxItems": 10,
             "items": {
               "$ref": "#/components/schemas/FactorCondition"
-            }
+            },
+            "description": "因子条件，最多 10 条"
           }
         }
       },
       "FactorCondition": {
         "type": "object",
-        "required": ["factorId"],
+        "required": [
+          "factorId"
+        ],
         "properties": {
           "factorId": {
-            "type": "string"
+            "type": "string",
+            "description": "因子编号"
           },
           "op": {
             "type": "string",
-            "enum": ["HIT", "LT", "GT", "BETWEEN", "PERCENTILE"],
+            "enum": [
+              "HIT",
+              "LT",
+              "GT",
+              "BETWEEN",
+              "PERCENTILE"
+            ],
             "description": "HIT 只看是否入选。其余算子用 field，缺省 change_pct"
           },
           "field": {
-            "type": "string"
+            "type": "string",
+            "description": "取值字段。HIT 以外的算子使用，缺省为 change_pct"
           },
           "min": {
-            "type": "number"
+            "type": "number",
+            "description": "下限"
           },
           "max": {
-            "type": "number"
+            "type": "number",
+            "description": "上限"
           },
           "percentileLow": {
-            "type": "number"
+            "type": "number",
+            "description": "分位下限"
           },
           "percentileHigh": {
-            "type": "number"
+            "type": "number",
+            "description": "分位上限"
           }
         }
       },
@@ -229,10 +259,12 @@
         "type": "object",
         "properties": {
           "from": {
-            "type": "string"
+            "type": "string",
+            "description": "起始交易日"
           },
           "to": {
-            "type": "string"
+            "type": "string",
+            "description": "结束交易日"
           },
           "days": {
             "type": "array",
@@ -240,16 +272,19 @@
               "type": "object",
               "properties": {
                 "date": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "交易日"
                 },
                 "codes": {
                   "type": "array",
                   "items": {
                     "type": "string"
-                  }
+                  },
+                  "description": "当日成分代码"
                 }
               }
-            }
+            },
+            "description": "每个交易日的成分"
           }
         }
       },
@@ -274,10 +309,12 @@
             "description": "因子×交易日个数"
           },
           "from": {
-            "type": "string"
+            "type": "string",
+            "description": "快照起始日"
           },
           "to": {
-            "type": "string"
+            "type": "string",
+            "description": "快照结束日"
           },
           "lastBuildMs": {
             "type": "integer",
@@ -294,7 +331,8 @@
         "type": "object",
         "properties": {
           "error": {
-            "type": "string"
+            "type": "string",
+            "description": "错误说明"
           }
         }
       }

@@ -56,11 +56,11 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseMarketWarmup"
                 }
               }
             }
@@ -94,11 +94,11 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseComboSaved"
                 }
               }
             }
@@ -122,11 +122,11 @@
         "operationId": "refreshSectors",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseSectorRefresh"
                 }
               }
             }
@@ -160,11 +160,11 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseFactorPreview"
                 }
               }
             }
@@ -214,8 +214,7 @@
             "title": "异步提交组合回测；轮询 GET /jobs/{jobId}",
             "sidebarTitle": "异步提交组合回测；轮询 GET /jobs/{jobId}"
           }
-        },
-        "description": "在当前请求里跑完，响应是任务视图，不是 `POST /run` 的完整结果。\n\n| 字段 | 说明 |\n| --- | --- |\n| `jobId` | 任务 ID |\n| `status` | `PENDING` / `RUNNING` / `SUCCESS` / `FAILED` |\n| `clientRequestId` | 当前写的是 `portfolio-ui` |\n| `createdAt` / `finishedAt` | epoch 毫秒 |\n| `error` | 失败原因 |\n| `stage` | 成功为 `DONE`，失败为 `FAILED` |\n| `progressPct` | 0–100 |\n| `result` | 成功时为写入 `bt_job.result_json` 的摘要。字段与 [查询组合回测任务](/api-reference/portfolio-backtest/job) 的 `result` 相同 |\n\n本进程还留着这份报告时，`result.equityCurve` 会被补成完整曲线，并加上 `hasFullReport: true`。"
+        }
       }
     },
     "/api/v1/portfolio/strategies": {
@@ -227,11 +226,11 @@
         "operationId": "list_2",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseListMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseListSavedStrategy"
                 }
               }
             }
@@ -263,11 +262,11 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseSavedStrategy"
                 }
               }
             }
@@ -301,11 +300,11 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponsePortfolioRun"
                 }
               }
             }
@@ -317,8 +316,7 @@
             "title": "同步组合回测；摘要写入 bt_job，响应含全部成交，成交不落库",
             "sidebarTitle": "同步组合回测；摘要写入 bt_job，响应含全部成交，成交不落库"
           }
-        },
-        "description": "同步跑完后，完整结果在 `data` 里。`trades` 含买入和卖出，按发生顺序排列。写入 `bt_job.result_json` 的是摘要，曲线和成交都是空数组；重新打开任务时从 [查询组合回测任务](/api-reference/portfolio-backtest/job) 的 `result` 读取。\n\n每个数的公式见 [指标、买卖点与回测结果](/backtest/signals) 第 9 节。\n\n| 字段 | 类型 | 说明 |\n| --- | --- | --- |\n| `jobId` | string | `pf_` 加 16 位十六进制 |\n| `universeId` | string | 股票池 |\n| `benchmarkCode` | string | 对比指数 |\n| `candidateCount` | int | 实际载入的股票数 |\n| `tradingDays` | int | 净值点数，按交易日 |\n| `loadMs` / `computeMs` | long | 加载、撮合耗时，毫秒 |\n| `initialCash` | double | 初始资金 |\n| `finalEquity` | double | 期末权益 |\n| `totalReturn` | double | `finalEquity / initialCash - 1` |\n| `benchmarkReturn` | double | 对比指数同期收益。指数加载失败时用候选股等权收盘代替 |\n| `maxDrawdown` | double | 权益相对历史峰值的最大回撤，正数 |\n| `annualizedReturn` | double | `(1 + totalReturn) ^ (252 / 交易日) - 1` |\n| `sharpeRatio` | double | (日收益 − 0.02/252) 的均值 / 总体标准差 × √252。有效收益少于 2 段时为 0 |\n| `turnover` | double | 各净值日单边换手的平均。单边换手为 0.5 乘以权重绝对变化之和，权重含现金 |\n| `tradeCount` | int | 完成的卖出笔数，不含买入 |\n| `winTrades` | int | 卖出且 `pnl > 0` 的笔数 |\n| `winRate` | double | `winTrades / tradeCount`，`tradeCount` 为 0 时为 0 |\n| `holdingPeriodDays` | int | 配置的持股天数 |\n| `avgTradeReturn` | double | 卖出 `returnPct` 的平均，没有卖出时为 0 |\n| `payoffRatio` | double | 盈利卖出平均收益率 / 亏损卖出平均收益率的绝对值。没有亏损时为 0。与 `profitFactor` 不是同一个数 |\n| `maxTradeReturn` / `minTradeReturn` | double | 卖出 `returnPct` 的最大、最小。没有卖出时为 0 |\n| `rejectedBuys` / `rejectedSells` | int | 涨跌停或停牌导致未成交的次数 |\n| `equityCurve` | array | 每个交易日一条 |\n| `trades` | array | 全部成交，按发生顺序，`index` 从 1 递增。笔数不少于 `tradeCount`，因为含买入 |\n| `holdingsSnapshot` | array | 期末仍持有的仓位 |\n| `config` | object | 归一化后的交易配置 |\n\n`equityCurve[]`：\n\n| 字段 | 说明 |\n| --- | --- |\n| `date` | `YYYY-MM-DD` |\n| `equity` | 当日收盘后权益 |\n| `benchmarkEquity` | 对比曲线，起点对齐初始资金 |\n| `drawdown` | 当日回撤 |\n\n`holdingsSnapshot[]`：\n\n| 字段 | 说明 |\n| --- | --- |\n| `code` | 证券代码 |\n| `shares` | 股数 |\n| `cost` | 持仓成本金额 |\n| `price` | 最后一根 K 线收盘价，缺失为 0 |\n| `marketValue` | `shares * price` |\n| `holdDays` | 已持有天数 |\n\n`trades[]`：\n\n| 字段 | 说明 |\n| --- | --- |\n| `index` | 成交序号，从 1 起，按发生顺序 |\n| `code` | 证券代码 |\n| `side` | `BUY` / `SELL` |\n| `date` | `YYYY-MM-DD`，成交日 |\n| `price` | 含成本后的成交价 |\n| `shares` | 股数 |\n| `amount` | 成交金额 |\n| `pnl` | 卖出盈亏。买入为 0 |\n| `returnPct` | 卖出收益率。买入为 0 |\n| `holdDays` | 卖出时的持有天数。买入为 0 |"
+        }
       }
     },
     "/api/v1/universe": {
@@ -362,17 +360,19 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "description": "股票池编号"
+            },
+            "description": "股票池编号"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseUniverseDetail"
                 }
               }
             }
@@ -400,8 +400,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "description": "股票池编号"
+            },
+            "description": "股票池编号"
           },
           {
             "name": "limit",
@@ -409,8 +411,10 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "format": "int32"
-            }
+              "format": "int32",
+              "description": "返回代码条数"
+            },
+            "description": "返回代码条数"
           }
         ],
         "responses": {
@@ -443,11 +447,11 @@
         "operationId": "marketPanelStatus",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseMarketPanel"
                 }
               }
             }
@@ -471,11 +475,11 @@
         "operationId": "thsStatus",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseThsStatus"
                 }
               }
             }
@@ -503,8 +507,10 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "description": "证券代码或名称"
+            },
+            "description": "证券代码或名称"
           },
           {
             "name": "limit",
@@ -513,8 +519,10 @@
             "schema": {
               "type": "integer",
               "format": "int32",
-              "default": 20
-            }
+              "default": 20,
+              "description": "返回条数，默认 20"
+            },
+            "description": "返回条数，默认 20"
           }
         ],
         "responses": {
@@ -547,11 +555,11 @@
         "operationId": "list_1",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseListMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseListSavedCombo"
                 }
               }
             }
@@ -579,17 +587,19 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "description": "策略编号"
+            },
+            "description": "策略编号"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseSavedStrategy"
                 }
               }
             }
@@ -613,11 +623,11 @@
         "operationId": "meta",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponsePortfolioMeta"
                 }
               }
             }
@@ -645,8 +655,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "description": "任务编号"
+            },
+            "description": "任务编号"
           }
         ],
         "responses": {
@@ -667,8 +679,7 @@
             "title": "查询组合回测任务（含异步进度 stage/progressPct）",
             "sidebarTitle": "查询组合回测任务（含异步进度 stage/progressPct）"
           }
-        },
-        "description": "外层是任务视图，不是 `POST /run` 的完整报告。\n\n| 字段 | 说明 |\n| --- | --- |\n| `jobId` | 任务 ID |\n| `status` | `PENDING` / `RUNNING` / `SUCCESS` / `FAILED` |\n| `clientRequestId` | 当前写的是 `portfolio-ui` |\n| `createdAt` / `finishedAt` | epoch 毫秒 |\n| `error` | 失败原因 |\n| `stage` | 成功为 `DONE`，失败为 `FAILED` |\n| `progressPct` | 0–100 |\n| `result` | 成功时为写入 `bt_job.result_json` 的摘要 |\n\n`result` 字段：\n\n| 字段 | 说明 |\n| --- | --- |\n| `type` | 固定 `PORTFOLIO` |\n| `strategyName` | 固定 `PORTFOLIO` |\n| `symbol` | 等于 `universeId` |\n| `dataSource` | `组合回测·股票池 {universeId}` |\n| `barCount` | 等于股票数 `candidateCount`，不是 K 线根数 |\n| `candidateCount` | 股票数 |\n| `tradingDays` | 交易日数 |\n| `tradeCount` | 完成的卖出笔数 |\n| `initialCash` / `finalEquity` | 初始资金、期末权益 |\n| `totalReturn` / `annualizedReturn` / `maxDrawdown` | 与 [同步组合回测](/api-reference/portfolio-backtest/run) 的 `data` 相同 |\n| `sharpeRatio` / `turnover` | 与首屏相同 |\n| `winRate` | `winTrades / tradeCount`。分母是完成的卖出笔数，`tradeCount` 为 0 时写 0 |\n| `holdingPeriodDays` | 配置的持股天数 |\n| `avgTradeReturn` | 卖出收益率平均 |\n| `payoffRatio` | 盈亏比：盈利卖出平均收益率 / 亏损卖出平均收益率的绝对值 |\n| `maxTradeReturn` / `minTradeReturn` | 卖出收益率的最大、最小 |\n| `profitFactor` | 卖出盈利金额合计 / 亏损金额绝对值。没有亏损时写 0 |\n| `buyHoldReturn` | 写入的是 `benchmarkReturn` |\n| `riskFreeRate` | 固定 `0.02`。Sharpe 计算没有用这个数 |\n| `startDate` / `endDate` | 请求里的日期，缺省时可能为空 |\n| `loadMs` / `computeMs` | 毫秒 |\n| `rejectedBuys` / `rejectedSells` | 拒单次数 |\n| `equityCurve` / `priceSeries` / `trades` | 固定空数组 |\n\n本进程还留着这份报告时，`result.equityCurve` 会被补成完整曲线，并加上 `hasFullReport: true`。进程重启后只剩库里的空曲线。成交分页见 [分页查询成交明细](/api-reference/portfolio-backtest/trades)。"
+        }
       }
     },
     "/api/v1/portfolio/jobs/{jobId}/trades": {
@@ -684,8 +695,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            }
+              "type": "string",
+              "description": "任务编号"
+            },
+            "description": "任务编号"
           },
           {
             "name": "limit",
@@ -694,8 +707,10 @@
             "schema": {
               "type": "integer",
               "format": "int32",
-              "default": 50
-            }
+              "default": 50,
+              "description": "每页条数，默认 50，最大 2000"
+            },
+            "description": "每页条数，默认 50，最大 2000"
           },
           {
             "name": "offset",
@@ -704,17 +719,19 @@
             "schema": {
               "type": "integer",
               "format": "int32",
-              "default": 0
-            }
+              "default": 0,
+              "description": "跳过条数，0 为最新成交"
+            },
+            "description": "跳过条数，0 为最新成交"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseTradePage"
                 }
               }
             }
@@ -726,8 +743,7 @@
             "title": "分页查询成交明细（只读本次进程内存）",
             "sidebarTitle": "分页查询成交明细（只读本次进程内存）"
           }
-        },
-        "description": "`limit` 默认 50，最大 2000。按成交时间倒序，`offset = 0` 是最新一笔。数据来自本进程内存。\n\n| 字段 | 说明 |\n| --- | --- |\n| `jobId` | 任务 ID |\n| `total` | 总笔数 |\n| `limit` / `offset` | 分页 |\n| `hasMore` | 后面是否还有 |\n| `trades` | 本页成交 |\n\n`trades[]`：\n\n| 字段 | 说明 |\n| --- | --- |\n| `index` | 成交序号，从 1 起，按发生顺序 |\n| `code` | 证券代码 |\n| `side` | `BUY` / `SELL` |\n| `date` | `YYYY-MM-DD`，成交日 |\n| `price` | 含成本后的成交价 |\n| `shares` | 股数 |\n| `amount` | 成交金额 |\n| `pnl` | 卖出盈亏。买入为 0 |\n| `returnPct` | 卖出收益率。买入为 0 |\n| `holdDays` | 卖出时的持有天数。买入为 0 |\n\n内存里没有这份报告时，这一页是空的。进程重启后历史任务的成交不可再翻。同一笔回测在 [同步组合回测](/api-reference/portfolio-backtest/run) 的响应里会一次返回全部成交。"
+        }
       }
     },
     "/api/v1/health": {
@@ -739,11 +755,11 @@
         "operationId": "health",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMapStringObject"
+                  "$ref": "#/components/schemas/ApiResponseHealth"
                 }
               }
             }
@@ -767,11 +783,11 @@
         "operationId": "cacheStats",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "成功",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponseObject"
+                  "$ref": "#/components/schemas/ApiResponseCacheStats"
                 }
               }
             }
@@ -793,27 +809,34 @@
         "type": "object",
         "properties": {
           "summary": {
-            "type": "string"
+            "type": "string",
+            "description": "摘要"
           },
           "introHtml": {
-            "type": "string"
+            "type": "string",
+            "description": "介绍正文"
           },
           "videoUrl": {
-            "type": "string"
+            "type": "string",
+            "description": "视频地址"
           },
           "videoCoverUrl": {
-            "type": "string"
+            "type": "string",
+            "description": "封面地址"
           },
           "displayOrder": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "展示顺序"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "description": "状态"
           },
           "sellType": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "卖出类型"
           }
         }
       },
@@ -821,23 +844,28 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
             "type": "object",
             "additionalProperties": {
               "type": "object"
-            }
+            },
+            "description": "业务数据"
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -845,24 +873,30 @@
         "type": "object",
         "properties": {
           "universeId": {
-            "type": "string"
+            "type": "string",
+            "description": "股票池编号"
           },
           "limit": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "预热股票上限"
           },
           "lookbackYears": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "回看年数"
           },
           "startDate": {
-            "type": "string"
+            "type": "string",
+            "description": "开始日期"
           },
           "endDate": {
-            "type": "string"
+            "type": "string",
+            "description": "结束日期"
           },
           "forwardAdjust": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否前复权"
           }
         }
       },
@@ -870,29 +904,36 @@
         "type": "object",
         "properties": {
           "universeId": {
-            "type": "string"
+            "type": "string",
+            "description": "股票池编号"
           },
           "shortMa": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "短均线天数"
           },
           "longMa": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "长均线天数"
           },
           "feeRate": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "佣金率"
           },
           "slippage": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "滑点"
           },
           "parallel": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否并行计算"
           },
           "keepAll": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否保留全部结果"
           }
         }
       },
@@ -900,19 +941,23 @@
         "type": "object",
         "properties": {
           "baseUniverseId": {
-            "type": "string"
+            "type": "string",
+            "description": "基准股票池编号"
           },
           "combineMode": {
-            "type": "string"
+            "type": "string",
+            "description": "交并集方式，INTERSECT 为交集，UNION 为并集"
           },
           "factors": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FactorCondition"
-            }
+            },
+            "description": "因子条件"
           },
           "empty": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否没有可用因子"
           }
         }
       },
@@ -920,29 +965,36 @@
         "type": "object",
         "properties": {
           "factorId": {
-            "type": "string"
+            "type": "string",
+            "description": "因子编号"
           },
           "op": {
-            "type": "string"
+            "type": "string",
+            "description": "比较算子"
           },
           "field": {
-            "type": "string"
+            "type": "string",
+            "description": "取值字段"
           },
           "min": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "下限"
           },
           "max": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "上限"
           },
           "percentileLow": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "分位下限"
           },
           "percentileHigh": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "分位上限"
           }
         }
       },
@@ -950,133 +1002,177 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "组合名称"
           },
           "config": {
-            "$ref": "#/components/schemas/FactorCombo"
+            "description": "因子组合",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FactorCombo"
+              }
+            ]
           }
         }
       },
       "PortfolioTradeConfig": {
         "type": "object",
+        "description": "交易配置",
         "properties": {
           "universeId": {
-            "type": "string"
+            "type": "string",
+            "description": "股票池编号"
           },
           "candidateCodes": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "指定股票代码。有因子组合时不使用"
           },
           "lookbackYears": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "回看年数"
           },
           "startDate": {
-            "type": "string"
+            "type": "string",
+            "description": "开始日期"
           },
           "endDate": {
-            "type": "string"
+            "type": "string",
+            "description": "结束日期"
           },
           "forwardAdjust": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否前复权"
           },
           "benchmarkCode": {
-            "type": "string"
+            "type": "string",
+            "description": "对比指数代码"
           },
           "buyTiming": {
-            "type": "string"
+            "type": "string",
+            "description": "买入时机"
           },
           "buyPriority": {
-            "type": "string"
+            "type": "string",
+            "description": "买入排序"
           },
           "buySignal": {
-            "type": "string"
+            "type": "string",
+            "description": "买入信号"
           },
           "sellOnIndicator": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否按指标卖出"
           },
           "sellSignal": {
-            "type": "string"
+            "type": "string",
+            "description": "卖出信号"
           },
           "holdingPeriodDays": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "持股天数"
           },
           "initialCash": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "初始资金"
           },
           "feeRate": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "佣金率"
           },
           "slippage": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "滑点"
           },
           "stampTaxRate": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "印花税率"
           },
           "positionMode": {
-            "type": "string"
+            "type": "string",
+            "description": "仓位模式"
           },
           "positionRatio": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "仓位比例"
           },
           "maxStockWeight": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "单票权重上限"
           },
           "maxHoldings": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "最大持仓数"
           },
           "maxDailyBuys": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "每日最多买入"
           },
           "shortMa": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "短均线天数"
           },
           "longMa": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "长均线天数"
           },
           "warmupLimit": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "预热股票上限"
           },
           "tPlusOne": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否启用 T+1"
           },
           "limitRules": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否启用涨跌停规则"
           },
           "rebalance": {
-            "type": "string"
+            "type": "string",
+            "description": "再平衡方式"
           },
           "excludeSt": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否排除 ST"
           },
           "momentumTopPct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "动量截面保留比例"
           },
           "minFloatMktCapYi": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "最低流通市值，单位亿"
           },
           "maxSameIndustry": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "同行业持仓上限"
           },
           "factorCombo": {
-            "$ref": "#/components/schemas/FactorCombo"
+            "description": "因子组合。设置后优先于股票池和指定代码",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FactorCombo"
+              }
+            ]
           }
         }
       },
@@ -1084,20 +1180,29 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
-            "$ref": "#/components/schemas/BacktestJobView"
+            "description": "任务",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BacktestJobView"
+              }
+            ]
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1105,37 +1210,51 @@
         "type": "object",
         "properties": {
           "jobId": {
-            "type": "string"
+            "type": "string",
+            "description": "任务编号，pf_ 加 16 位十六进制"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "description": "任务状态：PENDING、RUNNING、SUCCESS、FAILED"
           },
           "clientRequestId": {
-            "type": "string"
+            "type": "string",
+            "description": "客户端请求号"
           },
           "createdAt": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "创建时间，毫秒"
           },
           "finishedAt": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "结束时间，毫秒"
           },
           "error": {
-            "type": "string"
+            "type": "string",
+            "description": "失败原因。成功时为空"
           },
           "result": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object"
-            }
+            "description": "结果摘要",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JobSummary"
+              }
+            ]
           },
           "stage": {
-            "type": "string"
+            "type": "string",
+            "description": "阶段。完成为 DONE，失败为 FAILED"
           },
           "progressPct": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "进度，0 到 100"
+          },
+          "hasFullReport": {
+            "type": "boolean",
+            "description": "内存中是否仍保留完整报告"
           }
         }
       },
@@ -1143,10 +1262,16 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "策略名称"
           },
           "config": {
-            "$ref": "#/components/schemas/PortfolioTradeConfig"
+            "description": "交易配置",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioTradeConfig"
+              }
+            ]
           }
         }
       },
@@ -1154,23 +1279,28 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/UniverseInfo"
-            }
+            },
+            "description": "股票池列表"
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1178,24 +1308,30 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "股票池编号"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "股票池名称"
           },
           "relativePath": {
-            "type": "string"
+            "type": "string",
+            "description": "相对路径"
           },
           "count": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "股票只数"
           },
           "mtimeMs": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "修改时间，毫秒"
           },
           "type": {
-            "type": "string"
+            "type": "string",
+            "description": "股票池类型"
           }
         }
       },
@@ -1203,23 +1339,28 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "股票代码"
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1227,23 +1368,28 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ThsSecurity"
-            }
+            },
+            "description": "证券列表"
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1251,22 +1397,28 @@
         "type": "object",
         "properties": {
           "secId": {
-            "type": "string"
+            "type": "string",
+            "description": "证券内部编号"
           },
           "secCode": {
-            "type": "string"
+            "type": "string",
+            "description": "证券代码"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "证券名称"
           },
           "thsCode": {
-            "type": "string"
+            "type": "string",
+            "description": "同花顺代码"
           },
           "marketCode": {
-            "type": "string"
+            "type": "string",
+            "description": "市场代码"
           },
           "assetType": {
-            "type": "string"
+            "type": "string",
+            "description": "资产类型"
           }
         }
       },
@@ -1274,20 +1426,29 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
-            "$ref": "#/components/schemas/WatchlistPage"
+            "description": "业务数据",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WatchlistPage"
+              }
+            ]
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1295,39 +1456,50 @@
         "type": "object",
         "properties": {
           "factorId": {
-            "type": "string"
+            "type": "string",
+            "description": "因子编号"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "名称"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "categoryL1": {
-            "type": "string"
+            "type": "string",
+            "description": "一级分类"
           },
           "categoryL2": {
-            "type": "string"
+            "type": "string",
+            "description": "二级分类"
           },
           "signalCount": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "信号数量"
           },
           "dayChangePct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "当日涨跌幅"
           },
           "followed": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否已关注"
           },
           "pinned": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否置顶"
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否启用"
           },
           "typeLabel": {
-            "type": "string"
+            "type": "string",
+            "description": "类型名称"
           }
         }
       },
@@ -1335,11 +1507,13 @@
         "type": "object",
         "properties": {
           "date": {
-            "type": "string"
+            "type": "string",
+            "description": "日期"
           },
           "value": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "数值"
           }
         }
       },
@@ -1347,60 +1521,75 @@
         "type": "object",
         "properties": {
           "strategyId": {
-            "type": "string"
+            "type": "string",
+            "description": "策略编号"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "名称"
           },
           "summary": {
-            "type": "string"
+            "type": "string",
+            "description": "摘要"
           },
           "sellType": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "卖出类型"
           },
           "sellTypeLabel": {
-            "type": "string"
+            "type": "string",
+            "description": "卖出类型名称"
           },
           "retSinceCreate": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "创建以来收益"
           },
           "retAnnual": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "年化收益"
           },
           "retToday": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "当日收益"
           },
           "winRate": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "胜率"
           },
           "profitLossRatio": {
-            "type": "string"
+            "type": "string",
+            "description": "盈亏比"
           },
           "followed": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否已关注"
           },
           "pinned": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否置顶"
           },
           "pushEnabled": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否开启推送"
           },
           "curve": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/NavPoint"
-            }
+            },
+            "description": "净值曲线"
           },
           "benchCurve": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/NavPoint"
-            }
+            },
+            "description": "基准净值"
           }
         }
       },
@@ -1411,16 +1600,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FactorCard"
-            }
+            },
+            "description": "因子条件"
           },
           "strategies": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/StrategyCard"
-            }
+            },
+            "description": "策略列表"
           },
           "emptyHint": {
-            "type": "string"
+            "type": "string",
+            "description": "空列表说明"
           }
         }
       },
@@ -1428,23 +1620,28 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/StrategyCard"
-            }
+            },
+            "description": "业务数据"
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1452,20 +1649,29 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
-            "$ref": "#/components/schemas/StrategyDetail"
+            "description": "业务数据",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StrategyDetail"
+              }
+            ]
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1473,15 +1679,18 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "名称"
           },
           "count": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "数量"
           },
           "weightPct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "权重百分比"
           }
         }
       },
@@ -1489,29 +1698,36 @@
         "type": "object",
         "properties": {
           "secCode": {
-            "type": "string"
+            "type": "string",
+            "description": "证券代码"
           },
           "secName": {
-            "type": "string"
+            "type": "string",
+            "description": "证券名称"
           },
           "weightPct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "权重百分比"
           },
           "costPrice": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "成本价"
           },
           "lastPrice": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "最新价"
           },
           "pnlPct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "盈亏比例"
           },
           "industry": {
-            "type": "string"
+            "type": "string",
+            "description": "行业"
           }
         }
       },
@@ -1519,27 +1735,34 @@
         "type": "object",
         "properties": {
           "rebalanceAt": {
-            "type": "string"
+            "type": "string",
+            "description": "调仓时间"
           },
           "action": {
-            "type": "string"
+            "type": "string",
+            "description": "动作"
           },
           "secCode": {
-            "type": "string"
+            "type": "string",
+            "description": "证券代码"
           },
           "secName": {
-            "type": "string"
+            "type": "string",
+            "description": "证券名称"
           },
           "price": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "价格"
           },
           "weightPct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "权重百分比"
           },
           "remark": {
-            "type": "string"
+            "type": "string",
+            "description": "备注"
           }
         }
       },
@@ -1547,87 +1770,106 @@
         "type": "object",
         "properties": {
           "strategyId": {
-            "type": "string"
+            "type": "string",
+            "description": "策略编号"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "名称"
           },
           "hangzhouName": {
-            "type": "string"
+            "type": "string",
+            "description": "展示名称"
           },
           "summary": {
-            "type": "string"
+            "type": "string",
+            "description": "摘要"
           },
           "introHtml": {
-            "type": "string"
+            "type": "string",
+            "description": "介绍正文"
           },
           "videoUrl": {
-            "type": "string"
+            "type": "string",
+            "description": "视频地址"
           },
           "videoCoverUrl": {
-            "type": "string"
+            "type": "string",
+            "description": "封面地址"
           },
           "sellType": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "卖出类型"
           },
           "sellTypeLabel": {
-            "type": "string"
+            "type": "string",
+            "description": "卖出类型名称"
           },
           "followed": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否已关注"
           },
           "pushEnabled": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否开启推送"
           },
           "metrics": {
             "type": "object",
             "additionalProperties": {
               "type": "number",
               "format": "double"
-            }
+            },
+            "description": "指标"
           },
           "curve": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/NavPoint"
-            }
+            },
+            "description": "净值曲线"
           },
           "benchCurve": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/NavPoint"
-            }
+            },
+            "description": "基准净值"
           },
           "positions": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PositionRow"
-            }
+            },
+            "description": "持仓"
           },
           "rebalances": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RebalanceRow"
-            }
+            },
+            "description": "调仓记录"
           },
           "industryDist": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DistItem"
-            }
+            },
+            "description": "行业分布"
           },
           "contribProfit": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DistItem"
-            }
+            },
+            "description": "盈利贡献"
           },
           "contribLoss": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DistItem"
-            }
+            },
+            "description": "亏损贡献"
           }
         }
       },
@@ -1635,23 +1877,28 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SearchHit"
-            }
+            },
+            "description": "业务数据"
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1659,19 +1906,24 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string"
+            "type": "string",
+            "description": "类型"
           },
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "编号"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "名称"
           },
           "subtitle": {
-            "type": "string"
+            "type": "string",
+            "description": "副标题"
           },
           "href": {
-            "type": "string"
+            "type": "string",
+            "description": "链接"
           }
         }
       },
@@ -1679,13 +1931,16 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
             "type": "array",
@@ -1694,11 +1949,13 @@
               "additionalProperties": {
                 "type": "object"
               }
-            }
+            },
+            "description": "业务数据"
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1706,20 +1963,29 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
-            "$ref": "#/components/schemas/PersonalCenter"
+            "description": "业务数据",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PersonalCenter"
+              }
+            ]
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1727,50 +1993,61 @@
         "type": "object",
         "properties": {
           "userId": {
-            "type": "string"
+            "type": "string",
+            "description": "用户编号"
           },
           "displayName": {
-            "type": "string"
+            "type": "string",
+            "description": "显示名称"
           },
           "factorFollowCount": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "关注的因子数"
           },
           "strategyFollowCount": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "关注的策略数"
           },
           "pushCount": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "推送条数"
           },
           "backtestCount": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "回测次数"
           },
           "maxFactorFollow": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "因子关注上限"
           },
           "maxStrategyFollow": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "策略关注上限"
           },
           "maxPush": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "推送上限"
           },
           "factors": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FactorCard"
-            }
+            },
+            "description": "因子条件"
           },
           "strategies": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/StrategyCard"
-            }
+            },
+            "description": "策略列表"
           },
           "recentJobs": {
             "type": "array",
@@ -1779,7 +2056,8 @@
               "additionalProperties": {
                 "type": "object"
               }
-            }
+            },
+            "description": "最近任务"
           },
           "rebalanceMessages": {
             "type": "array",
@@ -1788,13 +2066,15 @@
               "additionalProperties": {
                 "type": "object"
               }
-            }
+            },
+            "description": "调仓消息"
           },
           "recentBrowse": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FactorCard"
-            }
+            },
+            "description": "最近浏览"
           }
         }
       },
@@ -1802,23 +2082,28 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FactorCard"
-            }
+            },
+            "description": "业务数据"
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1826,20 +2111,29 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
-            "$ref": "#/components/schemas/FactorDetail"
+            "description": "业务数据",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FactorDetail"
+              }
+            ]
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1847,73 +2141,89 @@
         "type": "object",
         "properties": {
           "factorId": {
-            "type": "string"
+            "type": "string",
+            "description": "因子编号"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "名称"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "categoryL1": {
-            "type": "string"
+            "type": "string",
+            "description": "一级分类"
           },
           "categoryL2": {
-            "type": "string"
+            "type": "string",
+            "description": "二级分类"
           },
           "typeLabel": {
-            "type": "string"
+            "type": "string",
+            "description": "类型名称"
           },
           "followed": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否已关注"
           },
           "active": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否启用"
           },
           "dayChangePct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "当日涨跌幅"
           },
           "signalCount": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "信号数量"
           },
           "stageReturns": {
             "type": "object",
             "additionalProperties": {
               "type": "number",
               "format": "double"
-            }
+            },
+            "description": "阶段收益"
           },
           "equityCurve": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/NavPoint"
-            }
+            },
+            "description": "权益曲线"
           },
           "benchCurve": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/NavPoint"
-            }
+            },
+            "description": "基准净值"
           },
           "signals": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FactorSignalRow"
-            }
+            },
+            "description": "信号明细"
           },
           "industryDist": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DistItem"
-            }
+            },
+            "description": "行业分布"
           },
           "marketDist": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DistItem"
-            }
+            },
+            "description": "市场分布"
           }
         }
       },
@@ -1921,44 +2231,55 @@
         "type": "object",
         "properties": {
           "secCode": {
-            "type": "string"
+            "type": "string",
+            "description": "证券代码"
           },
           "secName": {
-            "type": "string"
+            "type": "string",
+            "description": "证券名称"
           },
           "lastPrice": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "最新价"
           },
           "changePct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "涨跌幅"
           },
           "amount": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "成交额"
           },
           "turnover": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "换手率"
           },
           "marketCap": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "总市值"
           },
           "pe": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "市盈率"
           },
           "volumeRatio": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "量比"
           },
           "industry": {
-            "type": "string"
+            "type": "string",
+            "description": "行业"
           },
           "market": {
-            "type": "string"
+            "type": "string",
+            "description": "市场"
           }
         }
       },
@@ -1966,20 +2287,29 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
-            "$ref": "#/components/schemas/FactorHover"
+            "description": "业务数据",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FactorHover"
+              }
+            ]
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -1987,30 +2317,37 @@
         "type": "object",
         "properties": {
           "factorId": {
-            "type": "string"
+            "type": "string",
+            "description": "因子编号"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "名称"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "signalCount": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "信号数量"
           },
           "dayChangePct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "当日涨跌幅"
           },
           "followed": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否已关注"
           },
           "leaders": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LeaderStock"
-            }
+            },
+            "description": "领涨股票"
           }
         }
       },
@@ -2018,14 +2355,17 @@
         "type": "object",
         "properties": {
           "secCode": {
-            "type": "string"
+            "type": "string",
+            "description": "证券代码"
           },
           "secName": {
-            "type": "string"
+            "type": "string",
+            "description": "证券名称"
           },
           "changePct": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "description": "涨跌幅"
           }
         }
       },
@@ -2033,26 +2373,33 @@
         "type": "object",
         "properties": {
           "strategyId": {
-            "type": "string"
+            "type": "string",
+            "description": "策略编号"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "名称"
           },
           "hangzhouName": {
-            "type": "string"
+            "type": "string",
+            "description": "展示名称"
           },
           "displayOrder": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "展示顺序"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "description": "状态"
           },
           "videoUrl": {
-            "type": "string"
+            "type": "string",
+            "description": "视频地址"
           },
           "videoCoverUrl": {
-            "type": "string"
+            "type": "string",
+            "description": "封面地址"
           }
         }
       },
@@ -2060,23 +2407,28 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AdminStrategyRow"
-            }
+            },
+            "description": "业务数据"
           },
           "timestamp": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "服务器时间，毫秒"
           }
         }
       },
@@ -2084,19 +2436,1709 @@
         "type": "object",
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "是否成功"
           },
           "code": {
-            "type": "string"
+            "type": "string",
+            "description": "业务状态码"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "说明"
           },
           "data": {
-            "type": "object"
+            "type": "object",
+            "description": "业务数据"
           },
           "timestamp": {
             "type": "integer",
+            "format": "int64",
+            "description": "服务器时间，毫秒"
+          }
+        }
+      },
+      "LabeledOption": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "选项编号"
+          },
+          "label": {
+            "type": "string",
+            "description": "显示名"
+          }
+        }
+      },
+      "YearPreset": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "选项编号"
+          },
+          "years": {
+            "type": "integer",
+            "description": "回看年数",
+            "format": "int32"
+          },
+          "label": {
+            "type": "string",
+            "description": "显示名"
+          }
+        }
+      },
+      "BenchmarkOption": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "指数代码"
+          },
+          "name": {
+            "type": "string",
+            "description": "指数名称"
+          }
+        }
+      },
+      "PositionModeOption": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "选项编号"
+          },
+          "label": {
+            "type": "string",
+            "description": "显示名"
+          },
+          "tip": {
+            "type": "string",
+            "description": "补充说明"
+          }
+        }
+      },
+      "ValueOption": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "description": "选项值"
+          },
+          "label": {
+            "type": "string",
+            "description": "显示名"
+          }
+        }
+      },
+      "EquityPoint": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "交易日"
+          },
+          "equity": {
+            "type": "number",
+            "description": "组合权益"
+          },
+          "benchmarkEquity": {
+            "type": "number",
+            "description": "对比指数权益"
+          },
+          "drawdown": {
+            "type": "number",
+            "description": "回撤，取正数"
+          }
+        }
+      },
+      "HoldingRow": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "证券代码"
+          },
+          "shares": {
+            "type": "number",
+            "description": "股数"
+          },
+          "cost": {
+            "type": "number",
+            "description": "成本价"
+          },
+          "price": {
+            "type": "number",
+            "description": "最新收盘价，没有行情时为 0"
+          },
+          "marketValue": {
+            "type": "number",
+            "description": "市值，股数乘以价格"
+          },
+          "holdDays": {
+            "type": "integer",
+            "description": "持有天数",
+            "format": "int32"
+          }
+        }
+      },
+      "TradeFill": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "序号，从 1 开始。含买入，所以条数不少于卖出笔数",
+            "format": "int32"
+          },
+          "code": {
+            "type": "string",
+            "description": "证券代码"
+          },
+          "side": {
+            "type": "string",
+            "description": "方向，BUY 或 SELL"
+          },
+          "date": {
+            "type": "string",
+            "description": "成交日"
+          },
+          "price": {
+            "type": "number",
+            "description": "成交价，已含成本"
+          },
+          "shares": {
+            "type": "number",
+            "description": "股数"
+          },
+          "amount": {
+            "type": "number",
+            "description": "成交金额"
+          },
+          "pnl": {
+            "type": "number",
+            "description": "盈亏金额。买入为 0"
+          },
+          "returnPct": {
+            "type": "number",
+            "description": "收益率。买入为 0"
+          },
+          "holdDays": {
+            "type": "integer",
+            "description": "持有天数。买入为 0",
+            "format": "int32"
+          }
+        }
+      },
+      "PortfolioRunData": {
+        "type": "object",
+        "description": "同步回测结果",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "description": "任务编号，pf_ 加 16 位十六进制"
+          },
+          "universeId": {
+            "type": "string",
+            "description": "股票池编号"
+          },
+          "benchmarkCode": {
+            "type": "string",
+            "description": "对比指数代码"
+          },
+          "candidateCount": {
+            "type": "integer",
+            "description": "候选股票数",
+            "format": "int32"
+          },
+          "tradingDays": {
+            "type": "integer",
+            "description": "交易日数",
+            "format": "int32"
+          },
+          "loadMs": {
+            "type": "integer",
+            "description": "装载耗时，毫秒",
+            "format": "int64"
+          },
+          "computeMs": {
+            "type": "integer",
+            "description": "计算耗时，毫秒",
+            "format": "int64"
+          },
+          "initialCash": {
+            "type": "number",
+            "description": "初始资金"
+          },
+          "finalEquity": {
+            "type": "number",
+            "description": "期末权益"
+          },
+          "totalReturn": {
+            "type": "number",
+            "description": "区间收益率，期末权益除以期初资金再减 1"
+          },
+          "benchmarkReturn": {
+            "type": "number",
+            "description": "对比指数收益率。指数缺失时按等权收盘"
+          },
+          "maxDrawdown": {
+            "type": "number",
+            "description": "最大回撤，取正数"
+          },
+          "annualizedReturn": {
+            "type": "number",
+            "description": "年化收益率。(1+区间收益) 的 252/交易日 次方，再减 1"
+          },
+          "sharpeRatio": {
+            "type": "number",
+            "description": "夏普比率。日收益扣除 0.02/252 后取均值，除以总体标准差，再乘以根号 252。不足两段时为 0"
+          },
+          "turnover": {
+            "type": "number",
+            "description": "日均单边换手。单边换手为权重变动绝对值之和的一半，含现金"
+          },
+          "tradeCount": {
+            "type": "integer",
+            "description": "完成卖出的笔数",
+            "format": "int32"
+          },
+          "winTrades": {
+            "type": "integer",
+            "description": "盈利卖出笔数",
+            "format": "int32"
+          },
+          "winRate": {
+            "type": "number",
+            "description": "胜率"
+          },
+          "holdingPeriodDays": {
+            "type": "integer",
+            "description": "配置的持股天数",
+            "format": "int32"
+          },
+          "avgTradeReturn": {
+            "type": "number",
+            "description": "平均单笔收益率"
+          },
+          "payoffRatio": {
+            "type": "number",
+            "description": "平均盈利除以平均亏损的绝对值"
+          },
+          "maxTradeReturn": {
+            "type": "number",
+            "description": "单笔最大收益率"
+          },
+          "minTradeReturn": {
+            "type": "number",
+            "description": "单笔最小收益率"
+          },
+          "rejectedBuys": {
+            "type": "integer",
+            "description": "拒绝买入次数",
+            "format": "int32"
+          },
+          "rejectedSells": {
+            "type": "integer",
+            "description": "拒绝卖出次数",
+            "format": "int32"
+          },
+          "equityCurve": {
+            "type": "array",
+            "description": "权益曲线",
+            "items": {
+              "$ref": "#/components/schemas/EquityPoint"
+            }
+          },
+          "trades": {
+            "type": "array",
+            "description": "成交明细",
+            "items": {
+              "$ref": "#/components/schemas/TradeFill"
+            }
+          },
+          "holdingsSnapshot": {
+            "type": "array",
+            "description": "期末持仓",
+            "items": {
+              "$ref": "#/components/schemas/HoldingRow"
+            }
+          },
+          "config": {
+            "description": "本次使用的交易配置",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioTradeConfig"
+              }
+            ]
+          }
+        }
+      },
+      "JobSummary": {
+        "type": "object",
+        "description": "写入任务表的结果摘要",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "结果类型，PORTFOLIO"
+          },
+          "strategyName": {
+            "type": "string",
+            "description": "策略名称，PORTFOLIO"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "标的，这里是股票池编号"
+          },
+          "dataSource": {
+            "type": "string",
+            "description": "数据来源说明"
+          },
+          "barCount": {
+            "type": "integer",
+            "description": "候选股票数",
+            "format": "int32"
+          },
+          "candidateCount": {
+            "type": "integer",
+            "description": "候选股票数",
+            "format": "int32"
+          },
+          "tradingDays": {
+            "type": "integer",
+            "description": "交易日数",
+            "format": "int32"
+          },
+          "tradeCount": {
+            "type": "integer",
+            "description": "完成卖出的笔数",
+            "format": "int32"
+          },
+          "initialCash": {
+            "type": "number",
+            "description": "初始资金"
+          },
+          "finalEquity": {
+            "type": "number",
+            "description": "期末权益"
+          },
+          "totalReturn": {
+            "type": "number",
+            "description": "区间收益率，期末权益除以期初资金再减 1"
+          },
+          "annualizedReturn": {
+            "type": "number",
+            "description": "年化收益率。(1+区间收益) 的 252/交易日 次方，再减 1"
+          },
+          "maxDrawdown": {
+            "type": "number",
+            "description": "最大回撤，取正数"
+          },
+          "sharpeRatio": {
+            "type": "number",
+            "description": "夏普比率。日收益扣除 0.02/252 后取均值，除以总体标准差，再乘以根号 252。不足两段时为 0"
+          },
+          "turnover": {
+            "type": "number",
+            "description": "日均单边换手。单边换手为权重变动绝对值之和的一半，含现金"
+          },
+          "winRate": {
+            "type": "number",
+            "description": "胜率"
+          },
+          "holdingPeriodDays": {
+            "type": "integer",
+            "description": "配置的持股天数",
+            "format": "int32"
+          },
+          "avgTradeReturn": {
+            "type": "number",
+            "description": "平均单笔收益率"
+          },
+          "payoffRatio": {
+            "type": "number",
+            "description": "平均盈利除以平均亏损的绝对值"
+          },
+          "maxTradeReturn": {
+            "type": "number",
+            "description": "单笔最大收益率"
+          },
+          "minTradeReturn": {
+            "type": "number",
+            "description": "单笔最小收益率"
+          },
+          "profitFactor": {
+            "type": "number",
+            "description": "盈利金额除以亏损金额绝对值。没有亏损时为 0"
+          },
+          "buyHoldReturn": {
+            "type": "number",
+            "description": "对比指数收益率"
+          },
+          "riskFreeRate": {
+            "type": "number",
+            "description": "无风险利率，固定 0.02"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "开始日期"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "结束日期"
+          },
+          "loadMs": {
+            "type": "integer",
+            "description": "装载耗时，毫秒",
+            "format": "int64"
+          },
+          "computeMs": {
+            "type": "integer",
+            "description": "计算耗时，毫秒",
+            "format": "int64"
+          },
+          "rejectedBuys": {
+            "type": "integer",
+            "description": "拒绝买入次数",
+            "format": "int32"
+          },
+          "rejectedSells": {
+            "type": "integer",
+            "description": "拒绝卖出次数",
+            "format": "int32"
+          },
+          "equityCurve": {
+            "type": "array",
+            "description": "权益曲线",
+            "items": {
+              "$ref": "#/components/schemas/EquityPoint"
+            }
+          },
+          "priceSeries": {
+            "type": "array",
+            "description": "价格序列",
+            "items": {
+              "type": "number"
+            }
+          },
+          "trades": {
+            "type": "array",
+            "description": "成交明细",
+            "items": {
+              "$ref": "#/components/schemas/TradeFill"
+            }
+          }
+        }
+      },
+      "StrategySnapshot": {
+        "type": "object",
+        "description": "已保存策略的最近一次结果",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "description": "开始日期"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "结束日期"
+          },
+          "benchmarkCode": {
+            "type": "string",
+            "description": "对比指数代码"
+          },
+          "candidateCount": {
+            "type": "integer",
+            "description": "候选股票数",
+            "format": "int32"
+          },
+          "tradingDays": {
+            "type": "integer",
+            "description": "交易日数",
+            "format": "int32"
+          },
+          "initialCash": {
+            "type": "number",
+            "description": "初始资金"
+          },
+          "finalEquity": {
+            "type": "number",
+            "description": "期末权益"
+          },
+          "totalReturn": {
+            "type": "number",
+            "description": "区间收益率，期末权益除以期初资金再减 1"
+          },
+          "benchmarkReturn": {
+            "type": "number",
+            "description": "对比指数收益率。指数缺失时按等权收盘"
+          },
+          "annualizedReturn": {
+            "type": "number",
+            "description": "年化收益率。(1+区间收益) 的 252/交易日 次方，再减 1"
+          },
+          "maxDrawdown": {
+            "type": "number",
+            "description": "最大回撤，取正数"
+          },
+          "sharpeRatio": {
+            "type": "number",
+            "description": "夏普比率。日收益扣除 0.02/252 后取均值，除以总体标准差，再乘以根号 252。不足两段时为 0"
+          },
+          "turnover": {
+            "type": "number",
+            "description": "日均单边换手。单边换手为权重变动绝对值之和的一半，含现金"
+          },
+          "tradeCount": {
+            "type": "integer",
+            "description": "完成卖出的笔数",
+            "format": "int32"
+          },
+          "winTrades": {
+            "type": "integer",
+            "description": "盈利卖出笔数",
+            "format": "int32"
+          },
+          "winRate": {
+            "type": "number",
+            "description": "胜率"
+          },
+          "holdingPeriodDays": {
+            "type": "integer",
+            "description": "配置的持股天数",
+            "format": "int32"
+          },
+          "avgTradeReturn": {
+            "type": "number",
+            "description": "平均单笔收益率"
+          },
+          "payoffRatio": {
+            "type": "number",
+            "description": "平均盈利除以平均亏损的绝对值"
+          },
+          "maxTradeReturn": {
+            "type": "number",
+            "description": "单笔最大收益率"
+          },
+          "minTradeReturn": {
+            "type": "number",
+            "description": "单笔最小收益率"
+          },
+          "rejectedBuys": {
+            "type": "integer",
+            "description": "拒绝买入次数",
+            "format": "int32"
+          },
+          "rejectedSells": {
+            "type": "integer",
+            "description": "拒绝卖出次数",
+            "format": "int32"
+          },
+          "loadMs": {
+            "type": "integer",
+            "description": "装载耗时，毫秒",
+            "format": "int64"
+          },
+          "computeMs": {
+            "type": "integer",
+            "description": "计算耗时，毫秒",
+            "format": "int64"
+          },
+          "equityCurve": {
+            "type": "array",
+            "description": "权益曲线",
+            "items": {
+              "$ref": "#/components/schemas/EquityPoint"
+            }
+          },
+          "holdings": {
+            "type": "array",
+            "description": "期末持仓",
+            "items": {
+              "$ref": "#/components/schemas/HoldingRow"
+            }
+          }
+        }
+      },
+      "SavedStrategy": {
+        "type": "object",
+        "description": "已保存的交易策略",
+        "properties": {
+          "strategyId": {
+            "type": "string",
+            "description": "策略编号"
+          },
+          "userId": {
+            "type": "string",
+            "description": "用户编号"
+          },
+          "name": {
+            "type": "string",
+            "description": "策略名称"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "lastRunAt": {
+            "type": "string",
+            "description": "最近回测时间"
+          },
+          "lastStatus": {
+            "type": "string",
+            "description": "最近回测状态"
+          },
+          "lastError": {
+            "type": "string",
+            "description": "最近失败原因"
+          },
+          "asOfDate": {
+            "type": "string",
+            "description": "结果截止日期"
+          },
+          "totalReturn": {
+            "type": "number",
+            "description": "区间收益率"
+          },
+          "annualizedReturn": {
+            "type": "number",
+            "description": "年化收益率"
+          },
+          "maxDrawdown": {
+            "type": "number",
+            "description": "最大回撤，取正数"
+          },
+          "sharpeRatio": {
+            "type": "number",
+            "description": "夏普比率"
+          },
+          "holdingCount": {
+            "type": "integer",
+            "description": "持仓只数",
+            "format": "int32"
+          },
+          "config": {
+            "description": "交易配置",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioTradeConfig"
+              }
+            ]
+          },
+          "configJson": {
+            "type": "string",
+            "description": "原始配置。配置无法解析时返回"
+          },
+          "result": {
+            "description": "最近一次回测结果",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StrategySnapshot"
+              }
+            ]
+          }
+        }
+      },
+      "PreviewRow": {
+        "type": "object",
+        "properties": {
+          "secCode": {
+            "type": "string",
+            "description": "证券代码"
+          },
+          "secName": {
+            "type": "string",
+            "description": "证券名称"
+          },
+          "lastPrice": {
+            "type": "number",
+            "description": "最新价"
+          },
+          "changePct": {
+            "type": "number",
+            "description": "涨跌幅"
+          }
+        }
+      },
+      "FactorPreview": {
+        "type": "object",
+        "description": "因子组合预览",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "入选股票数",
+            "format": "int32"
+          },
+          "asOf": {
+            "type": "string",
+            "description": "截止日期"
+          },
+          "combineMode": {
+            "type": "string",
+            "description": "交并集方式，INTERSECT 为交集，UNION 为并集"
+          },
+          "baseUniverseId": {
+            "type": "string",
+            "description": "基准股票池编号"
+          },
+          "factorCount": {
+            "type": "integer",
+            "description": "因子个数",
+            "format": "int32"
+          },
+          "codes": {
+            "type": "array",
+            "description": "入选代码",
+            "items": {
+              "type": "string"
+            }
+          },
+          "preview": {
+            "type": "array",
+            "description": "预览行",
+            "items": {
+              "$ref": "#/components/schemas/PreviewRow"
+            }
+          },
+          "hint": {
+            "type": "string",
+            "description": "补充说明"
+          }
+        }
+      },
+      "ComboSaved": {
+        "type": "object",
+        "properties": {
+          "comboId": {
+            "type": "string",
+            "description": "组合编号"
+          },
+          "name": {
+            "type": "string",
+            "description": "组合名称"
+          },
+          "config": {
+            "description": "因子组合",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FactorCombo"
+              }
+            ]
+          }
+        }
+      },
+      "SavedCombo": {
+        "type": "object",
+        "properties": {
+          "comboId": {
+            "type": "string",
+            "description": "组合编号"
+          },
+          "name": {
+            "type": "string",
+            "description": "组合名称"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "config": {
+            "description": "因子组合",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FactorCombo"
+              }
+            ]
+          }
+        }
+      },
+      "SectorRefresh": {
+        "type": "object",
+        "properties": {
+          "asOf": {
+            "type": "string",
+            "description": "截止日期"
+          },
+          "industries": {
+            "type": "integer",
+            "description": "行业数量",
+            "format": "int32"
+          },
+          "signalRows": {
+            "type": "integer",
+            "description": "信号行数",
+            "format": "int32"
+          },
+          "legacyAliased": {
+            "type": "integer",
+            "description": "旧别名数量",
+            "format": "int32"
+          },
+          "samples": {
+            "type": "array",
+            "description": "样例",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "source": {
+            "type": "string",
+            "description": "数据来源"
+          }
+        }
+      },
+      "HealthStatus": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "description": "是否正常"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          },
+          "mode": {
+            "type": "string",
+            "description": "运行模式"
+          },
+          "version": {
+            "type": "string",
+            "description": "版本"
+          },
+          "marketData": {
+            "type": "string",
+            "description": "行情来源"
+          },
+          "thsMode": {
+            "type": "string",
+            "description": "同花顺读取模式"
+          },
+          "thsEnabled": {
+            "type": "boolean",
+            "description": "同花顺数据源是否启用"
+          },
+          "appDbPersistence": {
+            "type": "boolean",
+            "description": "是否写入业务库"
+          },
+          "docs": {
+            "type": "string",
+            "description": "文档标识"
+          }
+        }
+      },
+      "ThsSourceStatus": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "schemaDocs": {
+            "type": "string",
+            "description": "行情库说明标识"
+          },
+          "readMode": {
+            "type": "string",
+            "description": "读取模式"
+          },
+          "writeDb": {
+            "type": "string",
+            "description": "写入库"
+          },
+          "writeSchemaDocs": {
+            "type": "string",
+            "description": "业务库说明标识"
+          },
+          "persistence": {
+            "type": "boolean",
+            "description": "是否持久化"
+          }
+        }
+      },
+      "CacheStats": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "缓存是否启用。未启用时只返回该字段"
+          },
+          "hits": {
+            "type": "integer",
+            "description": "命中次数",
+            "format": "int64"
+          },
+          "misses": {
+            "type": "integer",
+            "description": "未命中次数",
+            "format": "int64"
+          },
+          "localEntries": {
+            "type": "integer",
+            "description": "本地缓存条数",
+            "format": "int64"
+          },
+          "localBytesEstimate": {
+            "type": "integer",
+            "description": "本地缓存估算字节",
+            "format": "int64"
+          },
+          "redisConnected": {
+            "type": "boolean",
+            "description": "Redis 是否连通"
+          },
+          "redisWriteBytesAccum": {
+            "type": "integer",
+            "description": "Redis 累计写入字节",
+            "format": "int64"
+          },
+          "ttlHours": {
+            "type": "integer",
+            "description": "过期时间，小时",
+            "format": "int64"
+          }
+        }
+      },
+      "UniverseDetail": {
+        "type": "object",
+        "properties": {
+          "universeId": {
+            "type": "string",
+            "description": "股票池编号"
+          },
+          "path": {
+            "type": "string",
+            "description": "文件路径"
+          },
+          "count": {
+            "type": "integer",
+            "description": "股票只数",
+            "format": "int32"
+          },
+          "mtime": {
+            "type": "string",
+            "description": "修改时间"
+          },
+          "sample": {
+            "type": "array",
+            "description": "代码样例",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PanelItem": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "面板键"
+          },
+          "universeId": {
+            "type": "string",
+            "description": "股票池编号"
+          },
+          "from": {
+            "type": "string",
+            "description": "开始日期"
+          },
+          "to": {
+            "type": "string",
+            "description": "结束日期"
+          },
+          "loaded": {
+            "type": "integer",
+            "description": "成功装载的股票数",
+            "format": "int32"
+          },
+          "failed": {
+            "type": "integer",
+            "description": "装载失败的股票数",
+            "format": "int32"
+          },
+          "loadMs": {
+            "type": "integer",
+            "description": "装载耗时，毫秒",
+            "format": "int64"
+          },
+          "closeBytes": {
+            "type": "integer",
+            "description": "收盘价占用字节",
+            "format": "int64"
+          }
+        }
+      },
+      "MarketPanelStatus": {
+        "type": "object",
+        "properties": {
+          "panels": {
+            "type": "integer",
+            "description": "已预热面板个数",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "description": "面板明细",
+            "items": {
+              "$ref": "#/components/schemas/PanelItem"
+            }
+          }
+        }
+      },
+      "MarketWarmupResult": {
+        "type": "object",
+        "properties": {
+          "universeId": {
+            "type": "string",
+            "description": "股票池编号"
+          },
+          "from": {
+            "type": "string",
+            "description": "开始日期"
+          },
+          "to": {
+            "type": "string",
+            "description": "结束日期"
+          },
+          "requested": {
+            "type": "integer",
+            "description": "请求装载的股票数",
+            "format": "int32"
+          },
+          "loaded": {
+            "type": "integer",
+            "description": "成功装载的股票数",
+            "format": "int32"
+          },
+          "failed": {
+            "type": "integer",
+            "description": "装载失败的股票数",
+            "format": "int32"
+          },
+          "loadMs": {
+            "type": "integer",
+            "description": "装载耗时，毫秒",
+            "format": "int64"
+          },
+          "closeBytes": {
+            "type": "integer",
+            "description": "收盘价占用字节",
+            "format": "int64"
+          },
+          "hint": {
+            "type": "string",
+            "description": "补充说明"
+          }
+        }
+      },
+      "PortfolioMeta": {
+        "type": "object",
+        "description": "交易模型可选项和默认值",
+        "properties": {
+          "lookbackPresets": {
+            "type": "array",
+            "description": "回看年数选项",
+            "items": {
+              "$ref": "#/components/schemas/YearPreset"
+            }
+          },
+          "benchmarks": {
+            "type": "array",
+            "description": "对比指数选项",
+            "items": {
+              "$ref": "#/components/schemas/BenchmarkOption"
+            }
+          },
+          "buyTiming": {
+            "type": "array",
+            "description": "买入时机选项",
+            "items": {
+              "$ref": "#/components/schemas/LabeledOption"
+            }
+          },
+          "buyPriority": {
+            "type": "array",
+            "description": "买入排序选项",
+            "items": {
+              "$ref": "#/components/schemas/LabeledOption"
+            }
+          },
+          "buySignal": {
+            "type": "array",
+            "description": "买入信号选项",
+            "items": {
+              "$ref": "#/components/schemas/LabeledOption"
+            }
+          },
+          "sellSignal": {
+            "type": "array",
+            "description": "卖出信号选项",
+            "items": {
+              "$ref": "#/components/schemas/LabeledOption"
+            }
+          },
+          "positionMode": {
+            "type": "array",
+            "description": "仓位模式选项",
+            "items": {
+              "$ref": "#/components/schemas/PositionModeOption"
+            }
+          },
+          "rebalanceOptions": {
+            "type": "array",
+            "description": "再平衡选项",
+            "items": {
+              "$ref": "#/components/schemas/LabeledOption"
+            }
+          },
+          "positionRatioOptions": {
+            "type": "array",
+            "description": "仓位比例选项",
+            "items": {
+              "$ref": "#/components/schemas/ValueOption"
+            }
+          },
+          "maxStockWeightOptions": {
+            "type": "array",
+            "description": "单票权重上限选项",
+            "items": {
+              "type": "number"
+            }
+          },
+          "maxHoldingsOptions": {
+            "type": "array",
+            "description": "最大持仓数选项",
+            "items": {
+              "type": "number"
+            }
+          },
+          "maxDailyBuysOptions": {
+            "type": "array",
+            "description": "每日最多买入选项",
+            "items": {
+              "type": "number"
+            }
+          },
+          "momentumTopPctOptions": {
+            "type": "array",
+            "description": "动量截面比例选项",
+            "items": {
+              "$ref": "#/components/schemas/ValueOption"
+            }
+          },
+          "minFloatMktCapYiOptions": {
+            "type": "array",
+            "description": "最低流通市值选项，单位亿",
+            "items": {
+              "$ref": "#/components/schemas/ValueOption"
+            }
+          },
+          "maxSameIndustryOptions": {
+            "type": "array",
+            "description": "同行业持仓上限选项",
+            "items": {
+              "$ref": "#/components/schemas/ValueOption"
+            }
+          },
+          "executionNotes": {
+            "type": "array",
+            "description": "执行说明",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaults": {
+            "description": "默认交易配置",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioTradeConfig"
+              }
+            ]
+          }
+        }
+      },
+      "TradePage": {
+        "type": "object",
+        "description": "成交分页",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "description": "任务编号"
+          },
+          "total": {
+            "type": "integer",
+            "description": "成交总条数",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "本页条数",
+            "format": "int32"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "跳过条数，0 为最新成交",
+            "format": "int32"
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "是否还有下一页"
+          },
+          "trades": {
+            "type": "array",
+            "description": "本页成交",
+            "items": {
+              "$ref": "#/components/schemas/TradeFill"
+            }
+          }
+        }
+      },
+      "ApiResponsePortfolioRun": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "回测结果",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioRunData"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseTradePage": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "成交分页",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TradePage"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseFactorPreview": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "预览结果",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FactorPreview"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseComboSaved": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "已保存的组合",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ComboSaved"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseListSavedCombo": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "type": "array",
+            "description": "已保存的因子组合",
+            "items": {
+              "$ref": "#/components/schemas/SavedCombo"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseSectorRefresh": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "板块刷新结果",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SectorRefresh"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseHealth": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "健康状态",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HealthStatus"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseThsStatus": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "数据源状态",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ThsSourceStatus"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseCacheStats": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "缓存统计",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CacheStats"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseUniverseDetail": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "股票池详情",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UniverseDetail"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseMarketPanel": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "预热面板",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MarketPanelStatus"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseMarketWarmup": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "预热结果",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MarketWarmupResult"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponsePortfolioMeta": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "交易模型元数据",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PortfolioMeta"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseSavedStrategy": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "description": "策略",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SavedStrategy"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseListSavedStrategy": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "是否成功"
+          },
+          "code": {
+            "type": "string",
+            "description": "业务状态码"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "data": {
+            "type": "array",
+            "description": "已保存的策略",
+            "items": {
+              "$ref": "#/components/schemas/SavedStrategy"
+            }
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "服务器时间，毫秒",
             "format": "int64"
           }
         }
