@@ -251,7 +251,6 @@ TAG_LABELS = {
     "Universe Files": "股票池",
     "Portfolio Backtest": "组合回测",
     "Factor Combo": "因子组合",
-    "Product Quant UI": "产品",
 }
 
 
@@ -267,8 +266,27 @@ def _rename_wildcard_content(node: object) -> None:
             _rename_wildcard_content(item)
 
 
+def drop_product_ui(spec: dict) -> None:
+    """产品工作台接口不属于回测引擎，快照里若仍带该标签则丢掉。"""
+    spec["tags"] = [tag for tag in spec.get("tags") or [] if tag.get("name") != "Product Quant UI"]
+    paths = spec.get("paths") or {}
+    for path in list(paths):
+        item = paths[path]
+        if not isinstance(item, dict):
+            continue
+        for method in list(item):
+            if method.startswith(("x-", "$")):
+                continue
+            operation = item.get(method)
+            if isinstance(operation, dict) and "Product Quant UI" in (operation.get("tags") or []):
+                item.pop(method, None)
+        if not any(not method.startswith(("x-", "$")) for method in item):
+            paths.pop(path, None)
+
+
 def prepare_openapi(spec: dict) -> dict:
     """Docs-only adjustments. The exported snapshot stays the source of truth."""
+    drop_product_ui(spec)
     for tag in spec.get("tags", []):
         label = TAG_LABELS.get(tag.get("name"))
         if label:
