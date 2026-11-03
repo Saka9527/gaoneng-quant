@@ -215,7 +215,8 @@
         "tab": "调研",
         "icon": "telescope",
         "pages": [
-          "research/factor-decomposition"
+          "research/factor-decomposition",
+          "research/nl-factor"
         ]
       }
     ]
