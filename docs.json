@@ -212,7 +212,8 @@
         "icon": "telescope",
         "pages": [
           "research/factor-decomposition",
-          "research/nl-factor"
+          "research/nl-factor",
+          "research/ai-qa"
         ]
       }
     ]
