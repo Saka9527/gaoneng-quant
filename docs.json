@@ -196,9 +196,7 @@
             "pages": [
               "api/overview",
               "api/page-map",
-              "api/portfolio-meta",
-              "api/portfolio-output",
-              "api/factor-service"
+              "api/portfolio-meta"
             ]
           },
           {

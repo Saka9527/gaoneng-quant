@@ -38,7 +38,7 @@ description: "统一响应（回测服务）：{ \"success\", \"code\", \"messag
 | 右侧交易模型的枚举和默认值（均线、买入排序、卖出信号、仓位、过滤） | GET | `/api/v1/portfolio/meta` | 进入工作台。14 项买入排序、38 项卖出信号和涨跌停口径见 [组合回测枚举（GET /api/v1/portfolio/meta）](/api/portfolio-meta)。默认卖出 `MA_DEATH`，`excludeSt` 默认 false |
 | 预览选股 | POST | `/api/v1/product/factor-combo/preview` | 「预览选股」。只取各因子在 `gn_factor_signal` 里的最新一个信号日，不走选股服务 |
 | 保存动态组合 | POST | `/api/v1/product/factor-combo/save` | 「保存动态组合」 |
-| 回测 | POST | `/api/v1/portfolio/run` | 结果页在同一次请求里跑完。响应含净值曲线和全部成交，字段见 [组合回测输出结构](/api/portfolio-output) |
+| 回测 | POST | `/api/v1/portfolio/run` | 结果页在同一次请求里跑完。响应含净值曲线和全部成交，字段见 [同步组合回测](/api-reference/portfolio-backtest/run) |
 | 结果页打开已有任务 | GET | `/api/v1/portfolio/jobs/{jobId}` | 用 `jobId` 重新打开。本进程还留着报告时补净值曲线；成交另拉内存分页 |
 | 成交明细翻页 | GET | `/api/v1/portfolio/jobs/{jobId}/trades` | 结果页表格，每页 50 条。成交只在跑任务的那台进程内存里 |
 | 保存策略 | POST | `/api/v1/portfolio/strategies` | 工作台「保存策略」。立刻按回看年数回测到今天，写入收益和持仓 |
@@ -71,13 +71,13 @@ description: "统一响应（回测服务）：{ \"success\", \"code\", \"messag
 
 ## 4. 选股服务（8081，页面不直接调用）
 
-字段和错误码见 [选股服务（8081）](/api/factor-service)。
+字段和错误码在选股成分服务的接口页：[每日成分](/api-reference/constituents/constituents)、[快照状态](/api-reference/constituents/membership-status)、[重建快照](/api-reference/constituents/membership-rebuild)。
 
 | 方法 | 路径 | 谁调用 | 作用 |
 |------|------|--------|------|
 | POST | `/api/v1/constituents` | 回测进程 | 按 `from` / `to` 和因子组合返回每日成分。数据来自本机 `membership.bin` 装进内存后的交并 |
 | GET | `/api/v1/membership/status` | 运维 | 快照是否就绪、因子数、行数、日期范围、文件路径 |
-| POST | `/api/v1/membership/rebuild` | 运维 | 用 `gn_factor_signal` 重写快照。这会覆盖预热算出来的三年成分。字段说明见 [选股服务（8081）](/api/factor-service) |
+| POST | `/api/v1/membership/rebuild` | 运维 | 用 `gn_factor_signal` 重写快照。这会覆盖预热算出来的三年成分。字段说明见 [重建快照](/api-reference/constituents/membership-rebuild) |
 
 ---
 
@@ -89,8 +89,8 @@ description: "统一响应（回测服务）：{ \"success\", \"code\", \"messag
 | 2026-10-13 | `GET /api/v1/portfolio/meta` 的 `buyPriority` 扩展为图中的买入排序。路径不变。总市值、市盈率、市净率本地行情没有对应列。 |
 | 2026-10-13 | `GET /api/v1/portfolio/meta` 的 `sellSignal` 扩展为图中的指标卖出。路径不变。默认仍是 `MA_DEATH`。 |
 | 2026-10-14 | 路径不变。`excludeSt` 默认改为 false。缺涨跌停价时的板幅改为按板块日期和 `st_hat` 区间，不再统一 10% 或 20%。 |
-| 2026-10-14 | 枚举明细写到 [组合回测枚举](/api/portfolio-meta)，选股服务字段写到 [选股服务](/api/factor-service)。路径个数不变。 |
-| 2026-10-14 | 回测输出字段写到 [组合回测输出结构](/api/portfolio-output)：首屏、`result_json`、成交分页。路径不变。 |
+| 2026-10-14 | 枚举明细写到组合回测枚举，选股服务字段写到成分接口。路径个数不变。 |
+| 2026-10-14 | 回测输出字段写到同步回测、任务查询和成交分页：首屏、`result_json`、成交分页。路径不变。 |
 | 2026-10-14 | 产品页回测一律 `POST /portfolio/run`。`/submit` 改为同步，页面不再调用。成交只读进程内存。 |
 | 2026-10-15 | 去掉因子字典、策略榜单、策略广场、定制策略、我的策略、个人中心、策略后台。页面只留量化工作台。回测服务 JSON 接口 36 → 23，产品页直接调用 21 → 9。 |
 | 2026-10-22 | 成交明细分页默认 `limit` 从 20 改为 50。路径不变，上限仍是 2000。 |

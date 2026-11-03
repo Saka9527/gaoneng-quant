@@ -214,7 +214,8 @@
             "title": "异步提交组合回测；轮询 GET /jobs/{jobId}",
             "sidebarTitle": "异步提交组合回测；轮询 GET /jobs/{jobId}"
           }
-        }
+        },
+        "description": "在当前请求里跑完，响应是任务视图，不是 `POST /run` 的完整结果。\n\n| 字段 | 说明 |\n| --- | --- |\n| `jobId` | 任务 ID |\n| `status` | `PENDING` / `RUNNING` / `SUCCESS` / `FAILED` |\n| `clientRequestId` | 当前写的是 `portfolio-ui` |\n| `createdAt` / `finishedAt` | epoch 毫秒 |\n| `error` | 失败原因 |\n| `stage` | 成功为 `DONE`，失败为 `FAILED` |\n| `progressPct` | 0–100 |\n| `result` | 成功时为写入 `bt_job.result_json` 的摘要。字段与 [查询组合回测任务](/api-reference/portfolio-backtest/job) 的 `result` 相同 |\n\n本进程还留着这份报告时，`result.equityCurve` 会被补成完整曲线，并加上 `hasFullReport: true`。"
       }
     },
     "/api/v1/portfolio/strategies": {
@@ -316,7 +317,8 @@
             "title": "同步组合回测；摘要写入 bt_job，响应含全部成交，成交不落库",
             "sidebarTitle": "同步组合回测；摘要写入 bt_job，响应含全部成交，成交不落库"
           }
-        }
+        },
+        "description": "同步跑完后，完整结果在 `data` 里。`trades` 含买入和卖出，按发生顺序排列。写入 `bt_job.result_json` 的是摘要，曲线和成交都是空数组；重新打开任务时从 [查询组合回测任务](/api-reference/portfolio-backtest/job) 的 `result` 读取。\n\n每个数的公式见 [指标、买卖点与回测结果](/backtest/signals) 第 9 节。\n\n| 字段 | 类型 | 说明 |\n| --- | --- | --- |\n| `jobId` | string | `pf_` 加 16 位十六进制 |\n| `universeId` | string | 股票池 |\n| `benchmarkCode` | string | 对比指数 |\n| `candidateCount` | int | 实际载入的股票数 |\n| `tradingDays` | int | 净值点数，按交易日 |\n| `loadMs` / `computeMs` | long | 加载、撮合耗时，毫秒 |\n| `initialCash` | double | 初始资金 |\n| `finalEquity` | double | 期末权益 |\n| `totalReturn` | double | `finalEquity / initialCash - 1` |\n| `benchmarkReturn` | double | 对比指数同期收益。指数加载失败时用候选股等权收盘代替 |\n| `maxDrawdown` | double | 权益相对历史峰值的最大回撤，正数 |\n| `annualizedReturn` | double | `(1 + totalReturn) ^ (252 / 交易日) - 1` |\n| `sharpeRatio` | double | (日收益 − 0.02/252) 的均值 / 总体标准差 × √252。有效收益少于 2 段时为 0 |\n| `turnover` | double | 各净值日单边换手的平均。单边换手为 0.5 乘以权重绝对变化之和，权重含现金 |\n| `tradeCount` | int | 完成的卖出笔数，不含买入 |\n| `winTrades` | int | 卖出且 `pnl > 0` 的笔数 |\n| `winRate` | double | `winTrades / tradeCount`，`tradeCount` 为 0 时为 0 |\n| `holdingPeriodDays` | int | 配置的持股天数 |\n| `avgTradeReturn` | double | 卖出 `returnPct` 的平均，没有卖出时为 0 |\n| `payoffRatio` | double | 盈利卖出平均收益率 / 亏损卖出平均收益率的绝对值。没有亏损时为 0。与 `profitFactor` 不是同一个数 |\n| `maxTradeReturn` / `minTradeReturn` | double | 卖出 `returnPct` 的最大、最小。没有卖出时为 0 |\n| `rejectedBuys` / `rejectedSells` | int | 涨跌停或停牌导致未成交的次数 |\n| `equityCurve` | array | 每个交易日一条 |\n| `trades` | array | 全部成交，按发生顺序，`index` 从 1 递增。笔数不少于 `tradeCount`，因为含买入 |\n| `holdingsSnapshot` | array | 期末仍持有的仓位 |\n| `config` | object | 归一化后的交易配置 |\n\n`equityCurve[]`：\n\n| 字段 | 说明 |\n| --- | --- |\n| `date` | `YYYY-MM-DD` |\n| `equity` | 当日收盘后权益 |\n| `benchmarkEquity` | 对比曲线，起点对齐初始资金 |\n| `drawdown` | 当日回撤 |\n\n`holdingsSnapshot[]`：\n\n| 字段 | 说明 |\n| --- | --- |\n| `code` | 证券代码 |\n| `shares` | 股数 |\n| `cost` | 持仓成本金额 |\n| `price` | 最后一根 K 线收盘价，缺失为 0 |\n| `marketValue` | `shares * price` |\n| `holdDays` | 已持有天数 |\n\n`trades[]`：\n\n| 字段 | 说明 |\n| --- | --- |\n| `index` | 成交序号，从 1 起，按发生顺序 |\n| `code` | 证券代码 |\n| `side` | `BUY` / `SELL` |\n| `date` | `YYYY-MM-DD`，成交日 |\n| `price` | 含成本后的成交价 |\n| `shares` | 股数 |\n| `amount` | 成交金额 |\n| `pnl` | 卖出盈亏。买入为 0 |\n| `returnPct` | 卖出收益率。买入为 0 |\n| `holdDays` | 卖出时的持有天数。买入为 0 |"
       }
     },
     "/api/v1/universe": {
@@ -665,7 +667,8 @@
             "title": "查询组合回测任务（含异步进度 stage/progressPct）",
             "sidebarTitle": "查询组合回测任务（含异步进度 stage/progressPct）"
           }
-        }
+        },
+        "description": "外层是任务视图，不是 `POST /run` 的完整报告。\n\n| 字段 | 说明 |\n| --- | --- |\n| `jobId` | 任务 ID |\n| `status` | `PENDING` / `RUNNING` / `SUCCESS` / `FAILED` |\n| `clientRequestId` | 当前写的是 `portfolio-ui` |\n| `createdAt` / `finishedAt` | epoch 毫秒 |\n| `error` | 失败原因 |\n| `stage` | 成功为 `DONE`，失败为 `FAILED` |\n| `progressPct` | 0–100 |\n| `result` | 成功时为写入 `bt_job.result_json` 的摘要 |\n\n`result` 字段：\n\n| 字段 | 说明 |\n| --- | --- |\n| `type` | 固定 `PORTFOLIO` |\n| `strategyName` | 固定 `PORTFOLIO` |\n| `symbol` | 等于 `universeId` |\n| `dataSource` | `组合回测·股票池 {universeId}` |\n| `barCount` | 等于股票数 `candidateCount`，不是 K 线根数 |\n| `candidateCount` | 股票数 |\n| `tradingDays` | 交易日数 |\n| `tradeCount` | 完成的卖出笔数 |\n| `initialCash` / `finalEquity` | 初始资金、期末权益 |\n| `totalReturn` / `annualizedReturn` / `maxDrawdown` | 与 [同步组合回测](/api-reference/portfolio-backtest/run) 的 `data` 相同 |\n| `sharpeRatio` / `turnover` | 与首屏相同 |\n| `winRate` | `winTrades / tradeCount`。分母是完成的卖出笔数，`tradeCount` 为 0 时写 0 |\n| `holdingPeriodDays` | 配置的持股天数 |\n| `avgTradeReturn` | 卖出收益率平均 |\n| `payoffRatio` | 盈亏比：盈利卖出平均收益率 / 亏损卖出平均收益率的绝对值 |\n| `maxTradeReturn` / `minTradeReturn` | 卖出收益率的最大、最小 |\n| `profitFactor` | 卖出盈利金额合计 / 亏损金额绝对值。没有亏损时写 0 |\n| `buyHoldReturn` | 写入的是 `benchmarkReturn` |\n| `riskFreeRate` | 固定 `0.02`。Sharpe 计算没有用这个数 |\n| `startDate` / `endDate` | 请求里的日期，缺省时可能为空 |\n| `loadMs` / `computeMs` | 毫秒 |\n| `rejectedBuys` / `rejectedSells` | 拒单次数 |\n| `equityCurve` / `priceSeries` / `trades` | 固定空数组 |\n\n本进程还留着这份报告时，`result.equityCurve` 会被补成完整曲线，并加上 `hasFullReport: true`。进程重启后只剩库里的空曲线。成交分页见 [分页查询成交明细](/api-reference/portfolio-backtest/trades)。"
       }
     },
     "/api/v1/portfolio/jobs/{jobId}/trades": {
@@ -723,7 +726,8 @@
             "title": "分页查询成交明细（只读本次进程内存）",
             "sidebarTitle": "分页查询成交明细（只读本次进程内存）"
           }
-        }
+        },
+        "description": "`limit` 默认 50，最大 2000。按成交时间倒序，`offset = 0` 是最新一笔。数据来自本进程内存。\n\n| 字段 | 说明 |\n| --- | --- |\n| `jobId` | 任务 ID |\n| `total` | 总笔数 |\n| `limit` / `offset` | 分页 |\n| `hasMore` | 后面是否还有 |\n| `trades` | 本页成交 |\n\n`trades[]`：\n\n| 字段 | 说明 |\n| --- | --- |\n| `index` | 成交序号，从 1 起，按发生顺序 |\n| `code` | 证券代码 |\n| `side` | `BUY` / `SELL` |\n| `date` | `YYYY-MM-DD`，成交日 |\n| `price` | 含成本后的成交价 |\n| `shares` | 股数 |\n| `amount` | 成交金额 |\n| `pnl` | 卖出盈亏。买入为 0 |\n| `returnPct` | 卖出收益率。买入为 0 |\n| `holdDays` | 卖出时的持有天数。买入为 0 |\n\n内存里没有这份报告时，这一页是空的。进程重启后历史任务的成交不可再翻。同一笔回测在 [同步组合回测](/api-reference/portfolio-backtest/run) 的响应里会一次返回全部成交。"
       }
     },
     "/api/v1/health": {

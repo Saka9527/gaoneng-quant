@@ -29,8 +29,6 @@ SPECIAL = {
     "api/README.md": "api/overview.mdx",
     "api/page-api-map.md": "api/page-map.mdx",
     "api/portfolio-meta.md": "api/portfolio-meta.mdx",
-    "api/portfolio-output.md": "api/portfolio-output.mdx",
-    "api/factor-service.md": "api/factor-service.mdx",
     "product/factors/README.md": "factor/formulas.mdx",
     "product/factors/01-上升通道.md": "factor/rising-channel.mdx",
     "product/factors/02-回踩辅助线.md": "factor/pullback.mdx",
@@ -55,8 +53,6 @@ SIDEBAR = {
     "api/overview.mdx": "总览",
     "api/page-map.mdx": "对照",
     "api/portfolio-meta.mdx": "枚举",
-    "api/portfolio-output.mdx": "输出",
-    "api/factor-service.mdx": "选股",
     "factor/formulas.mdx": "总览",
     "factor/rising-channel.mdx": "上升通道",
     "factor/pullback.mdx": "回踩",
@@ -110,7 +106,7 @@ def build_dest_map(src_root: Path) -> dict[str, str]:
 def rewrite_links(text: str, src_file: Path, src_root: Path, dest_map: dict[str, str]) -> str:
     def replace(match: re.Match[str]) -> str:
         label, href = match.group(1), match.group(2).strip()
-        if href.startswith(("http://", "https://", "mailto:")):
+        if href.startswith(("http://", "https://", "mailto:", "/")):
             return match.group(0)
         path_part, _, anchor = href.partition("#")
         if not path_part:
@@ -471,8 +467,6 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                                 "api/overview",
                                 "api/page-map",
                                 "api/portfolio-meta",
-                                "api/portfolio-output",
-                                "api/factor-service",
                             ],
                         },
                         {
