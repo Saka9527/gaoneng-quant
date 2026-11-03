@@ -467,6 +467,11 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                         },
                     ],
                 },
+                {
+                    "tab": "调研",
+                    "icon": "telescope",
+                    "pages": ["research/factor-decomposition"],
+                },
             ]
         },
     }

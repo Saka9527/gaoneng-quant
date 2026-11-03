@@ -210,6 +210,13 @@
             "openapi": "api/factor-service.openapi.json"
           }
         ]
+      },
+      {
+        "tab": "调研",
+        "icon": "telescope",
+        "pages": [
+          "research/factor-decomposition"
+        ]
       }
     ]
   }
