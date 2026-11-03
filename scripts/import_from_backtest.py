@@ -26,8 +26,6 @@ SPECIAL = {
     "duckdb/README.md": "data/duckdb.mdx",
     "gngltdb/README.md": "data/gngltdb/index.mdx",
     "ths-db/README.md": "data/ths/index.mdx",
-    "api/README.md": "api/overview.mdx",
-    "api/page-api-map.md": "api/page-map.mdx",
     "api/portfolio-meta.md": "api/portfolio-meta.mdx",
     "product/factors/README.md": "factor/formulas.mdx",
     "product/factors/01-上升通道.md": "factor/rising-channel.mdx",
@@ -50,8 +48,6 @@ SIDEBAR = {
     "data/mirror.mdx": "镜像",
     "data/gngltdb/index.mdx": "概览",
     "data/ths/index.mdx": "概览",
-    "api/overview.mdx": "总览",
-    "api/page-map.mdx": "对照",
     "api/portfolio-meta.mdx": "枚举",
     "factor/formulas.mdx": "总览",
     "factor/rising-channel.mdx": "上升通道",
@@ -224,15 +220,19 @@ def write_ported(src_root: Path, dest_map: dict[str, str]) -> None:
         title, body = split_title(raw, Path(rel).stem)
         body = rewrite_links(body, source, src_root, dest_map)
         body = escape_mdx(body)
-        description = description_from(body, title)
-        body, description = strip_repeated_description(body, description)
+        if dest_rel == "api/portfolio-meta.mdx":
+            description = ""
+        else:
+            description = description_from(body, title)
+            body, description = strip_repeated_description(body, description)
         sidebar = SIDEBAR.get(dest_rel)
         sidebar_line = f"sidebarTitle: {yaml_quote(sidebar)}\n" if sidebar else ""
+        description_line = f"description: {yaml_quote(description)}\n" if description else ""
         page = (
             "---\n"
             f"title: {yaml_quote(title)}\n"
             f"{sidebar_line}"
-            f"description: {yaml_quote(description)}\n"
+            f"{description_line}"
             "---\n\n"
             f"{body}"
         )
@@ -464,8 +464,6 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                         {
                             "group": nest,
                             "pages": [
-                                "api/overview",
-                                "api/page-map",
                                 "api/portfolio-meta",
                             ],
                         },

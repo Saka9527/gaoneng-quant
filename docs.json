@@ -194,8 +194,6 @@
           {
             "group": " ",
             "pages": [
-              "api/overview",
-              "api/page-map",
               "api/portfolio-meta"
             ]
           },

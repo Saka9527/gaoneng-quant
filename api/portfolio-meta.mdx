@@ -1,14 +1,7 @@
 ---
-title: "组合回测枚举（`GET /api/v1/portfolio/meta`）"
+title: "枚举"
 sidebarTitle: "枚举"
-description: "OpenAPI 快照只描述字段类型。买入排序和卖出信号的可选项以这个接口的 data.buyPriority、data.sellSignal 为准。"
 ---
-
-默认值和下拉项存在业务库表 `bt_trade_model`。服务启动时读进内存；表是空的才写入下面这套内置值，之后改表再重启即可，不会覆盖已改过的行。表里只保存当前选中的编号。
-
-内置默认（首次装库）：买入 `CHANGE_DESC`，卖出 `MA_DEATH`，`sellOnIndicator` true，`excludeSt` false，`limitRules` true，对比指数 `000300`。`scope=default` 的 `item_key` 是参数名，`item_value` 是默认值。其它 `scope` 是下拉分组。
-
-未知卖出 id 回落到 `MA_DEATH`。未知买入排序回落到 `CHANGE_DESC`。
 
 ## 买入排序 `buyPriority`（14）
 
