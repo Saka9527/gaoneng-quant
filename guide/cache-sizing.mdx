@@ -1,6 +1,6 @@
 ---
 title: "行情缓存容量评估（Caffeine + 本地 Redis）"
-sidebarTitle: "容量"
+sidebarTitle: "缓存容量"
 description: "运行中全部缓存的结构和占用见 运行时缓存清单。本文只测算日 K 这一层的 JSON / Redis 体积。"
 ---
 
@@ -22,25 +22,6 @@ description: "运行中全部缓存的结构和占用见 运行时缓存清单�
 | 工作台常用 | 200 | ~20 MB | 够用 |
 | 全 A 预热日线 | ~5000 | ~400–500 MB | 建议 `maxmemory 1gb` + `allkeys-lru` |
 | 全 A × 8 年 | ~5000 | ~1.1–1.4 GB | 需扩内存或缩短 TTL/区间 |
-
-当前配置：
-
-- 本地 Caffeine：最多 256 条，约 256 × 100KB ≈ **25 MB** 上限
-- Redis TTL：24h
-- 本机 Redis（Windows 服务，默认无 maxmemory 限制）：**个人/联调完全够用**
-
-## 结论
-
-- **现在本地 Redis 够用**：回测工作台级缓存（几十～几百标的）只需几十 MB。
-- 只有「全市场预热长历史」才需要到 GB 级；那时再调 `maxmemory` 或改物化到 MySQL。
-
-## 运维
-
-```bat
-rem 服务默认已安装并自启（C:\Program Files\Redis）
-redis-cli ping
-redis-cli INFO memory
-```
 
 应用配置见 `application.yml` → `spring.data.redis` / `quant.cache.*`。  
 统计接口：`GET /api/v1/cache/stats`。  

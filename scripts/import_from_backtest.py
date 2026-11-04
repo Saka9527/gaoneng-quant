@@ -41,7 +41,7 @@ SIDEBAR = {
     "backtest/signals.mdx": "买卖点",
     "guide/tech-design.mdx": "方案",
     "guide/deploy.mdx": "部署",
-    "guide/cache-sizing.mdx": "容量",
+    "guide/cache-sizing.mdx": "缓存容量",
     "guide/cache-inventory.mdx": "清单",
     "data/tables.mdx": "总览",
     "data/duckdb.mdx": "本地库",
