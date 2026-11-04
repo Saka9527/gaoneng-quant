@@ -77,10 +77,6 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
 
 核心关系：`gn_user` 一对多拥有回测任务、已保存策略和因子组合。`gn_factor_combo` / `bt_portfolio_strategy` 存 JSON 配置（可含 `factorCombo`）。`bt_job` 只存任务摘要。逻辑外键，应用层维护。
 
-<Frame caption="产品域策略表 + 行情镜像辅助表">
-  <img src="/images/tech/datasource.svg" alt="产品域与行情镜像" />
-</Frame>
-
 ---
 
 ## 5. 回测主链路
@@ -90,11 +86,6 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
 点击节点，或用上一步 / 下一步，沿同步回测路径查看每一步。可以拖动画布。
 
 <BacktestFlow />
-
-1. 工作台配置 → `collectPortfolioConfig()` → `#/backtest/result`
-2. `POST /api/v1/portfolio/run`，在当前请求里跑完
-3. 首屏：指标 + 净值曲线。`/run` 同时返回全部成交
-4. 结果页表格仍按 `GET /jobs/{id}/trades?limit=50&offset=` 从本进程内存分页
 
 ### 5.2 引擎口径（撮合）
 
@@ -134,14 +125,10 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
 |------|------|
 | 组合 | 最多 10 因子；AND（交集）/ OR（并集） |
 | 条件 | HIT / LT / GT / BETWEEN / PERCENTILE（相对 `gn_factor_signal`） |
-| API | `POST .../factor-combo/preview|save`；回测体带 `factorCombo` |
-| 板块 | 从 `lm_ths_db.stk_corp_ic` 写入信号；概念成分对齐待补 |
 
 ---
 
 ## 6. 绩效指标
-
-**选股回测结果为真实计算**（非演示写死）。
 
 | 指标 | 口径摘要 |
 |------|----------|
@@ -151,8 +138,6 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
 | Sharpe | 日收益均值/标准差 × √252（rf=0；总体方差） |
 | 换手 | 双边成交额 / (初始资金 × 交易日)，**近似密度** |
 | 成交/拒单 | 撮合计数 |
-
-公式为项目自研，**未接入** ta4j Criteria / empyrical 等库。若需对齐外部研报，应先冻结口径再对账或引入对照脚本。
 
 ---
 
@@ -164,8 +149,6 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
 | 进程 `reportCache` | 净值曲线、逐笔成交、期末持仓。成交分页读这里 |
 | `bt_portfolio_strategy` | 用户保存的交易配置 |
 | `gn_factor` / `gn_factor_signal` / `gn_factor_combo` | 因子与组合 |
-
-**响应瘦身**：`/run` 与任务 SUCCESS 视图不返回全量 `trades`；前端默认拉 20 条再懒加载，降低首屏耗时。
 
 ---
 
@@ -182,8 +165,6 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
 | 组合 | GET | `/api/v1/portfolio/jobs/{id}/trades` | 成交分页，默认 limit=50 |
 | 因子组合 | POST | `/api/v1/product/factor-combo/*` | 预览/保存/刷新板块 |
 | 股票池 | POST | `/api/v1/universe/market-warmup` | 预热 Panel |
-
-完整集合：`api/apipost.collection.json`（`api/apipost.collection.json`）、Swagger `/swagger-ui.html`。
 
 ---
 
