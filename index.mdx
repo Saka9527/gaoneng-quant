@@ -21,24 +21,3 @@ description: "高能量化回测服务的因子、回测、数据和 API 文档�
     因子拆解、自然语言因子，以及 AI 问答与优化。
   </Card>
 </Columns>
-
-## 系统里有什么
-
-| 部分 | 职责 |
-| --- | --- |
-| `java-quant-backtest` :8080 | 产品页、组合回测、任务摘要 |
-| `factor-service` :8081 | 按区间返回每日选股成分 |
-| `data/market.duckdb` | 回测实际读取的日 K、复权、涨跌停、停牌、ST |
-| `gngltdb` | 可写业务表，以及同花顺行情的精简镜像 |
-| `lm_ths_db` | 同花顺源库。`quant.ths.mode=ths` 时直接读 |
-
-本服务负责行情读取、回测计算、结果摘要和产品壳。交易、账户和完整终端 UI 在桌面客户端。
-
-## 阅读顺序
-
-<Steps>
-  <Step title="启动服务">按 [快速开始](/quickstart) 把 8080 跑起来。</Step>
-  <Step title="看因子怎么定义">从 [因子研究简介](/factor/overview) 进入，公式细节在六条选股页。</Step>
-  <Step title="看一次回测怎么走">[回测流程](/backtest/flow) 写产品路径，[指标与买卖点](/backtest/signals) 写计算公式。</Step>
-  <Step title="查表和接口">[三套库](/data/tables) 与 [枚举](/api/portfolio-meta)。</Step>
-</Steps>
