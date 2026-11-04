@@ -2,28 +2,56 @@ direction: down
 
 owners: "" {
   direction: down
-  user: "用户"
-  jobs: "回测任务"
-  strategy: "已保存策略"
-  combo: "因子组合"
-  user -> jobs: 一对多
-  user -> strategy: 一对多
-  user -> combo: 一对多
-  strategy -> combo: 配置可引用 {style.stroke-dash: 4}
+  用户: {
+    shape: sql_table
+    user_id: varchar {constraint: primary_key}
+    display_name: varchar
+    created_at: datetime
+  }
+  回测任务: {
+    shape: sql_table
+    job_id: varchar {constraint: primary_key}
+    user_id: varchar
+    status: varchar
+    dataset_id: varchar
+    strategy: varchar
+    request_json: mediumtext
+    result_json: longtext
+    created_at: bigint
+    finished_at: bigint
+  }
+  已保存策略: {
+    shape: sql_table
+    strategy_id: varchar {constraint: primary_key}
+    user_id: varchar
+    name: varchar
+    config_json: mediumtext
+    last_status: varchar
+    total_return: double
+    max_drawdown: double
+    sharpe_ratio: double
+    holding_count: int
+    result_json: longtext
+  }
+  因子组合: {
+    shape: sql_table
+    combo_id: varchar {constraint: primary_key}
+    user_id: varchar
+    name: varchar
+    config_json: mediumtext
+    created_at: datetime
+  }
+  用户 -> 回测任务: 一对多
+  用户 -> 已保存策略: 一对多
+  用户 -> 因子组合: 一对多
+  已保存策略 -> 因子组合: 配置可引用 {style.stroke-dash: 4}
 }
 
-factors: "" {
-  direction: right
-  factor: "因子词典"
-  signal: "因子信号"
-  factor -> signal: 一对多
-}
-
-factors -> note: "" {
+owners -> note: "" {
   style.opacity: 0
 }
 
-note: "逻辑外键由应用层维护\n净值、成交、持仓在进程内存" {
+note: "逻辑外键由应用层维护 · 净值、成交、持仓在进程内存" {
   shape: text
   style.font-size: 14
 }
