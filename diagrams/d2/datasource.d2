@@ -1,0 +1,38 @@
+direction: down
+
+product: 产品域 {
+  direction: down
+  strategy: "策略榜单表 gn_strategy\n主键：策略ID\n名称 / 简介 / 展示收益 / 上下架"
+  nav: "策略净值曲线表 gn_strategy_nav\n外键：策略榜单\n交易日 / 净值 / 对比基准净值"
+  position: "策略持仓表 gn_strategy_position\n外键：策略榜单\n持仓日期 / 代码 / 权重"
+  follow: "用户关注表 gn_user_follow\n用户ID\n关注因子或策略 / 目标ID" {
+    style.fill: "#172554"
+    style.stroke: "#60a5fa"
+  }
+  strategy -> nav: 一对多
+  strategy -> position: 一对多
+}
+
+mirror: "行情镜像辅助表 · MarketContext" {
+  direction: down
+  row1: "" {
+    direction: right
+    limit: "涨跌停价表\nbt_limit_price"
+    st: "ST 区间表\nbt_st_hat"
+    suspend: "停牌表\nbt_suspend"
+  }
+  row2: "" {
+    direction: right
+    share: "流通股本表\nbt_float_share"
+    calendar: "交易日历表\nbt_trade_calendar"
+    industry: "申万行业表\nbt_industry"
+  }
+}
+
+product -> mirror: "" {style.opacity: 0}
+mirror -> note: "" {style.opacity: 0}
+
+note: "策略榜单净值当前可为演示数据\n选股回测绩效由组合引擎真实计算" {
+  shape: text
+  style.font-size: 16
+}

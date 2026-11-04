@@ -1,0 +1,69 @@
+direction: down
+
+owners: "" {
+  direction: down
+  user: gn_user {
+    shape: sql_table
+    含义: 用户
+    用户ID: string {constraint: primary_key}
+    显示名: string
+  }
+  jobs: bt_job {
+    shape: sql_table
+    含义: 回测任务
+    任务ID: string {constraint: primary_key}
+    用户: string {constraint: foreign_key}
+    状态: string
+    结果摘要: json
+  }
+  strategy: bt_portfolio_strategy {
+    shape: sql_table
+    含义: 已保存策略
+    策略ID: string {constraint: primary_key}
+    用户: string {constraint: foreign_key}
+    名称: string
+    配置JSON: json
+  }
+  combo: gn_factor_combo {
+    shape: sql_table
+    含义: 因子组合
+    组合ID: string {constraint: primary_key}
+    用户: string {constraint: foreign_key}
+    名称: string
+    组合配置: json
+  }
+  user -> jobs: 一对多
+  user -> strategy: 一对多
+  user -> combo: 一对多
+  strategy -> combo: 配置可引用 {style.stroke-dash: 4}
+}
+
+factors: "" {
+  direction: right
+  factor: gn_factor {
+    shape: sql_table
+    含义: 因子词典
+    因子ID: string {constraint: primary_key}
+    名称: string
+    分类: string
+  }
+  signal: gn_factor_signal {
+    shape: sql_table
+    含义: 因子信号
+    自增ID: int {constraint: primary_key}
+    因子ID: string {constraint: foreign_key}
+    交易日: string
+    证券代码: string
+  }
+  factor -> signal: 一对多
+}
+
+factors -> note: "" {
+  style.opacity: 0
+}
+
+note: "逻辑外键由应用层维护\n净值、成交、持仓在进程内存 reportCache" {
+  shape: text
+  style.font-size: 14
+}
+

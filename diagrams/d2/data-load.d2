@@ -1,0 +1,39 @@
+direction: down
+
+sources: "" {
+  direction: right
+  factor: "因子词典组合\nFactorComboService\n与底池求交"
+  manual: "手工指定代码\ncandidateCodes"
+  file: "股票池文件\nuniverse 文件"
+  factor -> manual -> file
+}
+
+resolve: "解析候选代码\nresolveCodes" {
+  style.fill: "#3b2a14"
+  style.stroke: "#fb923c"
+}
+
+sources.file -> resolve
+
+branch: "" {
+  direction: right
+  panel: "优先：内存行情面板\nMarketPanel\n预热 warmup" {
+    style.fill: "#12352c"
+    style.stroke: "#34d399"
+  }
+  loader: "否则：按票加载日 K\nThsBarLoader\nMarketBarCache" {
+    style.fill: "#12352c"
+    style.stroke: "#34d399"
+  }
+}
+
+resolve -> branch.panel: 已预热
+resolve -> branch.loader: 未命中
+
+out: "紧凑行情 + 对比指数 + 市场上下文\nCompactSeries · Benchmark · MarketContext\n进入 PortfolioEngine" {
+  style.fill: "#172554"
+  style.stroke: "#60a5fa"
+}
+
+branch.panel -> out
+branch.loader -> out

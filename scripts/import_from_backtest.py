@@ -216,6 +216,9 @@ def strip_repeated_description(body: str, description: str) -> tuple[str, str]:
 def write_ported(src_root: Path, dest_map: dict[str, str]) -> None:
     for rel, dest_rel in dest_map.items():
         source = src_root / rel
+        if dest_rel == "guide/tech-design.mdx":
+            print("skip hand-authored guide/tech-design.mdx")
+            continue
         if not source.is_file():
             print(f"skip missing {rel}")
             continue

@@ -3,6 +3,8 @@ title: "量化回测系统 — 技术实现方案"
 sidebarTitle: "方案"
 ---
 
+import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
+
 ## 1. 目标与范围
 
 ### 1.1 目标
@@ -28,46 +30,8 @@ sidebarTitle: "方案"
 ## 2. 总体架构
 
 <Frame caption="总体架构：客户端 / 应用单体 / 数据平面">
-  <img src="/images/tech/01_architecture.png" alt="总体架构图" />
+  <img src="/images/tech/eraser/architecture.png" alt="总体架构图" />
 </Frame>
-
-```mermaid
-flowchart TB
-  subgraph client [客户端]
-    UI["选股回测工作台 (/product)"]
-    APIClient["接口调试 (ApiPost / HTTP)"]
-  end
-  subgraph app [应用服务 Spring Boot]
-    CTRL["接口入口层 (REST Controllers)"]
-    PF["组合回测编排服务 (PortfolioBacktestService)"]
-    FC["因子组合选股服务 (FactorComboService)"]
-    PE["组合撮合引擎 (PortfolioEngine)"]
-    CAT["信号规则注册表 (TradeSignalCatalog)"]
-    BRK["交易规则/成本 (broker)"]
-    AN["绩效计算 (PortfolioAnalytics)"]
-    PANEL["行情面板与缓存 (MarketPanel)"]
-  end
-  subgraph data [数据平面]
-    UNI["股票池文件 (universe)"]
-    APPDB[("业务库 gngltdb")]
-    THS[("行情库/镜像 THS")]
-    REDIS[("缓存 Redis")]
-  end
-  UI --> CTRL
-  APIClient --> CTRL
-  CTRL --> PF
-  CTRL --> FC
-  PF --> PANEL
-  PF --> PE
-  PE --> CAT
-  PE --> BRK
-  PE --> AN
-  PANEL --> THS
-  PANEL --> REDIS
-  PF --> APPDB
-  FC --> APPDB
-  UNI --> PF
-```
 
 **形态**：单体 Spring Boot；产品静态页内嵌于同进程（`/product/`）。  
 **鉴权（可选）**：`X-API-Key`；用户维度：`X-User-Id`（演示默认 `demo_user`）。
@@ -103,50 +67,22 @@ flowchart TB
 ### 4.2 加载路径
 
 <Frame caption="候选池解析与行情加载路径">
-  <img src="/images/tech/04_data_load.png" alt="行情与候选池加载路径" />
+  <img src="/images/tech/data-load.svg" alt="行情与候选池加载路径" />
 </Frame>
 
 镜像同步与表说明见 [行情镜像（THS → gngltdb）](/data/mirror)、[同花顺库表结构：lm_ths_db](/data/ths/index)、[测试库 gngltdb](/data/gngltdb/index)。
 
 ### 4.3 表结构关系
 
-<Frame caption="业务库 bt_* / gn_factor* 表关系">
-  <img src="/images/tech/05_er_business.png" alt="业务库 ER" />
+<Frame caption="业务库表关系。成交留在进程内存。">
+  <img src="/images/tech/er-business.svg" alt="业务库表关系" />
 </Frame>
 
-```mermaid
-erDiagram
-  bt_job ||--o{ bt_trade : "回测任务-成交"
-  gn_factor ||--o{ gn_factor_signal : "因子-信号"
-  gn_user ||--o{ gn_factor_combo : "用户-因子组合"
-  gn_user ||--o{ bt_job : "用户-回测任务"
-  gn_user ||--o{ bt_portfolio_strategy : "用户-已保存策略"
-  bt_job {
-    string job_id PK "任务ID"
-    string user_id "用户"
-    string status "状态"
-  }
-  bt_trade {
-    long id PK
-    string job_id FK "任务ID"
-    string sec_code "证券代码"
-  }
-  gn_factor {
-    string factor_id PK "因子ID"
-    string name "名称"
-  }
-  gn_factor_signal {
-    long id PK
-    string factor_id FK
-    string sec_code "证券代码"
-  }
-```
+核心关系：`gn_factor` 1:N `gn_factor_signal`；`gn_user` 一对多拥有回测任务、已保存策略和因子组合。`gn_factor_combo` / `bt_portfolio_strategy` 存 JSON 配置（可含 `factorCombo`）。`bt_job` 只存任务摘要。逻辑外键，应用层维护。
 
 <Frame caption="产品域策略表 + 行情镜像辅助表">
-  <img src="/images/tech/06_datasource_mirror.png" alt="产品域与镜像辅助表" />
+  <img src="/images/tech/datasource.svg" alt="产品域与行情镜像" />
 </Frame>
-
-核心关系：`gn_factor` 1:N `gn_factor_signal`；`gn_factor_combo` / `bt_portfolio_strategy` 存 JSON 配置（可含 `factorCombo`）。`bt_job` 只存任务摘要。逻辑外键，应用层维护。
 
 ---
 
@@ -154,20 +90,9 @@ erDiagram
 
 ### 5.1 产品路径
 
-<Frame caption="组合回测产品流程（同步出结果，成交在内存）">
-  <img src="/images/tech/02_backtest_flow.png" alt="组合回测产品流程" />
-</Frame>
+点击节点，或用上一步 / 下一步，沿同步回测路径查看每一步。可以拖动画布。
 
-```mermaid
-flowchart LR
-  A[工作台配置] --> B[结果页]
-  B --> D[同步回测 /run]
-  D --> G[组合撮合引擎 PortfolioEngine]
-  G --> H[指标+净值首屏]
-  H --> I[成交从内存分页 /trades]
-  G --> M[进程内存 reportCache]
-  G --> J[(任务摘要 bt_job)]
-```
+<BacktestFlow />
 
 1. 工作台配置 → `collectPortfolioConfig()` → `#/backtest/result`
 2. `POST /api/v1/portfolio/run`，在当前请求里跑完
@@ -177,7 +102,7 @@ flowchart LR
 ### 5.2 引擎口径（撮合）
 
 <Frame caption="撮合引擎单日循环与成本/规则">
-  <img src="/images/tech/03_engine_day_loop.png" alt="日频撮合单日循环" />
+  <img src="/images/tech/day-loop.svg" alt="日频撮合单日循环" />
 </Frame>
 
 **不是盘口撮合**，为日频简化事件驱动：
@@ -196,7 +121,7 @@ flowchart LR
 ### 5.3 信号规则横扩
 
 <Frame caption="买卖信号注册表扩展设计">
-  <img src="/images/tech/07_signal_catalog.png" alt="信号注册表扩展" />
+  <img src="/images/tech/signal-catalog.svg" alt="信号注册表扩展" />
 </Frame>
 
 - 内置买入：`SMA_GOLDEN` / `UNIVERSE_RANK`。卖出：`MA_DEATH` / `MA_TOP_DIV` / `HOLD_PERIOD`，以及 RSI、BOLL、KDJ、MACD、阴线、均线条件。默认卖出仍是 `MA_DEATH`。新指标卖出在开跑前写入 `boolean[]`，日循环只读标记

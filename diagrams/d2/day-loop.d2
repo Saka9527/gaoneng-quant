@@ -1,0 +1,38 @@
+direction: down
+
+header: "按交易日历推进到当日\n信号看昨收，成交用次日开盘" {
+  style.font-size: 16
+}
+
+loop: "" {
+  direction: right
+  sell: "① 卖出处理\n持股到期 / 卖出信号\n次日开盘卖出\n拒单：T+1 · 跌停 · 停牌" {
+    style.fill: "#3b1824"
+    style.stroke: "#fb7185"
+  }
+  buy: "② 买入处理\n再平衡日 + 买入信号\n排序 · 过滤 · 仓位预算\n次日开盘买入" {
+    style.fill: "#12352c"
+    style.stroke: "#34d399"
+  }
+  mark: "③ 当日记账\n按收盘价估净值\n更新回撤与基准" {
+    style.fill: "#172554"
+    style.stroke: "#60a5fa"
+  }
+  sell -> buy -> mark
+}
+
+rules: "" {
+  direction: right
+  cost: "交易成本 CostModel\n买入加佣金和滑点\n卖出再扣印花税"
+  market: "可交易规则 MarketRules\n停牌 / 涨跌停\n优先用镜像涨跌停价"
+  catalog: "信号注册表 TradeSignalCatalog\n开跑前绑定一次\n循环中不再查找"
+}
+
+loop.sell -> rules.cost: 成本 {style.stroke-dash: 4}
+loop.buy -> rules.market: 规则 {style.stroke-dash: 4}
+loop.sell -> rules.catalog: 信号 {style.stroke-dash: 4}
+
+footer: "成交口径：昨收确认信号 → 次日开盘成交\n非盘口撮合 · 默认 T+1 · 引擎 PortfolioEngine" {
+  shape: text
+  style.font-size: 14
+}
