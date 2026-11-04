@@ -35,14 +35,14 @@ const { ReactFlow, Background, Controls, Handle, Position } = window.ReactFlow;
 
 const steps = ["config", "result", "run", "engine", "screen", "trades"];
 const meta = {
-  config: { kicker: "1", title: "工作台配置", sub: "候选池 + 交易模型", body: "配置候选池和交易模型，由 collectPortfolioConfig() 收集，然后进入结果页。" },
-  result: { kicker: "2", title: "结果页", sub: "#/backtest/result", body: "打开 #/backtest/result。首屏展示指标和净值，成交表再按页从内存读取。" },
-  run: { kicker: "3", title: "同步回测", sub: "POST /portfolio/run", body: "POST /api/v1/portfolio/run，在当前请求里跑完。/submit 同样在当前请求内跑完。" },
-  engine: { kicker: "4", title: "组合撮合引擎", sub: "PortfolioEngine", body: "日频撮合。净值、成交和期末持仓留在进程内存，bt_job 只写任务摘要。" },
+  config: { kicker: "1", title: "工作台配置", sub: "候选池 + 交易模型", body: "配置候选池和交易模型，然后进入结果页。" },
+  result: { kicker: "2", title: "结果页", sub: "", body: "打开结果页。首屏展示指标和净值，成交表再按页从内存读取。" },
+  run: { kicker: "3", title: "同步回测", sub: "", body: "在当前请求里跑完同步回测。" },
+  engine: { kicker: "4", title: "组合撮合引擎", sub: "", body: "日频撮合。净值、成交和期末持仓留在进程内存，任务表只写摘要。" },
   screen: { kicker: "5", title: "指标与净值", sub: "首屏", body: "首屏返回指标和净值曲线。" },
-  trades: { kicker: "6", title: "成交分页", sub: "GET /jobs/{id}/trades", body: "结果页表格按 GET /jobs/{id}/trades?limit=50&offset= 从本进程内存分页。" },
-  cache: { kicker: "内存", title: "reportCache", sub: "净值 · 成交 · 持仓", body: "净值曲线、逐笔成交、期末持仓都在进程内存。成交分页读这里。" },
-  job: { kicker: "落库", title: "任务摘要", sub: "bt_job", body: "result_json 保存收益、耗时和拒单次数。曲线和成交写成空数组。" }
+  trades: { kicker: "6", title: "成交分页", sub: "", body: "结果页表格按页从本进程内存读取成交。" },
+  cache: { kicker: "内存", title: "进程内存", sub: "净值 · 成交 · 持仓", body: "净值曲线、逐笔成交、期末持仓都在进程内存。成交分页读这里。" },
+  job: { kicker: "落库", title: "任务摘要", sub: "", body: "任务表保存收益、耗时和拒单次数。曲线和成交写成空数组。" }
 };
 const positions = {
   config: { x: 0, y: 20 }, result: { x: 230, y: 20 }, run: { x: 460, y: 20 }, engine: { x: 690, y: 20 },
@@ -58,7 +58,7 @@ function StepNode({ data }) {
     React.createElement(Handle, { type: "target", position: Position.Left }),
     React.createElement("div", { className: "k" }, data.kicker),
     React.createElement("div", { className: "t" }, data.title),
-    React.createElement("div", { className: "s" }, data.sub),
+    data.sub ? React.createElement("div", { className: "s" }, data.sub) : null,
     React.createElement(Handle, { type: "source", position: Position.Right, id: "r" }),
     React.createElement(Handle, { type: "source", position: Position.Bottom, id: "b" })
   );

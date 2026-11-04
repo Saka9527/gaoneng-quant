@@ -23,16 +23,16 @@ loop: "" {
 
 rules: "" {
   direction: right
-  cost: "交易成本 CostModel\n买入加佣金和滑点\n卖出再扣印花税"
-  market: "可交易规则 MarketRules\n停牌 / 涨跌停\n优先用镜像涨跌停价"
-  catalog: "信号注册表 TradeSignalCatalog\n开跑前绑定一次\n循环中不再查找"
+  cost: "交易成本"
+  market: "可交易规则"
+  catalog: "信号注册表"
 }
 
 loop.sell -> rules.cost: 成本 {style.stroke-dash: 4}
 loop.buy -> rules.market: 规则 {style.stroke-dash: 4}
 loop.sell -> rules.catalog: 信号 {style.stroke-dash: 4}
 
-footer: "成交口径：昨收确认信号 → 次日开盘成交\n非盘口撮合 · 默认 T+1 · 引擎 PortfolioEngine" {
+footer: "成交口径：昨收确认信号 → 次日开盘成交\n非盘口撮合 · 默认 T+1" {
   shape: text
   style.font-size: 14
 }

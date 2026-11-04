@@ -2,15 +2,15 @@ direction: down
 
 rules: "" {
   direction: right
-  buy: "买入信号 BuySignalRule\nSMA_GOLDEN 双均线金叉\nUNIVERSE_RANK 成分排序\n可继续新增" {
+  buy: "买入信号" {
     style.fill: "#172554"
     style.stroke: "#60a5fa"
   }
-  sell: "卖出信号 SellSignalRule\nMA_DEATH（默认）· MA_TOP_DIV\nHOLD_PERIOD · RSI · BOLL\nKDJ · MACD · 阴线 · 均线" {
+  sell: "卖出信号" {
     style.fill: "#3b1824"
     style.stroke: "#fb7185"
   }
-  catalog: "信号注册表\nTradeSignalCatalog\n开跑前按配置绑定\n热路径不再按名字查找" {
+  catalog: "信号注册表" {
     style.fill: "#3b2a14"
     style.stroke: "#fb923c"
   }
@@ -20,11 +20,11 @@ rules: "" {
 
 sinks: "" {
   direction: right
-  meta: "枚举接口\nGET /portfolio/meta\nbuySignal / sellSignal\n来自已登记规则" {
+  meta: "枚举接口" {
     style.fill: "#12352c"
     style.stroke: "#34d399"
   }
-  engine: "日频循环 PortfolioEngine\n已绑定策略 BoundSignalStrategy\n新指标卖出写成 boolean[]\n日循环只读标记" {
+  engine: "日频循环" {
     style.fill: "#1e293b"
     style.stroke: "#94a3b8"
   }
