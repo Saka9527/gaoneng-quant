@@ -59,7 +59,7 @@ SIDEBAR = {
 }
 
 CODE_RE = re.compile(r"```[\s\S]*?```|`[^`\n]*`")
-LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
+LINK_RE = re.compile(r"(!?)\[([^\]]+)\]\(([^)]+)\)")
 
 
 def yaml_quote(value: str) -> str:
@@ -101,14 +101,17 @@ def build_dest_map(src_root: Path) -> dict[str, str]:
 
 def rewrite_links(text: str, src_file: Path, src_root: Path, dest_map: dict[str, str]) -> str:
     def replace(match: re.Match[str]) -> str:
-        label, href = match.group(1), match.group(2).strip()
+        bang, label, href = match.group(1), match.group(2), match.group(3).strip()
         if href.startswith(("http://", "https://", "mailto:", "/")):
             return match.group(0)
         path_part, _, anchor = href.partition("#")
         if not path_part:
             return match.group(0)
-        if not path_part.split("?")[0].endswith(".md"):
-            return f"{label}（`{path_part}`）"
+        image_name = path_part.split("?")[0]
+        if image_name.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg")):
+            return f"![{label}](/images/tech/{Path(image_name).name})"
+        if not image_name.endswith(".md"):
+            return f"{bang}{label}（`{path_part}`）"
         target = (src_file.parent / path_part).resolve()
         try:
             rel = target.relative_to(src_root.resolve()).as_posix()
@@ -139,7 +142,7 @@ def split_title(text: str, fallback: str) -> tuple[str, str]:
 
 
 def readable(text: str) -> str:
-    text = LINK_RE.sub(r"\1", text)
+    text = LINK_RE.sub(r"\2", text)
     text = re.sub(r"[`*]", "", text)
     return " ".join(text.split())
 
@@ -220,7 +223,7 @@ def write_ported(src_root: Path, dest_map: dict[str, str]) -> None:
         title, body = split_title(raw, Path(rel).stem)
         body = rewrite_links(body, source, src_root, dest_map)
         body = escape_mdx(body)
-        if dest_rel in {"api/portfolio-meta.mdx", "guide/tech-stack.mdx", "guide/deploy.mdx"}:
+        if dest_rel in {"api/portfolio-meta.mdx", "guide/tech-stack.mdx", "guide/deploy.mdx", "guide/tech-design.mdx"}:
             description = ""
         else:
             description = description_from(body, title)

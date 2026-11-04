@@ -1,36 +1,19 @@
 ---
 title: "量化回测系统 — 技术实现方案"
 sidebarTitle: "方案"
-description: "可编辑源是设计图目录里的 Mermaid。"
 ---
 
-| 项 | 内容 |
+## 0. 设计图
+
+| 图 | 说明 |
 |----|------|
-| 文档状态 | 评审稿（随迭代持续更新） |
-| 版本 | v1.2 |
-| 更新日期 | 2026-10-12 |
-| 配套文档 | [技术选型](/guide/tech-stack)、[完整回测流程（产品 × 开发）](/backtest/flow)、[运行时缓存清单](/guide/cache-inventory)、[枚举](/api/portfolio-meta)、[部署与服务器资源](/guide/deploy) |
-| **设计图目录** | `diagrams/`（`diagrams/`）（PNG + Mermaid 源） |
-| **Word 评审稿** | `TECH_DESIGN.docx`（`TECH_DESIGN.docx`） |
-| **PPT 评审稿** | `TECH_DESIGN.pptx`（`TECH_DESIGN.pptx`） |
-
-> **维护约定**：架构、口径或接口有变更时，先改本文。  
-> 细节流程见 [完整回测流程（产品 × 开发）](/backtest/flow)。  
-> 缓存的键、结构和占用见 [运行时缓存清单](/guide/cache-inventory)，缓存结构变更时同步改该文。
-
----
-
-## 0. 设计图（评审必看）
-
-| 图 | 文件 | 说明 |
-|----|------|------|
-| 图1 | !架构（`diagrams/01_architecture.png`） | 总体架构：客户端 / 应用单体 / 数据平面 |
-| 图2 | !流程（`diagrams/02_backtest_flow.png`） | 组合回测产品流程（同步出结果，成交在内存） |
-| 图3 | !日频循环（`diagrams/03_engine_day_loop.png`） | 撮合引擎单日循环与成本/规则 |
-| 图4 | !加载（`diagrams/04_data_load.png`） | 候选池解析与行情加载路径 |
-| 图5 | !ER（`diagrams/05_er_business.png`） | 业务库 `bt_*` / `gn_factor*` 表关系 |
-| 图6 | !镜像（`diagrams/06_datasource_mirror.png`） | 产品域策略表 + 行情镜像辅助表 |
-| 图7 | !信号（`diagrams/07_signal_catalog.png`） | 买卖信号注册表扩展设计 |
+| 图1 | 总体架构：客户端 / 应用单体 / 数据平面 |
+| 图2 | 组合回测产品流程（同步出结果，成交在内存） |
+| 图3 | 撮合引擎单日循环与成本/规则 |
+| 图4 | 候选池解析与行情加载路径 |
+| 图5 | 业务库 `bt_*` / `gn_factor*` 表关系 |
+| 图6 | 产品域策略表 + 行情镜像辅助表 |
+| 图7 | 买卖信号注册表扩展设计 |
 
 ---
 
@@ -38,7 +21,7 @@ description: "可编辑源是设计图目录里的 Mermaid。"
 
 ### 1.1 目标
 
-为桌面炒股客户端 / 产品工作台提供**可复现的 A 股日频组合回测**能力：
+提供**可复现的 A 股日频组合回测**能力：
 
 1. 候选池（股票池文件 / 因子词典组合）+ 交易模型配置 → 真实撮合与绩效；
 2. 任务摘要落 `bt_job`。净值、成交、期末持仓只在进程内存，结果页可分页看成交；
@@ -58,12 +41,50 @@ description: "可编辑源是设计图目录里的 Mermaid。"
 
 ## 2. 总体架构
 
-!总体架构图（`diagrams/01_architecture.png`）
+<Frame caption="总体架构：客户端 / 应用单体 / 数据平面">
+  <img src="/images/tech/01_architecture.png" alt="总体架构图" />
+</Frame>
+
+```mermaid
+flowchart TB
+  subgraph client [客户端]
+    UI["选股回测工作台 (/product)"]
+    APIClient["接口调试 (ApiPost / HTTP)"]
+  end
+  subgraph app [应用服务 Spring Boot]
+    CTRL["接口入口层 (REST Controllers)"]
+    PF["组合回测编排服务 (PortfolioBacktestService)"]
+    FC["因子组合选股服务 (FactorComboService)"]
+    PE["组合撮合引擎 (PortfolioEngine)"]
+    CAT["信号规则注册表 (TradeSignalCatalog)"]
+    BRK["交易规则/成本 (broker)"]
+    AN["绩效计算 (PortfolioAnalytics)"]
+    PANEL["行情面板与缓存 (MarketPanel)"]
+  end
+  subgraph data [数据平面]
+    UNI["股票池文件 (universe)"]
+    APPDB[("业务库 gngltdb")]
+    THS[("行情库/镜像 THS")]
+    REDIS[("缓存 Redis")]
+  end
+  UI --> CTRL
+  APIClient --> CTRL
+  CTRL --> PF
+  CTRL --> FC
+  PF --> PANEL
+  PF --> PE
+  PE --> CAT
+  PE --> BRK
+  PE --> AN
+  PANEL --> THS
+  PANEL --> REDIS
+  PF --> APPDB
+  FC --> APPDB
+  UNI --> PF
+```
 
 **形态**：单体 Spring Boot；产品静态页内嵌于同进程（`/product/`）。  
 **鉴权（可选）**：`X-API-Key`；用户维度：`X-User-Id`（演示默认 `demo_user`）。
-
-Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architecture.mmd`）。
 
 ---
 
@@ -95,15 +116,49 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 ### 4.2 加载路径
 
-!行情与候选池加载路径（`diagrams/04_data_load.png`）
+<Frame caption="候选池解析与行情加载路径">
+  <img src="/images/tech/04_data_load.png" alt="行情与候选池加载路径" />
+</Frame>
 
 镜像同步与表说明见 [行情镜像（THS → gngltdb）](/data/mirror)、[同花顺库表结构：lm_ths_db](/data/ths/index)、[测试库 gngltdb](/data/gngltdb/index)。
 
 ### 4.3 表结构关系
 
-!业务库 ER（`diagrams/05_er_business.png`）
+<Frame caption="业务库 bt_* / gn_factor* 表关系">
+  <img src="/images/tech/05_er_business.png" alt="业务库 ER" />
+</Frame>
 
-!产品域与镜像辅助表（`diagrams/06_datasource_mirror.png`）
+```mermaid
+erDiagram
+  bt_job ||--o{ bt_trade : "回测任务-成交"
+  gn_factor ||--o{ gn_factor_signal : "因子-信号"
+  gn_user ||--o{ gn_factor_combo : "用户-因子组合"
+  gn_user ||--o{ bt_job : "用户-回测任务"
+  gn_user ||--o{ bt_portfolio_strategy : "用户-已保存策略"
+  bt_job {
+    string job_id PK "任务ID"
+    string user_id "用户"
+    string status "状态"
+  }
+  bt_trade {
+    long id PK
+    string job_id FK "任务ID"
+    string sec_code "证券代码"
+  }
+  gn_factor {
+    string factor_id PK "因子ID"
+    string name "名称"
+  }
+  gn_factor_signal {
+    long id PK
+    string factor_id FK
+    string sec_code "证券代码"
+  }
+```
+
+<Frame caption="产品域策略表 + 行情镜像辅助表">
+  <img src="/images/tech/06_datasource_mirror.png" alt="产品域与镜像辅助表" />
+</Frame>
 
 核心关系：`gn_factor` 1:N `gn_factor_signal`；`gn_factor_combo` / `bt_portfolio_strategy` 存 JSON 配置（可含 `factorCombo`）。`bt_job` 只存任务摘要。逻辑外键，应用层维护。
 
@@ -113,7 +168,20 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 ### 5.1 产品路径
 
-!组合回测产品流程（`diagrams/02_backtest_flow.png`）
+<Frame caption="组合回测产品流程（同步出结果，成交在内存）">
+  <img src="/images/tech/02_backtest_flow.png" alt="组合回测产品流程" />
+</Frame>
+
+```mermaid
+flowchart LR
+  A[工作台配置] --> B[结果页]
+  B --> D[同步回测 /run]
+  D --> G[组合撮合引擎 PortfolioEngine]
+  G --> H[指标+净值首屏]
+  H --> I[成交从内存分页 /trades]
+  G --> M[进程内存 reportCache]
+  G --> J[(任务摘要 bt_job)]
+```
 
 1. 工作台配置 → `collectPortfolioConfig()` → `#/backtest/result`
 2. `POST /api/v1/portfolio/run`，在当前请求里跑完
@@ -122,7 +190,9 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 ### 5.2 引擎口径（撮合）
 
-!日频撮合单日循环（`diagrams/03_engine_day_loop.png`）
+<Frame caption="撮合引擎单日循环与成本/规则">
+  <img src="/images/tech/03_engine_day_loop.png" alt="日频撮合单日循环" />
+</Frame>
 
 **不是盘口撮合**，为日频简化事件驱动：
 
@@ -139,7 +209,9 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 
 ### 5.3 信号规则横扩
 
-!信号注册表扩展（`diagrams/07_signal_catalog.png`）
+<Frame caption="买卖信号注册表扩展设计">
+  <img src="/images/tech/07_signal_catalog.png" alt="信号注册表扩展" />
+</Frame>
 
 - 内置买入：`SMA_GOLDEN` / `UNIVERSE_RANK`。卖出：`MA_DEATH` / `MA_TOP_DIV` / `HOLD_PERIOD`，以及 RSI、BOLL、KDJ、MACD、阴线、均线条件。默认卖出仍是 `MA_DEATH`。新指标卖出在开跑前写入 `boolean[]`，日循环只读标记
 - 回测开始时把选中的规则绑好，热路径不再按名字查找
@@ -236,25 +308,4 @@ Mermaid 源见 `diagrams/sources/architecture.mmd`（`diagrams/sources/architect
 2. **绩效口径**：是否引入无风险利率、样本标准差、年化换手标准定义；是否用脚本对账  
 3. **规则插件化**：再平衡 / 仓位 / `buyTiming`（现仅 OPEN 且引擎固定开盘）  
 4. **撮合增强**（非盘口）：成交量约束、VWAP/收盘价可选成交价  
-5. **盘口撮合**：需求明确前不做；成本远高于日频增强  
-
----
-
-## 12. 评审检查清单
-
-- [ ] 成交口径（昨收信号 / 次日开盘 / T+1 / 涨跌停）是否接受  
-- [ ] 绩效简化口径是否满足产品展示（换手、Sharpe）  
-- [ ] 因子组合与板块信号数据源是否覆盖业务选股场景  
-- [ ] 同步/异步与成交懒加载是否满足体验与资源预算  
-- [ ] 信号横扩方式（注册表）是否满足策略同学扩展节奏  
-- [ ] 演示模块与真回测边界是否对外说明清楚  
-
----
-
-## 变更记录
-
-| 版本 | 日期 | 说明 |
-|------|------|------|
-| v1.0 | 2026-10-12 | 首版：整理架构、撮合口径、信号登记、因子组合、绩效与 API；导出 Word/PPT |
-| v1.1 | 2026-10-12 | 补充架构/流程/ER/加载/信号扩展等 PNG 设计图，嵌入 Markdown 与 Word/PPT |
-| v1.2 | 2026-10-12 | 设计图改为「中文名（类名/表名）」标注，便于产品等非研发评审 |
+5. **盘口撮合**：需求明确前不做；成本远高于日频增强
