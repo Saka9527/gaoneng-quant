@@ -1,10 +1,7 @@
 ---
 title: "部署与服务器资源"
 sidebarTitle: "部署"
-description: "更新日期：2026-10-11"
 ---
-
-适用版本：`java-quant-backtest` 单体 API（Spring Boot 3.3 / JDK 21）
 
 ## 1. 组件清单
 
@@ -15,8 +12,6 @@ description: "更新日期：2026-10-11"
 | **Redis 6+** | 强烈建议 | 单票日线 JSON 缓存；无 Redis 时冷路径更慢 |
 | 同花顺库 `lm_ths_db` | 可选 | `mode=ths` 直读，或仅作镜像同步源 |
 | Python 3.10+ | 运维可选 | 镜像增量或全量同步 |
-
-默认端口：`8080`。环境变量：`APP_DB_PASSWORD`、`THS_DB_PASSWORD`、`REDIS_HOST`、`REDIS_PORT`、`QUANT_THS_MODE`、`QUANT_UNIVERSE_DIR`。
 
 ---
 
@@ -35,8 +30,6 @@ description: "更新日期：2026-10-11"
 | 全 A 预热面板 | 5223 序列 | 数组约 **80–160 MB**（open+close+date）；收盘价数组约 **30 MB** |
 | Redis 全 A 日线缓存 | ~5000 key | **约 400–500 MB**（见 [行情缓存容量评估（Caffeine + 本地 Redis）](/guide/cache-sizing)） |
 | Caffeine 本地 | max 512 | **约 ≤50 MB** |
-
-> `information_schema` 的 `DATA_LENGTH` / `TABLE_ROWS` 对刚灌入的 InnoDB 常严重偏小，以 `COUNT(*)` + 上表估算为准。
 
 ---
 
@@ -60,7 +53,7 @@ description: "更新日期：2026-10-11"
 | **Redis** | 1–2 vCPU | **2 GB**（`maxmemory 1gb`～`2gb`） | 10 GB | 全 A 缓存 + 余量；TTL 24h |
 | **MySQL（gngltdb）** | **2～4 vCPU** | **4～8 GB** | **≥ 40 GB** SSD | 镜像 ~1 GB + 业务余量 + binlog；IOPS 影响预热耗时 |
 
-**单机一体化（App + Redis + MySQL 同机）建议：8 vCPU / 16 GB / 80 GB SSD。**
+**单机一体化（App + Redis + MySQL 同机）建议：8C / 32G。**
 
 依据：
 
@@ -68,18 +61,7 @@ description: "更新日期：2026-10-11"
 - 堆需容纳：Spring + Panel（~0.2 GB）+ 预热/组合临时缓冲 + Caffeine；4 GB 堆较稳妥。
 - Redis 全 A 约占 0.5 GB，生产建议 **≥1 GB maxmemory**。
 
-### 3.3 直连同花顺（`quant.ths.mode=ths`）
-
-| 角色 | 建议 | 说明 |
-|------|------|------|
-| 应用 | 4 vCPU / 8 GB | 与 3.2 相同；预热更依赖远端延迟 |
-| MySQL 本地 | 可仅放 `bt_*`/`gn_*`（小库） | 行情不落本地 |
-| 网络 | 稳定访问 THS RDS | 指数大表易超时；仍建议逐步切 `mirror` |
-| Redis | 同 3.2 | 降低重复拉数 |
-
-不推荐在生产长期直读 THS 做全市场预热。
-
-### 3.4 扩容参考
+### 3.3 扩容参考
 
 | 变化 | 额外资源 |
 |------|----------|
@@ -151,25 +133,14 @@ maxmemory-policy allkeys-lru
 
 ---
 
-## 7. 网络与安全
-
-| 项 | 要求 |
-|----|------|
-| 入站 | `8080`（或前置 Nginx/网关 TLS） |
-| 出站 | MySQL（6306/3306）、Redis |
-| 鉴权 | 可选 `quant.api-key` → 头 `X-API-Key`；产品演示头 `X-User-Id` |
-| 密钥 | 勿把密码写进镜像；用环境变量覆盖 `application.yml` 默认值 |
-
----
-
-## 8. 一页对照（默认生产）
+## 7. 一页对照（默认生产）
 
 | 资源 | 规格 |
 |------|------|
 | 应用 | **4C / 8G / 40G**，堆 **4G**，JDK 21 |
 | Redis | **1～2G** 内存（`maxmemory ≥1gb`） |
 | MySQL | **2～4C / 4～8G / ≥40G**，gngltdb 镜像约 **1GB 级** + 业务余量 |
-| 一体机 | **8C / 16G / 80G SSD** |
+| 一体机 | **8C / 32G** |
 | 软件依赖 | MySQL 8、Redis 6+、JDK 21 |
 
 更细的缓存测算见 [行情缓存容量评估（Caffeine + 本地 Redis）](/guide/cache-sizing)。

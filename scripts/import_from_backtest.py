@@ -220,7 +220,7 @@ def write_ported(src_root: Path, dest_map: dict[str, str]) -> None:
         title, body = split_title(raw, Path(rel).stem)
         body = rewrite_links(body, source, src_root, dest_map)
         body = escape_mdx(body)
-        if dest_rel in {"api/portfolio-meta.mdx", "guide/tech-stack.mdx"}:
+        if dest_rel in {"api/portfolio-meta.mdx", "guide/tech-stack.mdx", "guide/deploy.mdx"}:
             description = ""
         else:
             description = description_from(body, title)
