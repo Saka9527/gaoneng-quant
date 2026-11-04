@@ -72,7 +72,7 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
 ### 4.3 表结构关系
 
 <Frame caption="业务库表关系。成交留在进程内存。">
-  <img src="/images/tech/er-business.svg" alt="业务库表关系" />
+  <img src="/images/tech/er-business.png" alt="业务库表关系" />
 </Frame>
 
 核心关系：`gn_user` 一对多拥有回测任务、已保存策略和因子组合。`gn_factor_combo` / `bt_portfolio_strategy` 存 JSON 配置（可含 `factorCombo`）。`bt_job` 只存任务摘要。逻辑外键，应用层维护。
