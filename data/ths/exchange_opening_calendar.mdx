@@ -1,6 +1,6 @@
 ---
 title: "exchange_opening_calendar"
-description: "exchange_opening_calendar"
+description: "交易所开市日历表"
 ---
 
 - 说明: 交易所开市日历表
@@ -11,20 +11,20 @@ description: "exchange_opening_calendar"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `dt` | `datetime` | YES |  |  |  | 日期 |
-| 6 | `open_close_identifier` | `varchar(1)` | YES |  |  |  | 开闭市标识 |
-| 7 | `td_mkt_name` | `varchar(100)` | YES |  |  |  | 交易市场名称 |
-| 8 | `td_mkt_code` | `varchar(32)` | YES |  |  |  | 交易市场代码 |
-| 9 | `reasons_for_close` | `varchar(1000)` | YES |  |  |  | 非周末闭市原因 |
-| 10 | `part_time_trans_type_code` | `varchar(12)` | YES |  |  |  | 部分时间交易类型编码 |
-| 11 | `part_time_trans_instruction` | `varchar(200)` | YES |  |  |  | 部分时间交易说明 |
-| 12 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `dt` | `datetime` | YES |  | 日期 |
+| `open_close_identifier` | `varchar(1)` | YES |  | 开闭市标识 |
+| `td_mkt_name` | `varchar(100)` | YES |  | 交易市场名称 |
+| `td_mkt_code` | `varchar(32)` | YES |  | 交易市场代码 |
+| `reasons_for_close` | `varchar(1000)` | YES |  | 非周末闭市原因 |
+| `part_time_trans_type_code` | `varchar(12)` | YES |  | 部分时间交易类型编码 |
+| `part_time_trans_instruction` | `varchar(200)` | YES |  | 部分时间交易说明 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

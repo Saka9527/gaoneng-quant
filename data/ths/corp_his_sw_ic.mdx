@@ -1,6 +1,6 @@
 ---
 title: "corp_his_sw_ic"
-description: "corp_his_sw_ic"
+description: "中国股票申万行业分类全量表"
 ---
 
 - 说明: 中国股票申万行业分类全量表
@@ -11,21 +11,21 @@ description: "corp_his_sw_ic"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `industry_ctgry` | `varchar(32)` | YES |  |  |  | 行业类别 |
-| 6 | `corp_code` | `varchar(32)` | YES |  |  |  | 公司代码 |
-| 7 | `industry_name` | `varchar(200)` | YES |  |  |  | 行业名称 |
-| 8 | `lastest_symbol` | `decimal(1,0)` | YES |  |  |  | 最新标志 |
-| 9 | `industry_level` | `decimal(1,0)` | YES |  |  |  | 行业级别 |
-| 10 | `eliminate_date` | `date` | YES |  |  |  | 剔除日期 |
-| 11 | `inclusion_date` | `date` | YES |  |  |  | 纳入日期 |
-| 12 | `industry_code` | `varchar(20)` | YES |  |  |  | 行业代码 |
-| 13 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `industry_ctgry` | `varchar(32)` | YES |  | 行业类别 |
+| `corp_code` | `varchar(32)` | YES |  | 公司代码 |
+| `industry_name` | `varchar(200)` | YES |  | 行业名称 |
+| `lastest_symbol` | `decimal(1,0)` | YES |  | 最新标志 |
+| `industry_level` | `decimal(1,0)` | YES |  | 行业级别 |
+| `eliminate_date` | `date` | YES |  | 剔除日期 |
+| `inclusion_date` | `date` | YES |  | 纳入日期 |
+| `industry_code` | `varchar(20)` | YES |  | 行业代码 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

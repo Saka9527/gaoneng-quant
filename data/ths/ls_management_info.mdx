@@ -1,6 +1,6 @@
 ---
 title: "ls_management_info"
-description: "ls_management_info"
+description: "中国股票董监事高管持股及报酬"
 ---
 
 - 说明: 中国股票董监事高管持股及报酬
@@ -11,35 +11,35 @@ description: "ls_management_info"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
-| 5 | `currency_variety_encode` | `varchar(12)` | YES |  |  |  | 币种编码 |
-| 6 | `currency_variety_name` | `varchar(30)` | YES |  |  |  | 币种名称 |
-| 7 | `end_date_of_salary` | `date` | YES |  |  |  | 报酬或津贴截止日期 |
-| 8 | `final_ashare_held_num` | `decimal(18,0)` | YES |  |  |  | 期末持a股数 |
-| 9 | `final_bshare_held_num` | `decimal(18,0)` | YES |  |  |  | 期末持b股数 |
-| 10 | `final_hshare_held_num` | `decimal(18,0)` | YES |  |  |  | 期末持h股数 |
-| 11 | `held_chg_reason` | `varchar(60)` | YES |  |  |  | 持股变动原因 |
-| 12 | `announcement_date` | `date` | YES |  |  |  | 公告日期 |
-| 13 | `management_name` | `varchar(200)` | YES |  |  |  | 董监高姓名 |
-| 14 | `orig_ashare_held_num` | `decimal(18,0)` | YES |  |  |  | 期初持a股数 |
-| 15 | `orig_bshare_held_num` | `decimal(18,0)` | YES |  |  |  | 期初持b股数 |
-| 16 | `orig_hshare_held_num` | `decimal(18,0)` | YES |  |  |  | 期初持h股数 |
-| 17 | `personal_id` | `varchar(40)` | YES |  |  |  | 个人id |
-| 18 | `position_name_of_bod` | `varchar(60)` | YES |  |  |  | 董监会职务名称 |
-| 19 | `senior_position_code` | `varchar(64)` | YES |  |  |  | 高管职务编码 |
-| 20 | `senior_trigger_position_code` | `varchar(24)` | YES |  |  |  | 高管触发职务编码 |
-| 21 | `senior_trigger_position_name` | `varchar(60)` | YES |  |  |  | 高管职务名称 |
-| 22 | `is_receive_salary_from_holders` | `decimal(28,6)` | YES |  |  |  | 是否在股东方领取报酬 |
-| 23 | `annual_salary` | `decimal(18,4)` | YES |  |  |  | 年度报酬或津贴 |
-| 24 | `board_directors_code` | `varchar(60)` | YES |  |  |  | 董监会职务编码 |
-| 25 | `chg_date` | `date` | YES |  |  |  | 变动日期 |
-| 26 | `corp_code` | `varchar(20)` | YES |  |  |  | 公司代码 |
-| 27 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建时间 |
+| `mtime` | `datetime` | YES |  | 记录修改时间 |
+| `rtime` | `datetime` | YES |  | 记录同步时间 |
+| `currency_variety_encode` | `varchar(12)` | YES |  | 币种编码 |
+| `currency_variety_name` | `varchar(30)` | YES |  | 币种名称 |
+| `end_date_of_salary` | `date` | YES |  | 报酬或津贴截止日期 |
+| `final_ashare_held_num` | `decimal(18,0)` | YES |  | 期末持a股数 |
+| `final_bshare_held_num` | `decimal(18,0)` | YES |  | 期末持b股数 |
+| `final_hshare_held_num` | `decimal(18,0)` | YES |  | 期末持h股数 |
+| `held_chg_reason` | `varchar(60)` | YES |  | 持股变动原因 |
+| `announcement_date` | `date` | YES |  | 公告日期 |
+| `management_name` | `varchar(200)` | YES |  | 董监高姓名 |
+| `orig_ashare_held_num` | `decimal(18,0)` | YES |  | 期初持a股数 |
+| `orig_bshare_held_num` | `decimal(18,0)` | YES |  | 期初持b股数 |
+| `orig_hshare_held_num` | `decimal(18,0)` | YES |  | 期初持h股数 |
+| `personal_id` | `varchar(40)` | YES |  | 个人id |
+| `position_name_of_bod` | `varchar(60)` | YES |  | 董监会职务名称 |
+| `senior_position_code` | `varchar(64)` | YES |  | 高管职务编码 |
+| `senior_trigger_position_code` | `varchar(24)` | YES |  | 高管触发职务编码 |
+| `senior_trigger_position_name` | `varchar(60)` | YES |  | 高管职务名称 |
+| `is_receive_salary_from_holders` | `decimal(28,6)` | YES |  | 是否在股东方领取报酬 |
+| `annual_salary` | `decimal(18,4)` | YES |  | 年度报酬或津贴 |
+| `board_directors_code` | `varchar(60)` | YES |  | 董监会职务编码 |
+| `chg_date` | `date` | YES |  | 变动日期 |
+| `corp_code` | `varchar(20)` | YES |  | 公司代码 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

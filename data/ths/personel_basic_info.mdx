@@ -1,6 +1,6 @@
 ---
 title: "personel_basic_info"
-description: "personel_basic_info"
+description: "个人基本资料"
 ---
 
 - 说明: 个人基本资料
@@ -11,26 +11,26 @@ description: "personel_basic_info"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `nation` | `varchar(100)` | YES |  |  |  | 民族 |
-| 6 | `nationality` | `varchar(60)` | YES |  |  |  | 国籍 |
-| 7 | `personal_photo` | `varchar(200)` | YES |  |  |  | 个人照片 |
-| 8 | `name_en` | `varchar(60)` | YES |  |  |  | 姓名(英文) |
-| 9 | `nationality_code` | `varchar(12)` | YES |  |  |  | 国籍编码 |
-| 10 | `high_edu` | `varchar(60)` | YES |  |  |  | 最高学历 |
-| 11 | `high_education_code` | `varchar(12)` | YES |  |  |  | 最高学历编码 |
-| 12 | `year_of_birth` | `varchar(8)` | YES |  |  |  | 出生年份 |
-| 13 | `gender` | `varchar(1)` | YES |  |  |  | 性别 |
-| 14 | `name_cn` | `varchar(60)` | YES |  |  |  | 姓名(中文) |
-| 15 | `personal_id` | `varchar(15)` | YES | MUL |  |  | 个人ID |
-| 16 | `resume_en` | `longtext` | YES |  |  |  | 个人简历(英文) |
-| 17 | `resume_cn` | `longtext` | YES |  |  |  | 个人简历(中文) |
-| 18 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `nation` | `varchar(100)` | YES |  | 民族 |
+| `nationality` | `varchar(60)` | YES |  | 国籍 |
+| `personal_photo` | `varchar(200)` | YES |  | 个人照片 |
+| `name_en` | `varchar(60)` | YES |  | 姓名(英文) |
+| `nationality_code` | `varchar(12)` | YES |  | 国籍编码 |
+| `high_edu` | `varchar(60)` | YES |  | 最高学历 |
+| `high_education_code` | `varchar(12)` | YES |  | 最高学历编码 |
+| `year_of_birth` | `varchar(8)` | YES |  | 出生年份 |
+| `gender` | `varchar(1)` | YES |  | 性别 |
+| `name_cn` | `varchar(60)` | YES |  | 姓名(中文) |
+| `personal_id` | `varchar(15)` | YES | MUL | 个人ID |
+| `resume_en` | `longtext` | YES |  | 个人简历(英文) |
+| `resume_cn` | `longtext` | YES |  | 个人简历(中文) |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

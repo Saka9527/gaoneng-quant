@@ -1,6 +1,6 @@
 ---
 title: "thematicindex_stock_chg_record"
-description: "thematicindex_stock_chg_record"
+description: "中国股票专题概念指数成分股变动表"
 ---
 
 - 说明: 中国股票专题概念指数成分股变动表
@@ -11,20 +11,20 @@ description: "thematicindex_stock_chg_record"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录同步时间 |
-| 5 | `stock_code` | `varchar(255)` | YES |  |  |  | 股票代码 |
-| 6 | `change_time` | `datetime(6)` | YES |  |  |  | 更新时间 |
-| 7 | `stock_explain` | `longtext` | YES |  |  |  | 成分股解析 |
-| 8 | `change_type` | `varchar(255)` | YES |  |  |  | 变更类型 |
-| 9 | `concept_id` | `varchar(20)` | YES | MUL |  |  | 概念ID |
-| 10 | `market_id` | `varchar(255)` | YES |  |  |  | 小市场代码 |
-| 11 | `reason` | `varchar(500)` | YES |  |  |  | 变更理由 |
-| 12 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建时间 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改时间 |
+| `rtime` | `datetime(6)` | YES |  | 记录同步时间 |
+| `stock_code` | `varchar(255)` | YES |  | 股票代码 |
+| `change_time` | `datetime(6)` | YES |  | 更新时间 |
+| `stock_explain` | `longtext` | YES |  | 成分股解析 |
+| `change_type` | `varchar(255)` | YES |  | 变更类型 |
+| `concept_id` | `varchar(20)` | YES | MUL | 概念ID |
+| `market_id` | `varchar(255)` | YES |  | 小市场代码 |
+| `reason` | `varchar(500)` | YES |  | 变更理由 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

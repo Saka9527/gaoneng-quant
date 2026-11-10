@@ -1,6 +1,6 @@
 ---
 title: "shsz_stock_up_and_dl_price"
-description: "shsz_stock_up_and_dl_price"
+description: "中国股票涨跌停价格"
 ---
 
 - 说明: 中国股票涨跌停价格
@@ -11,17 +11,17 @@ description: "shsz_stock_up_and_dl_price"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `ul_price` | `decimal(10,4)` | YES |  |  |  | 涨停价格 |
-| 6 | `dl_price` | `decimal(10,4)` | YES |  |  |  | 跌停价格 |
-| 7 | `td_date` | `date` | YES |  |  |  | 交易日期 |
-| 8 | `sec_id` | `varchar(40)` | YES |  |  |  | 证券id |
-| 9 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建日期 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改日期 |
+| `rtime` | `datetime(6)` | YES |  | 记录通讯到用户端日期 |
+| `ul_price` | `decimal(10,4)` | YES |  | 涨停价格 |
+| `dl_price` | `decimal(10,4)` | YES |  | 跌停价格 |
+| `td_date` | `date` | YES |  | 交易日期 |
+| `sec_id` | `varchar(40)` | YES |  | 证券id |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

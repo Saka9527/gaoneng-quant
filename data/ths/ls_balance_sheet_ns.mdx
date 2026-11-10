@@ -1,6 +1,6 @@
 ---
 title: "ls_balance_sheet_ns"
-description: "ls_balance_sheet_ns"
+description: "中国股票资产负债表(新准则)"
 ---
 
 - 说明: 中国股票资产负债表(新准则)
@@ -11,203 +11,203 @@ description: "ls_balance_sheet_ns"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录同步时间 |
-| 5 | `chg_seq` | `decimal(3,0)` | YES |  |  |  | 变动序号 |
-| 6 | `announ_seq` | `decimal(20,0)` | YES |  |  |  | 公告序号 |
-| 7 | `bp_and_ap` | `decimal(24,4)` | YES |  |  |  | 应付票据及应付账款 |
-| 8 | `ar_and_br` | `decimal(24,4)` | YES |  |  |  | 应收票据及应收账款 |
-| 9 | `lt_payable_sum` | `decimal(24,4)` | YES |  |  |  | 长期应付款合计 |
-| 10 | `construction_in_process_sum` | `decimal(24,4)` | YES |  |  |  | 在建工程合计 |
-| 11 | `fixed_asset_sum` | `decimal(24,4)` | YES |  |  |  | 固定资产合计 |
-| 12 | `other_receivables_sum` | `decimal(24,4)` | YES |  |  |  | 其它应收款合计 |
-| 13 | `other_payables_sum` | `decimal(24,4)` | YES |  |  |  | 其它应付款合计 |
-| 14 | `use_right_asset` | `decimal(24,4)` | YES |  |  |  | 使用权资产 |
-| 15 | `receivable_financing` | `decimal(24,4)` | YES |  |  |  | 应收款项融资 |
-| 16 | `lease_debt` | `decimal(24,4)` | YES |  |  |  | 租赁负债 |
-| 17 | `total_quity_atsopc_bi` | `decimal(24,4)` | YES |  |  |  | 归属于母公司股东权益合计平衡科目 |
-| 18 | `total_quity_atsopc_si` | `decimal(24,4)` | YES |  |  |  | 归属于母公司股东权益合计特殊科目 |
-| 19 | `inventory_dscorce` | `decimal(24,4)` | YES |  |  |  | 存货：数据资源 |
-| 20 | `develop_exp_dscorce` | `decimal(24,4)` | YES |  |  |  | 开发支出：数据资源 |
-| 21 | `inta_asset_dscorce` | `decimal(24,4)` | YES |  |  |  | 无形资产：数据资源 |
-| 22 | `othr_liab` | `decimal(18,4)` | YES |  |  |  | 其他负债 |
-| 23 | `advance_premium` | `decimal(18,4)` | YES |  |  |  | 预收保费 |
-| 24 | `charge_and_commi_payable` | `decimal(18,4)` | YES |  |  |  | 应付手续费及佣金 |
-| 25 | `rein_payable` | `decimal(18,4)` | YES |  |  |  | 应付分保账款 |
-| 26 | `claim_payable` | `decimal(18,4)` | YES |  |  |  | 应付赔付款 |
-| 27 | `dvdnd_payable_for_the_insured` | `decimal(18,4)` | YES |  |  |  | 应付保单红利 |
-| 28 | `assured_saving_and_invest` | `decimal(18,4)` | YES |  |  |  | 保户储金及投资款 |
-| 29 | `unearned_premium_reserve` | `decimal(18,4)` | YES |  |  |  | 未到期责任准备金 |
-| 30 | `reserve_for_outstanding_losses` | `decimal(18,4)` | YES |  |  |  | 未决赔款准备金 |
-| 31 | `life_insurance_reserve` | `decimal(18,4)` | YES |  |  |  | 寿险责任准备金 |
-| 32 | `lt_health_insurance_reserve` | `decimal(18,4)` | YES |  |  |  | 长期健康险责任准备金 |
-| 33 | `independent_account_liab` | `decimal(18,4)` | YES |  |  |  | 独立账户负债 |
-| 34 | `pledged_loan` | `decimal(18,4)` | YES |  |  |  | 其中：质押借款 |
-| 35 | `acting_td_sec` | `decimal(18,4)` | YES |  |  |  | 代理买卖证券款 |
-| 36 | `act_underwriting_sec` | `decimal(18,4)` | YES |  |  |  | 代理承销证券款 |
-| 37 | `rein_undue_liability_reserve` | `decimal(18,4)` | YES |  |  |  | 应收分保未到期责任准备金 |
-| 38 | `currency_code` | `varchar(12)` | YES |  |  |  | 货币代码 |
-| 39 | `org_id` | `varchar(20)` | YES |  |  |  | 机构id |
-| 40 | `org_name` | `varchar(200)` | YES |  |  |  | 机构名称 |
-| 41 | `ed` | `date` | YES |  |  |  | 截止日期 |
-| 42 | `lt_deferred_expense` | `decimal(18,4)` | YES |  |  |  | 长期待摊费用 |
-| 43 | `statement_type_code` | `varchar(12)` | YES |  |  |  | 报表类型编码 |
-| 44 | `statement_type` | `varchar(40)` | YES |  |  |  | 报表类型 |
-| 45 | `bond_payable` | `decimal(18,4)` | YES |  |  |  | 应付债券 |
-| 46 | `statement_format_code` | `varchar(12)` | YES |  |  |  | 报表格式编码 |
-| 47 | `statement_format` | `varchar(40)` | YES |  |  |  | 报表格式 |
-| 48 | `sas_code` | `varchar(12)` | YES |  |  |  | 报表会计准则编码 |
-| 49 | `sas` | `varchar(40)` | YES |  |  |  | 报表会计准则 |
-| 50 | `data_source_code` | `varchar(12)` | YES |  |  |  | 数据来源代码 |
-| 51 | `data_source` | `varchar(40)` | YES |  |  |  | 数据来源 |
-| 52 | `is_statement_complete` | `decimal(1,0)` | YES |  |  |  | 报表是否完整 |
-| 53 | `is_audited` | `decimal(1,0)` | YES |  |  |  | 是否审计 |
-| 54 | `announcement_date` | `date` | YES |  |  |  | 公告日期 |
-| 55 | `currency_funds` | `decimal(18,4)` | YES |  |  |  | 货币资金 |
-| 56 | `tradable_fnncl_assets` | `decimal(18,4)` | YES |  |  |  | 交易性金融资产 |
-| 57 | `bills_receivable` | `decimal(18,4)` | YES |  |  |  | 应收票据 |
-| 58 | `account_receivable` | `decimal(18,4)` | YES |  |  |  | 应收账款 |
-| 59 | `pre_payment` | `decimal(18,4)` | YES |  |  |  | 预付款项 |
-| 60 | `interest_receivable` | `decimal(18,4)` | YES |  |  |  | 应收利息 |
-| 61 | `dividend_receivable` | `decimal(18,4)` | YES |  |  |  | 应收股利 |
-| 62 | `othr_receivables` | `decimal(18,4)` | YES |  |  |  | 其他应收款 |
-| 63 | `inventory` | `decimal(18,4)` | YES |  |  |  | 存货 |
-| 64 | `capital_reserve` | `decimal(18,4)` | YES |  |  |  | 资本公积 |
-| 65 | `nca_due_within_one_year` | `decimal(18,4)` | YES |  |  |  | 一年内到期的非流动资产 |
-| 66 | `othr_current_assets` | `decimal(18,4)` | YES |  |  |  | 其他流动资产 |
-| 67 | `current_assets_si` | `decimal(18,4)` | YES |  |  |  | 流动资产特殊科目 |
-| 68 | `current_assets_bi` | `decimal(18,4)` | YES |  |  |  | 流动资产平衡科目 |
-| 69 | `total_current_assets` | `decimal(18,4)` | YES |  |  |  | 流动资产合计 |
-| 70 | `salable_financial_assets` | `decimal(18,4)` | YES |  |  |  | 可供出售金融资产 |
-| 71 | `held_to_maturity_invest` | `decimal(18,4)` | YES |  |  |  | 持有至到期投资 |
-| 72 | `lt_receivable` | `decimal(18,4)` | YES |  |  |  | 长期应收款 |
-| 73 | `lt_equity_invest` | `decimal(18,4)` | YES |  |  |  | 长期股权投资 |
-| 74 | `invest_property` | `decimal(18,4)` | YES |  |  |  | 投资性房地产 |
-| 75 | `fixed_asset` | `decimal(18,4)` | YES |  |  |  | 固定资产 |
-| 76 | `construction_in_process` | `decimal(18,4)` | YES |  |  |  | 在建工程 |
-| 77 | `project_goods_and_material` | `decimal(18,4)` | YES |  |  |  | 工程物资 |
-| 78 | `fixed_assets_disposal` | `decimal(18,4)` | YES |  |  |  | 固定资产清理 |
-| 79 | `productive_biological_assets` | `decimal(18,4)` | YES |  |  |  | 生产性生物资产 |
-| 80 | `oil_and_gas_asset` | `decimal(18,4)` | YES |  |  |  | 油气资产 |
-| 81 | `intangible_assets` | `decimal(18,4)` | YES |  |  |  | 无形资产 |
-| 82 | `dev_expenditure` | `decimal(18,4)` | YES |  |  |  | 开发支出 |
-| 83 | `goodwill` | `decimal(18,4)` | YES |  |  |  | 商誉 |
-| 84 | `dt_assets` | `decimal(18,4)` | YES |  |  |  | 递延所得税资产 |
-| 85 | `othr_noncurrent_assets` | `decimal(18,4)` | YES |  |  |  | 其他非流动资产 |
-| 86 | `noncurrent_assets_si` | `decimal(18,4)` | YES |  |  |  | 非流动资产特殊科目 |
-| 87 | `lt_payable` | `decimal(18,4)` | YES |  |  |  | 长期应付款 |
-| 88 | `noncurrent_assets_bi` | `decimal(18,4)` | YES |  |  |  | 非流动资产平衡科目 |
-| 89 | `total_noncurrent_assets` | `decimal(18,4)` | YES |  |  |  | 非流动资产合计 |
-| 90 | `central_bank_cash_and_deposit` | `decimal(18,4)` | YES |  |  |  | 现金及存放中央银行款项 |
-| 91 | `interbank_storage` | `decimal(18,4)` | YES |  |  |  | 存放同业款项 |
-| 92 | `precious_metal` | `decimal(18,4)` | YES |  |  |  | 贵金属 |
-| 93 | `lending_fund` | `decimal(18,4)` | YES |  |  |  | 拆出资金 |
-| 94 | `derivative_fnncl_assets` | `decimal(18,4)` | YES |  |  |  | 衍生金融资产 |
-| 95 | `buy_resale_fnncl_assets` | `decimal(18,4)` | YES |  |  |  | 买入返售金融资产 |
-| 96 | `disbursement_loan_and_advance` | `decimal(18,4)` | YES |  |  |  | 发放贷款和垫款 |
-| 97 | `othr_assets` | `decimal(18,4)` | YES |  |  |  | 其他资产 |
-| 98 | `receivable_invest` | `decimal(18,4)` | YES |  |  |  | 应收款项类投资 |
-| 99 | `premium_receivable` | `decimal(18,4)` | YES |  |  |  | 应收保费 |
-| 100 | `subrogation_receivable` | `decimal(18,4)` | YES |  |  |  | 应收代位追偿款 |
-| 101 | `rein_account_receivable` | `decimal(18,4)` | YES |  |  |  | 应收分保账款 |
-| 102 | `receivable_rein_olr` | `decimal(18,4)` | YES |  |  |  | 应收分保未决赔款准备金 |
-| 103 | `receivable_rein_duty_reserve` | `decimal(18,4)` | YES |  |  |  | 应收分保寿险责任准备金 |
-| 104 | `receivable_deposit_of_lt_hi` | `decimal(18,4)` | YES |  |  |  | 应收分保长期健康险责任准备金 |
-| 105 | `assured_pledge_loan` | `decimal(18,4)` | YES |  |  |  | 保户质押贷款 |
-| 106 | `fixed_deposit` | `decimal(18,4)` | YES |  |  |  | 定期存款 |
-| 107 | `paid_capital_deposit` | `decimal(18,4)` | YES |  |  |  | 存出资本保证金 |
-| 108 | `separate_account` | `decimal(18,4)` | YES |  |  |  | 独立账户资产 |
-| 109 | `customer_fund_deposit` | `decimal(18,4)` | YES |  |  |  | 其中：客户资金存款 |
-| 110 | `settle_reserves` | `decimal(18,4)` | YES |  |  |  | 结算备付金 |
-| 111 | `customer_provision` | `decimal(18,4)` | YES |  |  |  | 其中：客户备付金 |
-| 112 | `paid_deposit` | `decimal(18,4)` | YES |  |  |  | 存出保证金 |
-| 113 | `td_seat_fee` | `decimal(18,4)` | YES |  |  |  | 其中：交易席位费 |
-| 114 | `asset_si` | `decimal(18,4)` | YES |  |  |  | 资产特殊科目 |
-| 115 | `asset_bi` | `decimal(18,4)` | YES |  |  |  | 资产平衡科目 |
-| 116 | `total_assets` | `decimal(18,4)` | YES |  |  |  | 资产总计 |
-| 117 | `st_loan` | `decimal(18,4)` | YES |  |  |  | 短期借款 |
-| 118 | `tradable_fnncl_liab` | `decimal(18,4)` | YES |  |  |  | 交易性金融负债 |
-| 119 | `bill_payable` | `decimal(18,4)` | YES |  |  |  | 应付票据 |
-| 120 | `accounts_payable` | `decimal(18,4)` | YES |  |  |  | 应付账款 |
-| 121 | `pre_receivable` | `decimal(18,4)` | YES |  |  |  | 预收款项 |
-| 122 | `payroll_payable` | `decimal(18,4)` | YES |  |  |  | 应付职工薪酬 |
-| 123 | `tax_payable` | `decimal(18,4)` | YES |  |  |  | 应交税费 |
-| 124 | `interest_payable` | `decimal(18,4)` | YES |  |  |  | 应付利息 |
-| 125 | `dividend_payable` | `decimal(18,4)` | YES |  |  |  | 应付股利 |
-| 126 | `othr_payables` | `decimal(18,4)` | YES |  |  |  | 其他应付款 |
-| 127 | `noncurrent_liab_due_in1y` | `decimal(18,4)` | YES |  |  |  | 一年内到期的非流动负债 |
-| 128 | `othr_current_liab` | `decimal(18,4)` | YES |  |  |  | 其他流动负债 |
-| 129 | `current_liab_si` | `decimal(18,4)` | YES |  |  |  | 流动负债特殊科目 |
-| 130 | `current_liab_bi` | `decimal(18,4)` | YES |  |  |  | 流动负债平衡科目 |
-| 131 | `total_current_liab` | `decimal(18,4)` | YES |  |  |  | 流动负债合计 |
-| 132 | `lt_loan` | `decimal(18,4)` | YES |  |  |  | 长期借款 |
-| 133 | `special_payable` | `decimal(18,4)` | YES |  |  |  | 专项应付款 |
-| 134 | `estimated_liab` | `decimal(18,4)` | YES |  |  |  | 预计负债 |
-| 135 | `dt_liab` | `decimal(18,4)` | YES |  |  |  | 递延所得税负债 |
-| 136 | `othr_non_current_liab` | `decimal(18,4)` | YES |  |  |  | 其他非流动负债 |
-| 137 | `noncurrent_liab_si` | `decimal(18,4)` | YES |  |  |  | 非流动负债特殊科目 |
-| 138 | `noncurrent_liab_bi` | `decimal(18,4)` | YES |  |  |  | 非流动负债平衡科目 |
-| 139 | `total_noncurrent_liab` | `decimal(18,4)` | YES |  |  |  | 非流动负债合计 |
-| 140 | `loan_from_central_bank` | `decimal(18,4)` | YES |  |  |  | 向中央银行借款 |
-| 141 | `interbank_deposit_etc` | `decimal(18,4)` | YES |  |  |  | 同业及其他金融机构存放款项 |
-| 142 | `borrowing_funds` | `decimal(18,4)` | YES |  |  |  | 拆入资金 |
-| 143 | `derivative_fnncl_liab` | `decimal(18,4)` | YES |  |  |  | 衍生金融负债 |
-| 144 | `fnncl_assets_sold_for_repur` | `decimal(18,4)` | YES |  |  |  | 卖出回购金融资产款 |
-| 145 | `savings_absorption` | `decimal(18,4)` | YES |  |  |  | 吸收存款 |
-| 146 | `liab_si` | `decimal(18,4)` | YES |  |  |  | 负债特殊科目 |
-| 147 | `liab_bi` | `decimal(18,4)` | YES |  |  |  | 负债平衡科目 |
-| 148 | `total_liab` | `decimal(18,4)` | YES |  |  |  | 负债合计 |
-| 149 | `shares` | `decimal(18,4)` | YES |  |  |  | 股本 |
-| 150 | `treasury_stock` | `decimal(18,4)` | YES |  |  |  | 减：库存股 |
-| 151 | `special_reserve` | `decimal(18,4)` | YES |  |  |  | 专项储备 |
-| 152 | `earned_surplus` | `decimal(18,4)` | YES |  |  |  | 盈余公积 |
-| 153 | `general_risk_provision` | `decimal(18,4)` | YES |  |  |  | 一般风险准备 |
-| 154 | `td_risk_preparation` | `decimal(18,4)` | YES |  |  |  | 交易风险准备 |
-| 155 | `undstrbtd_profit` | `decimal(18,4)` | YES |  |  |  | 未分配利润 |
-| 156 | `frgn_currency_convert_diff` | `decimal(18,4)` | YES |  |  |  | 外币报表折算差额 |
-| 157 | `holders_equity_si` | `decimal(18,4)` | YES |  |  |  | 股东权益特殊科目 |
-| 158 | `holders_equity_bi` | `decimal(18,4)` | YES |  |  |  | 股东权益平衡科目 |
-| 159 | `total_quity_atsopc` | `decimal(18,4)` | YES |  |  |  | 归属于母公司股东权益合计 |
-| 160 | `minority_equity` | `decimal(18,4)` | YES |  |  |  | 少数股东权益 |
-| 161 | `total_holders_equity` | `decimal(18,4)` | YES |  |  |  | 股东权益合计 |
-| 162 | `total_liab_and_holders_equity` | `decimal(18,4)` | YES |  |  |  | 负债和股东权益总计 |
-| 163 | `is_statement_released_values` | `decimal(1,0)` | YES |  |  |  | 报表是否公布值 |
-| 164 | `shares_num` | `decimal(18,0)` | YES |  |  |  | 股本总数 |
-| 165 | `rein_contract_reserve` | `decimal(18,4)` | YES |  |  |  | 应收分保合同准备金 |
-| 166 | `saving_and_interbank_deposit` | `decimal(18,4)` | YES |  |  |  | 吸收存款及同业存放 |
-| 167 | `insurance_contract_reserve` | `decimal(18,4)` | YES |  |  |  | 保险合同准备金 |
-| 168 | `current_liab_di` | `decimal(18,4)` | YES |  |  |  | 流动负债递延收益 |
-| 169 | `st_bond_payable` | `decimal(18,4)` | YES |  |  |  | 应付短期债券 |
-| 170 | `noncurrent_liab_di` | `decimal(18,4)` | YES |  |  |  | 非流动负债递延收益 |
-| 171 | `received_deposit` | `decimal(18,4)` | YES |  |  |  | 存入保证金 |
-| 172 | `financing_funds` | `decimal(18,4)` | YES |  |  |  | 融出资金 |
-| 173 | `receivable` | `decimal(18,4)` | YES |  |  |  | 应收款项 |
-| 174 | `st_financing_payable` | `decimal(18,4)` | YES |  |  |  | 应付短期融资款 |
-| 175 | `accrued_payable` | `decimal(18,4)` | YES |  |  |  | 应付款项 |
-| 176 | `othr_compre_income` | `decimal(24,4)` | YES |  |  |  | 其他综合收益 |
-| 177 | `lt_staff_salary_payable` | `decimal(24,4)` | YES |  |  |  | 长期应付职工薪酬 |
-| 178 | `othr_equity_instruments` | `decimal(24,4)` | YES |  |  |  | 其他权益工具 |
-| 179 | `preferred_share` | `decimal(24,4)` | YES |  |  |  | 其中：优先股 |
-| 180 | `perpetual_bond` | `decimal(24,4)` | YES |  |  |  | 其中：永续债 |
-| 181 | `to_sale_debt` | `decimal(18,4)` | YES |  |  |  | 划分为持有待售的负债 |
-| 182 | `to_sale_asset` | `decimal(18,4)` | YES |  |  |  | 划分为持有待售的资产 |
-| 183 | `preferred_shares` | `decimal(18,4)` | YES |  |  |  | 优先股 |
-| 184 | `perpetual_capital_sec` | `decimal(18,4)` | YES |  |  |  | 永续债 |
-| 185 | `fv_chg_income_fnncl_assets` | `decimal(24,4)` | YES |  |  |  | 以公允价值计量且其变动计入其他综合收益的金融资产 |
-| 186 | `amortized_cost_fnncl_assets` | `decimal(24,4)` | YES |  |  |  | 以摊余成本计量的金融资产 |
-| 187 | `debt_invest` | `decimal(24,4)` | YES |  |  |  | 债权投资 |
-| 188 | `other_debt_invest` | `decimal(24,4)` | YES |  |  |  | 其他债权投资 |
-| 189 | `other_eq_ins_invest` | `decimal(24,4)` | YES |  |  |  | 其他权益工具投资 |
-| 190 | `other_illiquid_fnncl_assets` | `decimal(24,4)` | YES |  |  |  | 其他非流动金融资产 |
-| 191 | `contract_liabilities` | `decimal(24,4)` | YES |  |  |  | 合同负债 |
-| 192 | `statement_source_explain` | `varchar(100)` | YES |  |  |  | 报表来源说明 |
-| 193 | `contractual_assets` | `decimal(24,4)` | YES |  |  |  | 合同资产 |
-| 194 | `special_explain` | `mediumtext` | YES |  |  |  | 特殊情况说明 |
-| 195 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建时间 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改时间 |
+| `rtime` | `datetime(6)` | YES |  | 记录同步时间 |
+| `chg_seq` | `decimal(3,0)` | YES |  | 变动序号 |
+| `announ_seq` | `decimal(20,0)` | YES |  | 公告序号 |
+| `bp_and_ap` | `decimal(24,4)` | YES |  | 应付票据及应付账款 |
+| `ar_and_br` | `decimal(24,4)` | YES |  | 应收票据及应收账款 |
+| `lt_payable_sum` | `decimal(24,4)` | YES |  | 长期应付款合计 |
+| `construction_in_process_sum` | `decimal(24,4)` | YES |  | 在建工程合计 |
+| `fixed_asset_sum` | `decimal(24,4)` | YES |  | 固定资产合计 |
+| `other_receivables_sum` | `decimal(24,4)` | YES |  | 其它应收款合计 |
+| `other_payables_sum` | `decimal(24,4)` | YES |  | 其它应付款合计 |
+| `use_right_asset` | `decimal(24,4)` | YES |  | 使用权资产 |
+| `receivable_financing` | `decimal(24,4)` | YES |  | 应收款项融资 |
+| `lease_debt` | `decimal(24,4)` | YES |  | 租赁负债 |
+| `total_quity_atsopc_bi` | `decimal(24,4)` | YES |  | 归属于母公司股东权益合计平衡科目 |
+| `total_quity_atsopc_si` | `decimal(24,4)` | YES |  | 归属于母公司股东权益合计特殊科目 |
+| `inventory_dscorce` | `decimal(24,4)` | YES |  | 存货：数据资源 |
+| `develop_exp_dscorce` | `decimal(24,4)` | YES |  | 开发支出：数据资源 |
+| `inta_asset_dscorce` | `decimal(24,4)` | YES |  | 无形资产：数据资源 |
+| `othr_liab` | `decimal(18,4)` | YES |  | 其他负债 |
+| `advance_premium` | `decimal(18,4)` | YES |  | 预收保费 |
+| `charge_and_commi_payable` | `decimal(18,4)` | YES |  | 应付手续费及佣金 |
+| `rein_payable` | `decimal(18,4)` | YES |  | 应付分保账款 |
+| `claim_payable` | `decimal(18,4)` | YES |  | 应付赔付款 |
+| `dvdnd_payable_for_the_insured` | `decimal(18,4)` | YES |  | 应付保单红利 |
+| `assured_saving_and_invest` | `decimal(18,4)` | YES |  | 保户储金及投资款 |
+| `unearned_premium_reserve` | `decimal(18,4)` | YES |  | 未到期责任准备金 |
+| `reserve_for_outstanding_losses` | `decimal(18,4)` | YES |  | 未决赔款准备金 |
+| `life_insurance_reserve` | `decimal(18,4)` | YES |  | 寿险责任准备金 |
+| `lt_health_insurance_reserve` | `decimal(18,4)` | YES |  | 长期健康险责任准备金 |
+| `independent_account_liab` | `decimal(18,4)` | YES |  | 独立账户负债 |
+| `pledged_loan` | `decimal(18,4)` | YES |  | 其中：质押借款 |
+| `acting_td_sec` | `decimal(18,4)` | YES |  | 代理买卖证券款 |
+| `act_underwriting_sec` | `decimal(18,4)` | YES |  | 代理承销证券款 |
+| `rein_undue_liability_reserve` | `decimal(18,4)` | YES |  | 应收分保未到期责任准备金 |
+| `currency_code` | `varchar(12)` | YES |  | 货币代码 |
+| `org_id` | `varchar(20)` | YES |  | 机构id |
+| `org_name` | `varchar(200)` | YES |  | 机构名称 |
+| `ed` | `date` | YES |  | 截止日期 |
+| `lt_deferred_expense` | `decimal(18,4)` | YES |  | 长期待摊费用 |
+| `statement_type_code` | `varchar(12)` | YES |  | 报表类型编码 |
+| `statement_type` | `varchar(40)` | YES |  | 报表类型 |
+| `bond_payable` | `decimal(18,4)` | YES |  | 应付债券 |
+| `statement_format_code` | `varchar(12)` | YES |  | 报表格式编码 |
+| `statement_format` | `varchar(40)` | YES |  | 报表格式 |
+| `sas_code` | `varchar(12)` | YES |  | 报表会计准则编码 |
+| `sas` | `varchar(40)` | YES |  | 报表会计准则 |
+| `data_source_code` | `varchar(12)` | YES |  | 数据来源代码 |
+| `data_source` | `varchar(40)` | YES |  | 数据来源 |
+| `is_statement_complete` | `decimal(1,0)` | YES |  | 报表是否完整 |
+| `is_audited` | `decimal(1,0)` | YES |  | 是否审计 |
+| `announcement_date` | `date` | YES |  | 公告日期 |
+| `currency_funds` | `decimal(18,4)` | YES |  | 货币资金 |
+| `tradable_fnncl_assets` | `decimal(18,4)` | YES |  | 交易性金融资产 |
+| `bills_receivable` | `decimal(18,4)` | YES |  | 应收票据 |
+| `account_receivable` | `decimal(18,4)` | YES |  | 应收账款 |
+| `pre_payment` | `decimal(18,4)` | YES |  | 预付款项 |
+| `interest_receivable` | `decimal(18,4)` | YES |  | 应收利息 |
+| `dividend_receivable` | `decimal(18,4)` | YES |  | 应收股利 |
+| `othr_receivables` | `decimal(18,4)` | YES |  | 其他应收款 |
+| `inventory` | `decimal(18,4)` | YES |  | 存货 |
+| `capital_reserve` | `decimal(18,4)` | YES |  | 资本公积 |
+| `nca_due_within_one_year` | `decimal(18,4)` | YES |  | 一年内到期的非流动资产 |
+| `othr_current_assets` | `decimal(18,4)` | YES |  | 其他流动资产 |
+| `current_assets_si` | `decimal(18,4)` | YES |  | 流动资产特殊科目 |
+| `current_assets_bi` | `decimal(18,4)` | YES |  | 流动资产平衡科目 |
+| `total_current_assets` | `decimal(18,4)` | YES |  | 流动资产合计 |
+| `salable_financial_assets` | `decimal(18,4)` | YES |  | 可供出售金融资产 |
+| `held_to_maturity_invest` | `decimal(18,4)` | YES |  | 持有至到期投资 |
+| `lt_receivable` | `decimal(18,4)` | YES |  | 长期应收款 |
+| `lt_equity_invest` | `decimal(18,4)` | YES |  | 长期股权投资 |
+| `invest_property` | `decimal(18,4)` | YES |  | 投资性房地产 |
+| `fixed_asset` | `decimal(18,4)` | YES |  | 固定资产 |
+| `construction_in_process` | `decimal(18,4)` | YES |  | 在建工程 |
+| `project_goods_and_material` | `decimal(18,4)` | YES |  | 工程物资 |
+| `fixed_assets_disposal` | `decimal(18,4)` | YES |  | 固定资产清理 |
+| `productive_biological_assets` | `decimal(18,4)` | YES |  | 生产性生物资产 |
+| `oil_and_gas_asset` | `decimal(18,4)` | YES |  | 油气资产 |
+| `intangible_assets` | `decimal(18,4)` | YES |  | 无形资产 |
+| `dev_expenditure` | `decimal(18,4)` | YES |  | 开发支出 |
+| `goodwill` | `decimal(18,4)` | YES |  | 商誉 |
+| `dt_assets` | `decimal(18,4)` | YES |  | 递延所得税资产 |
+| `othr_noncurrent_assets` | `decimal(18,4)` | YES |  | 其他非流动资产 |
+| `noncurrent_assets_si` | `decimal(18,4)` | YES |  | 非流动资产特殊科目 |
+| `lt_payable` | `decimal(18,4)` | YES |  | 长期应付款 |
+| `noncurrent_assets_bi` | `decimal(18,4)` | YES |  | 非流动资产平衡科目 |
+| `total_noncurrent_assets` | `decimal(18,4)` | YES |  | 非流动资产合计 |
+| `central_bank_cash_and_deposit` | `decimal(18,4)` | YES |  | 现金及存放中央银行款项 |
+| `interbank_storage` | `decimal(18,4)` | YES |  | 存放同业款项 |
+| `precious_metal` | `decimal(18,4)` | YES |  | 贵金属 |
+| `lending_fund` | `decimal(18,4)` | YES |  | 拆出资金 |
+| `derivative_fnncl_assets` | `decimal(18,4)` | YES |  | 衍生金融资产 |
+| `buy_resale_fnncl_assets` | `decimal(18,4)` | YES |  | 买入返售金融资产 |
+| `disbursement_loan_and_advance` | `decimal(18,4)` | YES |  | 发放贷款和垫款 |
+| `othr_assets` | `decimal(18,4)` | YES |  | 其他资产 |
+| `receivable_invest` | `decimal(18,4)` | YES |  | 应收款项类投资 |
+| `premium_receivable` | `decimal(18,4)` | YES |  | 应收保费 |
+| `subrogation_receivable` | `decimal(18,4)` | YES |  | 应收代位追偿款 |
+| `rein_account_receivable` | `decimal(18,4)` | YES |  | 应收分保账款 |
+| `receivable_rein_olr` | `decimal(18,4)` | YES |  | 应收分保未决赔款准备金 |
+| `receivable_rein_duty_reserve` | `decimal(18,4)` | YES |  | 应收分保寿险责任准备金 |
+| `receivable_deposit_of_lt_hi` | `decimal(18,4)` | YES |  | 应收分保长期健康险责任准备金 |
+| `assured_pledge_loan` | `decimal(18,4)` | YES |  | 保户质押贷款 |
+| `fixed_deposit` | `decimal(18,4)` | YES |  | 定期存款 |
+| `paid_capital_deposit` | `decimal(18,4)` | YES |  | 存出资本保证金 |
+| `separate_account` | `decimal(18,4)` | YES |  | 独立账户资产 |
+| `customer_fund_deposit` | `decimal(18,4)` | YES |  | 其中：客户资金存款 |
+| `settle_reserves` | `decimal(18,4)` | YES |  | 结算备付金 |
+| `customer_provision` | `decimal(18,4)` | YES |  | 其中：客户备付金 |
+| `paid_deposit` | `decimal(18,4)` | YES |  | 存出保证金 |
+| `td_seat_fee` | `decimal(18,4)` | YES |  | 其中：交易席位费 |
+| `asset_si` | `decimal(18,4)` | YES |  | 资产特殊科目 |
+| `asset_bi` | `decimal(18,4)` | YES |  | 资产平衡科目 |
+| `total_assets` | `decimal(18,4)` | YES |  | 资产总计 |
+| `st_loan` | `decimal(18,4)` | YES |  | 短期借款 |
+| `tradable_fnncl_liab` | `decimal(18,4)` | YES |  | 交易性金融负债 |
+| `bill_payable` | `decimal(18,4)` | YES |  | 应付票据 |
+| `accounts_payable` | `decimal(18,4)` | YES |  | 应付账款 |
+| `pre_receivable` | `decimal(18,4)` | YES |  | 预收款项 |
+| `payroll_payable` | `decimal(18,4)` | YES |  | 应付职工薪酬 |
+| `tax_payable` | `decimal(18,4)` | YES |  | 应交税费 |
+| `interest_payable` | `decimal(18,4)` | YES |  | 应付利息 |
+| `dividend_payable` | `decimal(18,4)` | YES |  | 应付股利 |
+| `othr_payables` | `decimal(18,4)` | YES |  | 其他应付款 |
+| `noncurrent_liab_due_in1y` | `decimal(18,4)` | YES |  | 一年内到期的非流动负债 |
+| `othr_current_liab` | `decimal(18,4)` | YES |  | 其他流动负债 |
+| `current_liab_si` | `decimal(18,4)` | YES |  | 流动负债特殊科目 |
+| `current_liab_bi` | `decimal(18,4)` | YES |  | 流动负债平衡科目 |
+| `total_current_liab` | `decimal(18,4)` | YES |  | 流动负债合计 |
+| `lt_loan` | `decimal(18,4)` | YES |  | 长期借款 |
+| `special_payable` | `decimal(18,4)` | YES |  | 专项应付款 |
+| `estimated_liab` | `decimal(18,4)` | YES |  | 预计负债 |
+| `dt_liab` | `decimal(18,4)` | YES |  | 递延所得税负债 |
+| `othr_non_current_liab` | `decimal(18,4)` | YES |  | 其他非流动负债 |
+| `noncurrent_liab_si` | `decimal(18,4)` | YES |  | 非流动负债特殊科目 |
+| `noncurrent_liab_bi` | `decimal(18,4)` | YES |  | 非流动负债平衡科目 |
+| `total_noncurrent_liab` | `decimal(18,4)` | YES |  | 非流动负债合计 |
+| `loan_from_central_bank` | `decimal(18,4)` | YES |  | 向中央银行借款 |
+| `interbank_deposit_etc` | `decimal(18,4)` | YES |  | 同业及其他金融机构存放款项 |
+| `borrowing_funds` | `decimal(18,4)` | YES |  | 拆入资金 |
+| `derivative_fnncl_liab` | `decimal(18,4)` | YES |  | 衍生金融负债 |
+| `fnncl_assets_sold_for_repur` | `decimal(18,4)` | YES |  | 卖出回购金融资产款 |
+| `savings_absorption` | `decimal(18,4)` | YES |  | 吸收存款 |
+| `liab_si` | `decimal(18,4)` | YES |  | 负债特殊科目 |
+| `liab_bi` | `decimal(18,4)` | YES |  | 负债平衡科目 |
+| `total_liab` | `decimal(18,4)` | YES |  | 负债合计 |
+| `shares` | `decimal(18,4)` | YES |  | 股本 |
+| `treasury_stock` | `decimal(18,4)` | YES |  | 减：库存股 |
+| `special_reserve` | `decimal(18,4)` | YES |  | 专项储备 |
+| `earned_surplus` | `decimal(18,4)` | YES |  | 盈余公积 |
+| `general_risk_provision` | `decimal(18,4)` | YES |  | 一般风险准备 |
+| `td_risk_preparation` | `decimal(18,4)` | YES |  | 交易风险准备 |
+| `undstrbtd_profit` | `decimal(18,4)` | YES |  | 未分配利润 |
+| `frgn_currency_convert_diff` | `decimal(18,4)` | YES |  | 外币报表折算差额 |
+| `holders_equity_si` | `decimal(18,4)` | YES |  | 股东权益特殊科目 |
+| `holders_equity_bi` | `decimal(18,4)` | YES |  | 股东权益平衡科目 |
+| `total_quity_atsopc` | `decimal(18,4)` | YES |  | 归属于母公司股东权益合计 |
+| `minority_equity` | `decimal(18,4)` | YES |  | 少数股东权益 |
+| `total_holders_equity` | `decimal(18,4)` | YES |  | 股东权益合计 |
+| `total_liab_and_holders_equity` | `decimal(18,4)` | YES |  | 负债和股东权益总计 |
+| `is_statement_released_values` | `decimal(1,0)` | YES |  | 报表是否公布值 |
+| `shares_num` | `decimal(18,0)` | YES |  | 股本总数 |
+| `rein_contract_reserve` | `decimal(18,4)` | YES |  | 应收分保合同准备金 |
+| `saving_and_interbank_deposit` | `decimal(18,4)` | YES |  | 吸收存款及同业存放 |
+| `insurance_contract_reserve` | `decimal(18,4)` | YES |  | 保险合同准备金 |
+| `current_liab_di` | `decimal(18,4)` | YES |  | 流动负债递延收益 |
+| `st_bond_payable` | `decimal(18,4)` | YES |  | 应付短期债券 |
+| `noncurrent_liab_di` | `decimal(18,4)` | YES |  | 非流动负债递延收益 |
+| `received_deposit` | `decimal(18,4)` | YES |  | 存入保证金 |
+| `financing_funds` | `decimal(18,4)` | YES |  | 融出资金 |
+| `receivable` | `decimal(18,4)` | YES |  | 应收款项 |
+| `st_financing_payable` | `decimal(18,4)` | YES |  | 应付短期融资款 |
+| `accrued_payable` | `decimal(18,4)` | YES |  | 应付款项 |
+| `othr_compre_income` | `decimal(24,4)` | YES |  | 其他综合收益 |
+| `lt_staff_salary_payable` | `decimal(24,4)` | YES |  | 长期应付职工薪酬 |
+| `othr_equity_instruments` | `decimal(24,4)` | YES |  | 其他权益工具 |
+| `preferred_share` | `decimal(24,4)` | YES |  | 其中：优先股 |
+| `perpetual_bond` | `decimal(24,4)` | YES |  | 其中：永续债 |
+| `to_sale_debt` | `decimal(18,4)` | YES |  | 划分为持有待售的负债 |
+| `to_sale_asset` | `decimal(18,4)` | YES |  | 划分为持有待售的资产 |
+| `preferred_shares` | `decimal(18,4)` | YES |  | 优先股 |
+| `perpetual_capital_sec` | `decimal(18,4)` | YES |  | 永续债 |
+| `fv_chg_income_fnncl_assets` | `decimal(24,4)` | YES |  | 以公允价值计量且其变动计入其他综合收益的金融资产 |
+| `amortized_cost_fnncl_assets` | `decimal(24,4)` | YES |  | 以摊余成本计量的金融资产 |
+| `debt_invest` | `decimal(24,4)` | YES |  | 债权投资 |
+| `other_debt_invest` | `decimal(24,4)` | YES |  | 其他债权投资 |
+| `other_eq_ins_invest` | `decimal(24,4)` | YES |  | 其他权益工具投资 |
+| `other_illiquid_fnncl_assets` | `decimal(24,4)` | YES |  | 其他非流动金融资产 |
+| `contract_liabilities` | `decimal(24,4)` | YES |  | 合同负债 |
+| `statement_source_explain` | `varchar(100)` | YES |  | 报表来源说明 |
+| `contractual_assets` | `decimal(24,4)` | YES |  | 合同资产 |
+| `special_explain` | `mediumtext` | YES |  | 特殊情况说明 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

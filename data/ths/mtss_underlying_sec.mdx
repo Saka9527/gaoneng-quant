@@ -1,6 +1,6 @@
 ---
 title: "mtss_underlying_sec"
-description: "mtss_underlying_sec"
+description: "中国股票融资融券标的证券"
 ---
 
 - 说明: 中国股票融资融券标的证券
@@ -11,17 +11,17 @@ description: "mtss_underlying_sec"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券id |
-| 6 | `inclusion_date` | `date` | YES |  |  |  | 纳入日期 |
-| 7 | `eliminate_date` | `date` | YES |  |  |  | 剔除日期 |
-| 8 | `type` | `decimal(5,0)` | YES |  |  |  | 类型 |
-| 9 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建日期 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改日期 |
+| `rtime` | `datetime(6)` | YES |  | 记录通讯到用户端日期 |
+| `sec_id` | `varchar(32)` | YES |  | 证券id |
+| `inclusion_date` | `date` | YES |  | 纳入日期 |
+| `eliminate_date` | `date` | YES |  | 剔除日期 |
+| `type` | `decimal(5,0)` | YES |  | 类型 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

@@ -1,6 +1,6 @@
 ---
 title: "industry_classi_standard"
-description: "industry_classi_standard"
+description: "行业分类标准编码表"
 ---
 
 - 说明: 行业分类标准编码表
@@ -11,24 +11,24 @@ description: "industry_classi_standard"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `industry_classi_code` | `varchar(12)` | YES |  |  |  | 行业分类代码 |
-| 6 | `industry_classi_name` | `varchar(200)` | YES |  |  |  | 行业分类名称 |
-| 7 | `industry_ctgry` | `varchar(400)` | YES |  |  |  | 行业说明 |
-| 8 | `parent_code` | `varchar(12)` | YES |  |  |  | 父类代码 |
-| 9 | `enable_date` | `date` | YES |  |  |  | 启用日期 |
-| 10 | `stop_date` | `date` | YES |  |  |  | 停用日期 |
-| 11 | `standard_industry_classi_code` | `varchar(100)` | YES |  |  |  | 标准行业分类代码 |
-| 12 | `standard_industry_classi_name` | `varchar(200)` | YES |  |  |  | 标准行业分类名称 |
-| 13 | `corresp_industry_index_id` | `varchar(30)` | YES |  |  |  | 对应行业指数id  |
-| 14 | `industry_level` | `decimal(1,0)` | YES |  |  |  | 行业级别 |
-| 15 | `industry_ctgry_code` | `varchar(12)` | YES |  |  |  | 行业类别编码 |
-| 16 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建日期 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改日期 |
+| `rtime` | `datetime(6)` | YES |  | 记录通讯到用户端日期 |
+| `industry_classi_code` | `varchar(12)` | YES |  | 行业分类代码 |
+| `industry_classi_name` | `varchar(200)` | YES |  | 行业分类名称 |
+| `industry_ctgry` | `varchar(400)` | YES |  | 行业说明 |
+| `parent_code` | `varchar(12)` | YES |  | 父类代码 |
+| `enable_date` | `date` | YES |  | 启用日期 |
+| `stop_date` | `date` | YES |  | 停用日期 |
+| `standard_industry_classi_code` | `varchar(100)` | YES |  | 标准行业分类代码 |
+| `standard_industry_classi_name` | `varchar(200)` | YES |  | 标准行业分类名称 |
+| `corresp_industry_index_id` | `varchar(30)` | YES |  | 对应行业指数id |
+| `industry_level` | `decimal(1,0)` | YES |  | 行业级别 |
+| `industry_ctgry_code` | `varchar(12)` | YES |  | 行业类别编码 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

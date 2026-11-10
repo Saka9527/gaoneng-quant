@@ -1,6 +1,6 @@
 ---
 title: "corp_share_structure"
-description: "corp_share_structure"
+description: "中国股票股本结构表"
 ---
 
 - 说明: 中国股票股本结构表
@@ -11,61 +11,61 @@ description: "corp_share_structure"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `corp_code` | `varchar(20)` | YES |  |  |  | 公司代码 |
-| 6 | `publish_date` | `date` | YES |  |  |  | 公布日期 |
-| 7 | `chg_date` | `date` | YES |  |  |  | 变动日期 |
-| 8 | `chg_reason_identifier` | `varchar(60)` | YES |  |  |  | 变动原因标识 |
-| 9 | `restricted_share` | `decimal(18,0)` | YES |  |  |  | 限售股本 |
-| 10 | `limit_shares_limit_ashare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股 |
-| 11 | `national_held_limit_ashare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_国家持股 |
-| 12 | `soap_held_limit_ashare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_国有法人持股 |
-| 13 | `domestic_held_limit_ashare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_其他内资持股 |
-| 14 | `ashare_domestic_corp_held` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_其他内资持股_境内法人持股 |
-| 15 | `domestic_np_held_limit_ashare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_其他内资持股_其他境内自然人持股 |
-| 16 | `executive_held_limit_ashare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_其他内资持股_高管持股 |
-| 17 | `org_place_limit_ashare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_其他内资持股_机构配售股份 |
-| 18 | `frgn_capital_held_limit_ashare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_外资持股 |
-| 19 | `ashare_frgn_corp_held` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_外资持股_境外法人持股 |
-| 20 | `frgn_np_held_limit_ashare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售a股_外资持股_境外自然人持股 |
-| 21 | `limit_shares_limit_bshare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售b股 |
-| 22 | `limit_shares_limit_hshare` | `decimal(18,0)` | YES |  |  |  | 限售股本_限售h股 |
-| 23 | `float_shares` | `decimal(18,0)` | YES |  |  |  | 流通股本 |
-| 24 | `float_shares_float_ashare` | `decimal(18,0)` | YES |  |  |  | 流通股本_流通a股 |
-| 25 | `float_shares_float_bshare` | `decimal(18,0)` | YES |  |  |  | 流通股本_流通b股 |
-| 26 | `float_shares_float_hshare` | `decimal(18,0)` | YES |  |  |  | 流通股本_流通h股 |
-| 27 | `othr_float_shares` | `decimal(18,0)` | YES |  |  |  | 流通股本_其它流通股 |
-| 28 | `overseas_listed_float_share` | `decimal(18,0)` | YES |  |  |  | 流通股本_其它流通股_境外上市其他股份 |
-| 29 | `neeq_ashare_float_shares` | `decimal(18,0)` | YES |  |  |  | 流通股本_其它流通股_三板a股 |
-| 30 | `neeq_bshare_float_shares` | `decimal(18,0)` | YES |  |  |  | 流通股本_其它流通股_三板b股 |
-| 31 | `total_shares` | `decimal(18,0)` | YES |  |  |  | 总股本 |
-| 32 | `unfloat_shares` | `decimal(18,0)` | YES |  |  |  | 非流通股本 |
-| 33 | `domestic_sponsor_shares_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_境内发起人股 |
-| 34 | `national_held_` | `decimal(18,0)` | YES |  |  |  | 非流通股本_境内发起人股_国家持有股份 |
-| 35 | `state_owned_corp_held_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_境内发起人股_国有法人股 |
-| 36 | `domestic_corp_held_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_境内发起人股_境内法人持有股份 |
-| 37 | `natural_personel_held_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_境内发起人股_自然人持有股份 |
-| 38 | `raise_corp_share_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_募集法人股 |
-| 39 | `normal_corp_share_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_一般法人股 |
-| 40 | `unlisted_frgn_capital_stock_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_非上市外资股 |
-| 41 | `staff_share_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_内部职工股 |
-| 42 | `prefered_share_etc_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_优先股及其他 |
-| 43 | `conversion_share_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_转配股 |
-| 44 | `natual_person_share_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_自然人股 |
-| 45 | `stragetic_investor_place_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_战略投资者配售股份 |
-| 46 | `fund_place_shares_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_基金配售股份 |
-| 47 | `normal_corp_place_share_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_一般法人配售股份 |
-| 48 | `orig_staq_float_share_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_原staq流通股 |
-| 49 | `orig_net_float_share_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_原net流通股 |
-| 50 | `other_unfloat_share_us` | `decimal(18,0)` | YES |  |  |  | 非流通股本_其他未流通股 |
-| 51 | `other_unfloat_shares` | `decimal(18,0)` | YES |  |  |  | 其它未流通股份 |
-| 52 | `total_shares_of_ashares` | `decimal(18,0)` | YES |  |  |  | a股总股本 |
-| 53 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `corp_code` | `varchar(20)` | YES |  | 公司代码 |
+| `publish_date` | `date` | YES |  | 公布日期 |
+| `chg_date` | `date` | YES |  | 变动日期 |
+| `chg_reason_identifier` | `varchar(60)` | YES |  | 变动原因标识 |
+| `restricted_share` | `decimal(18,0)` | YES |  | 限售股本 |
+| `limit_shares_limit_ashare` | `decimal(18,0)` | YES |  | 限售股本_限售a股 |
+| `national_held_limit_ashare` | `decimal(18,0)` | YES |  | 限售股本_限售a股_国家持股 |
+| `soap_held_limit_ashare` | `decimal(18,0)` | YES |  | 限售股本_限售a股_国有法人持股 |
+| `domestic_held_limit_ashare` | `decimal(18,0)` | YES |  | 限售股本_限售a股_其他内资持股 |
+| `ashare_domestic_corp_held` | `decimal(18,0)` | YES |  | 限售股本_限售a股_其他内资持股_境内法人持股 |
+| `domestic_np_held_limit_ashare` | `decimal(18,0)` | YES |  | 限售股本_限售a股_其他内资持股_其他境内自然人持股 |
+| `executive_held_limit_ashare` | `decimal(18,0)` | YES |  | 限售股本_限售a股_其他内资持股_高管持股 |
+| `org_place_limit_ashare` | `decimal(18,0)` | YES |  | 限售股本_限售a股_其他内资持股_机构配售股份 |
+| `frgn_capital_held_limit_ashare` | `decimal(18,0)` | YES |  | 限售股本_限售a股_外资持股 |
+| `ashare_frgn_corp_held` | `decimal(18,0)` | YES |  | 限售股本_限售a股_外资持股_境外法人持股 |
+| `frgn_np_held_limit_ashare` | `decimal(18,0)` | YES |  | 限售股本_限售a股_外资持股_境外自然人持股 |
+| `limit_shares_limit_bshare` | `decimal(18,0)` | YES |  | 限售股本_限售b股 |
+| `limit_shares_limit_hshare` | `decimal(18,0)` | YES |  | 限售股本_限售h股 |
+| `float_shares` | `decimal(18,0)` | YES |  | 流通股本 |
+| `float_shares_float_ashare` | `decimal(18,0)` | YES |  | 流通股本_流通a股 |
+| `float_shares_float_bshare` | `decimal(18,0)` | YES |  | 流通股本_流通b股 |
+| `float_shares_float_hshare` | `decimal(18,0)` | YES |  | 流通股本_流通h股 |
+| `othr_float_shares` | `decimal(18,0)` | YES |  | 流通股本_其它流通股 |
+| `overseas_listed_float_share` | `decimal(18,0)` | YES |  | 流通股本_其它流通股_境外上市其他股份 |
+| `neeq_ashare_float_shares` | `decimal(18,0)` | YES |  | 流通股本_其它流通股_三板a股 |
+| `neeq_bshare_float_shares` | `decimal(18,0)` | YES |  | 流通股本_其它流通股_三板b股 |
+| `total_shares` | `decimal(18,0)` | YES |  | 总股本 |
+| `unfloat_shares` | `decimal(18,0)` | YES |  | 非流通股本 |
+| `domestic_sponsor_shares_us` | `decimal(18,0)` | YES |  | 非流通股本_境内发起人股 |
+| `national_held_` | `decimal(18,0)` | YES |  | 非流通股本_境内发起人股_国家持有股份 |
+| `state_owned_corp_held_us` | `decimal(18,0)` | YES |  | 非流通股本_境内发起人股_国有法人股 |
+| `domestic_corp_held_us` | `decimal(18,0)` | YES |  | 非流通股本_境内发起人股_境内法人持有股份 |
+| `natural_personel_held_us` | `decimal(18,0)` | YES |  | 非流通股本_境内发起人股_自然人持有股份 |
+| `raise_corp_share_us` | `decimal(18,0)` | YES |  | 非流通股本_募集法人股 |
+| `normal_corp_share_us` | `decimal(18,0)` | YES |  | 非流通股本_一般法人股 |
+| `unlisted_frgn_capital_stock_us` | `decimal(18,0)` | YES |  | 非流通股本_非上市外资股 |
+| `staff_share_us` | `decimal(18,0)` | YES |  | 非流通股本_内部职工股 |
+| `prefered_share_etc_us` | `decimal(18,0)` | YES |  | 非流通股本_优先股及其他 |
+| `conversion_share_us` | `decimal(18,0)` | YES |  | 非流通股本_转配股 |
+| `natual_person_share_us` | `decimal(18,0)` | YES |  | 非流通股本_自然人股 |
+| `stragetic_investor_place_us` | `decimal(18,0)` | YES |  | 非流通股本_战略投资者配售股份 |
+| `fund_place_shares_us` | `decimal(18,0)` | YES |  | 非流通股本_基金配售股份 |
+| `normal_corp_place_share_us` | `decimal(18,0)` | YES |  | 非流通股本_一般法人配售股份 |
+| `orig_staq_float_share_us` | `decimal(18,0)` | YES |  | 非流通股本_原staq流通股 |
+| `orig_net_float_share_us` | `decimal(18,0)` | YES |  | 非流通股本_原net流通股 |
+| `other_unfloat_share_us` | `decimal(18,0)` | YES |  | 非流通股本_其他未流通股 |
+| `other_unfloat_shares` | `decimal(18,0)` | YES |  | 其它未流通股份 |
+| `total_shares_of_ashares` | `decimal(18,0)` | YES |  | a股总股本 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

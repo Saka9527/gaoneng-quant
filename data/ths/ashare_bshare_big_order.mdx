@@ -1,6 +1,6 @@
 ---
 title: "ashare_bshare_big_order"
-description: "ashare_bshare_big_order"
+description: "中国股票个股大单买卖"
 ---
 
 - 说明: 中国股票个股大单买卖
@@ -11,47 +11,47 @@ description: "ashare_bshare_big_order"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `active_sell_main_vol` | `decimal(18,0)` | YES |  |  |  | 主动卖出大单量 |
-| 6 | `active_buy_main_vol` | `decimal(18,0)` | YES |  |  |  | 主动买入大单量 |
-| 7 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券id |
-| 8 | `td_date` | `date` | YES | MUL |  |  | 交易日期 |
-| 9 | `active_buy_large_vol` | `decimal(18,0)` | YES |  |  |  | 主动买入特大单量 |
-| 10 | `active_buy_large_amt` | `decimal(18,4)` | YES |  |  |  | 主动买入特大单金额 |
-| 11 | `negative_buy_large_vol` | `decimal(18,0)` | YES |  |  |  | 被动买入特大单量 |
-| 12 | `negative_buy_large_amt` | `decimal(18,4)` | YES |  |  |  | 被动买入特大单金额 |
-| 13 | `active_sell_large_vol` | `decimal(18,0)` | YES |  |  |  | 主动卖出特大单量 |
-| 14 | `active_sell_large_amt` | `decimal(18,4)` | YES |  |  |  | 主动卖出特大单金额 |
-| 15 | `negative_sell_large_vol` | `decimal(18,0)` | YES |  |  |  | 被动卖出特大单量 |
-| 16 | `negative_sell_large_amt` | `decimal(18,4)` | YES |  |  |  | 被动卖出特大单金额 |
-| 17 | `active_buy_main_amt` | `decimal(18,4)` | YES |  |  |  | 主动买入大单金额 |
-| 18 | `negative_buy_main_vol` | `decimal(18,0)` | YES |  |  |  | 被动买入大单量 |
-| 19 | `negative_buy_main_amt` | `decimal(18,4)` | YES |  |  |  | 被动买入大单金额 |
-| 20 | `active_sell_main_amt` | `decimal(18,4)` | YES |  |  |  | 主动卖出大单金额 |
-| 21 | `negative_sell_main_vol` | `decimal(18,0)` | YES |  |  |  | 被动卖出大单量 |
-| 22 | `negative_sell_main_amt` | `decimal(18,4)` | YES |  |  |  | 被动卖出大单金额 |
-| 23 | `active_buy_middle_vol` | `decimal(18,0)` | YES |  |  |  | 主动买入中单量 |
-| 24 | `active_buy_middle_amt` | `decimal(18,4)` | YES |  |  |  | 主动买入中单金额 |
-| 25 | `negative_buy_middle_vol` | `decimal(18,0)` | YES |  |  |  | 被动买入中单量 |
-| 26 | `negative_buy_middle_amt` | `decimal(18,4)` | YES |  |  |  | 被动买入中单金额 |
-| 27 | `active_sell_middle_vol` | `decimal(18,0)` | YES |  |  |  | 主动卖出中单量 |
-| 28 | `active_sell_middle_amt` | `decimal(18,4)` | YES |  |  |  | 主动卖出中单金额 |
-| 29 | `negative_sell_middle_vol` | `decimal(18,0)` | YES |  |  |  | 被动卖出中单量 |
-| 30 | `negative_sell_middle_amt` | `decimal(18,4)` | YES |  |  |  | 被动卖出中单金额 |
-| 31 | `small_buy_vol` | `decimal(18,0)` | YES |  |  |  | 小单买入量 |
-| 32 | `small_buy_amt` | `decimal(18,4)` | YES |  |  |  | 小单买入金额 |
-| 33 | `small_sell_vol` | `decimal(18,0)` | YES |  |  |  | 小单卖出量 |
-| 34 | `small_sell_amt` | `decimal(18,4)` | YES |  |  |  | 小单卖出金额 |
-| 35 | `active_buy_small_vol` | `decimal(18,0)` | YES |  |  |  | 主动买入小单量 |
-| 36 | `active_buy_small_amt` | `decimal(18,4)` | YES |  |  |  | 主动买入小单金额 |
-| 37 | `active_sell_small_vol` | `decimal(18,0)` | YES |  |  |  | 主动卖出小单量 |
-| 38 | `active_sell_small_amt` | `decimal(18,4)` | YES |  |  |  | 主动卖出小单金额 |
-| 39 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建日期 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改日期 |
+| `rtime` | `datetime(6)` | YES |  | 记录通讯到用户端日期 |
+| `active_sell_main_vol` | `decimal(18,0)` | YES |  | 主动卖出大单量 |
+| `active_buy_main_vol` | `decimal(18,0)` | YES |  | 主动买入大单量 |
+| `sec_id` | `varchar(32)` | YES |  | 证券id |
+| `td_date` | `date` | YES | MUL | 交易日期 |
+| `active_buy_large_vol` | `decimal(18,0)` | YES |  | 主动买入特大单量 |
+| `active_buy_large_amt` | `decimal(18,4)` | YES |  | 主动买入特大单金额 |
+| `negative_buy_large_vol` | `decimal(18,0)` | YES |  | 被动买入特大单量 |
+| `negative_buy_large_amt` | `decimal(18,4)` | YES |  | 被动买入特大单金额 |
+| `active_sell_large_vol` | `decimal(18,0)` | YES |  | 主动卖出特大单量 |
+| `active_sell_large_amt` | `decimal(18,4)` | YES |  | 主动卖出特大单金额 |
+| `negative_sell_large_vol` | `decimal(18,0)` | YES |  | 被动卖出特大单量 |
+| `negative_sell_large_amt` | `decimal(18,4)` | YES |  | 被动卖出特大单金额 |
+| `active_buy_main_amt` | `decimal(18,4)` | YES |  | 主动买入大单金额 |
+| `negative_buy_main_vol` | `decimal(18,0)` | YES |  | 被动买入大单量 |
+| `negative_buy_main_amt` | `decimal(18,4)` | YES |  | 被动买入大单金额 |
+| `active_sell_main_amt` | `decimal(18,4)` | YES |  | 主动卖出大单金额 |
+| `negative_sell_main_vol` | `decimal(18,0)` | YES |  | 被动卖出大单量 |
+| `negative_sell_main_amt` | `decimal(18,4)` | YES |  | 被动卖出大单金额 |
+| `active_buy_middle_vol` | `decimal(18,0)` | YES |  | 主动买入中单量 |
+| `active_buy_middle_amt` | `decimal(18,4)` | YES |  | 主动买入中单金额 |
+| `negative_buy_middle_vol` | `decimal(18,0)` | YES |  | 被动买入中单量 |
+| `negative_buy_middle_amt` | `decimal(18,4)` | YES |  | 被动买入中单金额 |
+| `active_sell_middle_vol` | `decimal(18,0)` | YES |  | 主动卖出中单量 |
+| `active_sell_middle_amt` | `decimal(18,4)` | YES |  | 主动卖出中单金额 |
+| `negative_sell_middle_vol` | `decimal(18,0)` | YES |  | 被动卖出中单量 |
+| `negative_sell_middle_amt` | `decimal(18,4)` | YES |  | 被动卖出中单金额 |
+| `small_buy_vol` | `decimal(18,0)` | YES |  | 小单买入量 |
+| `small_buy_amt` | `decimal(18,4)` | YES |  | 小单买入金额 |
+| `small_sell_vol` | `decimal(18,0)` | YES |  | 小单卖出量 |
+| `small_sell_amt` | `decimal(18,4)` | YES |  | 小单卖出金额 |
+| `active_buy_small_vol` | `decimal(18,0)` | YES |  | 主动买入小单量 |
+| `active_buy_small_amt` | `decimal(18,4)` | YES |  | 主动买入小单金额 |
+| `active_sell_small_vol` | `decimal(18,0)` | YES |  | 主动卖出小单量 |
+| `active_sell_small_amt` | `decimal(18,4)` | YES |  | 主动卖出小单金额 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

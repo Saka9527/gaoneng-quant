@@ -1,6 +1,6 @@
 ---
 title: "corp_holder_account_table"
-description: "corp_holder_account_table"
+description: "中国股票股东户数表"
 ---
 
 - 说明: 中国股票股东户数表
@@ -11,20 +11,20 @@ description: "corp_holder_account_table"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `hshare_holder` | `decimal(18,0)` | YES |  |  |  | h股股东 |
-| 6 | `corp_code` | `varchar(20)` | YES |  |  |  | 公司代码 |
-| 7 | `publish_date` | `date` | YES |  |  |  | 公布日期 |
-| 8 | `chg_date` | `date` | YES |  |  |  | 变动日期 |
-| 9 | `holder_num` | `decimal(18,0)` | YES |  |  |  | 股东总数 |
-| 10 | `ashare_holder` | `decimal(18,0)` | YES |  |  |  | a股股东 |
-| 11 | `bshare_holder` | `decimal(18,0)` | YES |  |  |  | b股股东 |
-| 12 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建日期 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改日期 |
+| `rtime` | `datetime(6)` | YES |  | 记录通讯到用户端日期 |
+| `hshare_holder` | `decimal(18,0)` | YES |  | h股股东 |
+| `corp_code` | `varchar(20)` | YES |  | 公司代码 |
+| `publish_date` | `date` | YES |  | 公布日期 |
+| `chg_date` | `date` | YES |  | 变动日期 |
+| `holder_num` | `decimal(18,0)` | YES |  | 股东总数 |
+| `ashare_holder` | `decimal(18,0)` | YES |  | a股股东 |
+| `bshare_holder` | `decimal(18,0)` | YES |  | b股股东 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

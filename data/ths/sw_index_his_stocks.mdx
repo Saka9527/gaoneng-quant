@@ -1,6 +1,6 @@
 ---
 title: "sw_index_his_stocks"
-description: "sw_index_his_stocks"
+description: "申万指数成份股"
 ---
 
 - 说明: 申万指数成份股
@@ -11,18 +11,18 @@ description: "sw_index_his_stocks"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录同步时间 |
-| 5 | `constituent_sec_id` | `varchar(32)` | YES |  |  |  | 成分股证券id |
-| 6 | `stop_date` | `date` | YES |  |  |  | 停用日期 |
-| 7 | `enable_date` | `date` | YES |  |  |  | 启用日期 |
-| 8 | `index_id` | `varchar(32)` | YES |  |  |  | 指数id |
-| 9 | `sec_thscode` | `varchar(32)` | YES |  |  |  | 成分股thscode |
-| 10 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建时间 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改时间 |
+| `rtime` | `datetime(6)` | YES |  | 记录同步时间 |
+| `constituent_sec_id` | `varchar(32)` | YES |  | 成分股证券id |
+| `stop_date` | `date` | YES |  | 停用日期 |
+| `enable_date` | `date` | YES |  | 启用日期 |
+| `index_id` | `varchar(32)` | YES |  | 指数id |
+| `sec_thscode` | `varchar(32)` | YES |  | 成分股thscode |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

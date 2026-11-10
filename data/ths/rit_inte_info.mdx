@@ -1,6 +1,6 @@
 ---
 title: "rit_inte_info"
-description: "rit_inte_info"
+description: "中国股票权息资料"
 ---
 
 - 说明: 中国股票权息资料
@@ -11,24 +11,24 @@ description: "rit_inte_info"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
-| 5 | `sec_code` | `varchar(100)` | YES |  |  |  | 证券代码 |
-| 6 | `exright_date` | `date` | YES |  |  |  | 除权日 |
-| 7 | `dividend_payout_ratio` | `decimal(18,4)` | YES |  |  |  | 派息率 |
-| 8 | `conversion_ratio` | `decimal(18,4)` | YES |  |  |  | 送股比率 |
-| 9 | `conversion_increase_ratio` | `decimal(18,4)` | YES |  |  |  | 转增比率 |
-| 10 | `allot_ratio` | `decimal(18,4)` | YES |  |  |  | 配股比率 |
-| 11 | `allot_price` | `decimal(18,4)` | YES |  |  |  | 配股价 |
-| 12 | `record_date` | `date` | YES |  |  |  | 登记日 |
-| 13 | `allot_listing_date` | `date` | YES |  |  |  | 配股上市日 |
-| 14 | `right_and_interest_explain` | `longtext` | YES |  |  |  | 权息说明 |
-| 15 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券ID |
-| 16 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建时间 |
+| `mtime` | `datetime` | YES |  | 记录修改时间 |
+| `rtime` | `datetime` | YES |  | 记录同步时间 |
+| `sec_code` | `varchar(100)` | YES |  | 证券代码 |
+| `exright_date` | `date` | YES |  | 除权日 |
+| `dividend_payout_ratio` | `decimal(18,4)` | YES |  | 派息率 |
+| `conversion_ratio` | `decimal(18,4)` | YES |  | 送股比率 |
+| `conversion_increase_ratio` | `decimal(18,4)` | YES |  | 转增比率 |
+| `allot_ratio` | `decimal(18,4)` | YES |  | 配股比率 |
+| `allot_price` | `decimal(18,4)` | YES |  | 配股价 |
+| `record_date` | `date` | YES |  | 登记日 |
+| `allot_listing_date` | `date` | YES |  | 配股上市日 |
+| `right_and_interest_explain` | `longtext` | YES |  | 权息说明 |
+| `sec_id` | `varchar(32)` | YES |  | 证券ID |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

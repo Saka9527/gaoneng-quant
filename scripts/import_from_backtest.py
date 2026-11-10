@@ -154,6 +154,12 @@ def plain_prose(text: str) -> str:
 def description_from(body: str, title: str) -> str:
     for line in body.splitlines():
         stripped = line.strip()
+        if stripped.startswith("- 说明:"):
+            note = readable(stripped[len("- 说明:") :])
+            if note and note != "-":
+                if len(note) > 140:
+                    note = note[:137] + "..."
+                return note
         if not stripped or stripped.startswith(("#", "|", "-", ">", "```")):
             continue
         plain = readable(stripped)

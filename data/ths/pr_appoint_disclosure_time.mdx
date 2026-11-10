@@ -1,6 +1,6 @@
 ---
 title: "pr_appoint_disclosure_time"
-description: "pr_appoint_disclosure_time"
+description: "中国股票定期报告预约披露时间表"
 ---
 
 - 说明: 中国股票定期报告预约披露时间表
@@ -11,21 +11,21 @@ description: "pr_appoint_disclosure_time"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `corp_code` | `varchar(20)` | YES |  |  |  | 公司代码 |
-| 6 | `perf_report_date` | `date` | YES |  |  |  | 业绩报告时间 |
-| 7 | `appointment_date` | `datetime` | YES |  |  |  | 预约时间 |
-| 8 | `adjust_identifier` | `decimal(28,6)` | YES |  |  |  | 调整标志 |
-| 9 | `actual_dsclsr_date` | `date` | YES |  |  |  | 实际披露日期 |
-| 10 | `chg_date_1` | `date` | YES |  |  |  | 变更日1 |
-| 11 | `chg_date_2` | `date` | YES |  |  |  | 变更日2 |
-| 12 | `chg_date_3` | `date` | YES |  |  |  | 变更日3 |
-| 13 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `corp_code` | `varchar(20)` | YES |  | 公司代码 |
+| `perf_report_date` | `date` | YES |  | 业绩报告时间 |
+| `appointment_date` | `datetime` | YES |  | 预约时间 |
+| `adjust_identifier` | `decimal(28,6)` | YES |  | 调整标志 |
+| `actual_dsclsr_date` | `date` | YES |  | 实际披露日期 |
+| `chg_date_1` | `date` | YES |  | 变更日1 |
+| `chg_date_2` | `date` | YES |  | 变更日2 |
+| `chg_date_3` | `date` | YES |  | 变更日3 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

@@ -1,6 +1,6 @@
 ---
 title: "listing_state_chg"
-description: "listing_state_chg"
+description: "中国股票上市状态变动表"
 ---
 
 - 说明: 中国股票上市状态变动表
@@ -11,21 +11,21 @@ description: "listing_state_chg"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `chg_type_code` | `decimal(28,6)` | YES |  |  |  | 变更类型编码 |
-| 6 | `announcement_date` | `date` | YES |  |  |  | 公告日期 |
-| 7 | `listing_status_code_after_chg` | `varchar(12)` | YES |  |  |  | 变更后上市状态编码 |
-| 8 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券id |
-| 9 | `listing_status_after_chg` | `varchar(60)` | YES |  |  |  | 变更后上市状态 |
-| 10 | `chg_date` | `date` | YES |  |  |  | 变动日期 |
-| 11 | `chg_reason` | `varchar(500)` | YES |  |  |  | 变动原因 |
-| 12 | `chg_reason_code` | `varchar(60)` | YES |  |  |  | 变更原因编码 |
-| 13 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `chg_type_code` | `decimal(28,6)` | YES |  | 变更类型编码 |
+| `announcement_date` | `date` | YES |  | 公告日期 |
+| `listing_status_code_after_chg` | `varchar(12)` | YES |  | 变更后上市状态编码 |
+| `sec_id` | `varchar(32)` | YES |  | 证券id |
+| `listing_status_after_chg` | `varchar(60)` | YES |  | 变更后上市状态 |
+| `chg_date` | `date` | YES |  | 变动日期 |
+| `chg_reason` | `varchar(500)` | YES |  | 变动原因 |
+| `chg_reason_code` | `varchar(60)` | YES |  | 变更原因编码 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

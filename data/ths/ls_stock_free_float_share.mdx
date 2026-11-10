@@ -1,6 +1,6 @@
 ---
 title: "ls_stock_free_float_share"
-description: "ls_stock_free_float_share"
+description: "中国股票自由流通股本"
 ---
 
 - 说明: 中国股票自由流通股本
@@ -11,19 +11,19 @@ description: "ls_stock_free_float_share"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录同步时间 |
-| 5 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券ID |
-| 6 | `announcement_date` | `date` | YES |  |  |  | 公告日期 |
-| 7 | `end_date` | `date` | YES |  |  |  | 截止日期 |
-| 8 | `alg_type_code` | `varchar(12)` | YES |  |  |  | 算法类型编码 |
-| 9 | `free_float_shares` | `decimal(18,0)` | YES |  |  |  | 自由流通股本 |
-| 10 | `special_notes` | `mediumtext` | YES |  |  |  | 特殊情况说明 |
-| 11 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建时间 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改时间 |
+| `rtime` | `datetime(6)` | YES |  | 记录同步时间 |
+| `sec_id` | `varchar(32)` | YES |  | 证券ID |
+| `announcement_date` | `date` | YES |  | 公告日期 |
+| `end_date` | `date` | YES |  | 截止日期 |
+| `alg_type_code` | `varchar(12)` | YES |  | 算法类型编码 |
+| `free_float_shares` | `decimal(18,0)` | YES |  | 自由流通股本 |
+| `special_notes` | `mediumtext` | YES |  | 特殊情况说明 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

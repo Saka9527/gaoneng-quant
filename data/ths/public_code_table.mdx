@@ -1,6 +1,6 @@
 ---
 title: "public_code_table"
-description: "public_code_table"
+description: "公共编码表"
 ---
 
 - 说明: 公共编码表
@@ -11,21 +11,21 @@ description: "public_code_table"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `ctgry_code` | `varchar(18)` | YES | MUL |  |  | 类目编码 |
-| 6 | `ctgry_name` | `varchar(256)` | YES |  |  |  | 类目名称 |
-| 7 | `class_encode` | `varchar(12)` | YES |  |  |  | 总类编码 |
-| 8 | `class_name` | `varchar(60)` | YES |  |  |  | 总类名称 |
-| 9 | `standard_code` | `varchar(12)` | YES |  |  |  | 标准编码 |
-| 10 | `ed` | `date` | YES |  |  |  | 终止日期 |
-| 11 | `stop_reason` | `varchar(1000)` | YES |  |  |  | 终止原因 |
-| 12 | `ctgry_specification` | `mediumtext` | YES |  |  |  | 类目详细说明 |
-| 13 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `ctgry_code` | `varchar(18)` | YES | MUL | 类目编码 |
+| `ctgry_name` | `varchar(256)` | YES |  | 类目名称 |
+| `class_encode` | `varchar(12)` | YES |  | 总类编码 |
+| `class_name` | `varchar(60)` | YES |  | 总类名称 |
+| `standard_code` | `varchar(12)` | YES |  | 标准编码 |
+| `ed` | `date` | YES |  | 终止日期 |
+| `stop_reason` | `varchar(1000)` | YES |  | 终止原因 |
+| `ctgry_specification` | `mediumtext` | YES |  | 类目详细说明 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

@@ -1,6 +1,6 @@
 ---
 title: "ls_stock_daily_quotation"
-description: "ls_stock_daily_quotation"
+description: "中国股票日收盘行情"
 ---
 
 - 说明: 中国股票日收盘行情
@@ -11,32 +11,32 @@ description: "ls_stock_daily_quotation"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
-| 5 | `exchg` | `varchar(30)` | YES |  |  |  | 交易所 |
-| 6 | `exchg_code` | `varchar(6)` | YES |  |  |  | 交易所编码 |
-| 7 | `high_trans` | `decimal(10,4)` | YES |  |  |  | 最高成交 |
-| 8 | `latest_trans` | `decimal(10,4)` | YES |  |  |  | 收盘价 |
-| 9 | `low_trans` | `decimal(10,4)` | YES |  |  |  | 最低成交 |
-| 10 | `open_price` | `decimal(10,4)` | YES |  |  |  | 今日开盘 |
-| 11 | `pre_close` | `decimal(10,4)` | YES |  |  |  | 昨日收盘 |
-| 12 | `sec_category` | `varchar(30)` | YES |  |  |  | 证券种类 |
-| 13 | `sec_code` | `varchar(10)` | YES | MUL |  |  | 证券代码 |
-| 14 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券id |
-| 15 | `sec_short_name` | `varchar(40)` | YES |  |  |  | 证券简称 |
-| 16 | `td_date` | `date` | YES | MUL |  |  | 交易日期 |
-| 17 | `total_trans_num` | `decimal(10,0)` | YES |  |  |  | 总笔数 |
-| 18 | `trans_amt_orig_currency` | `decimal(18,2)` | YES |  |  |  | 成交金额(原币) |
-| 19 | `trans_amt_rmb` | `decimal(18,2)` | YES |  |  |  | 成交金额(人民币) |
-| 20 | `trans_vol` | `decimal(12,0)` | YES |  |  |  | 成交数量 |
-| 21 | `turnover_ratio` | `decimal(12,4)` | YES |  |  |  | 换手率 |
-| 22 | `chg_ratio` | `decimal(10,4)` | YES |  |  |  | 涨跌幅 |
-| 23 | `currency_ctgry` | `varchar(30)` | YES |  |  |  | 货币种类 |
-| 24 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建时间 |
+| `mtime` | `datetime` | YES |  | 记录修改时间 |
+| `rtime` | `datetime` | YES |  | 记录同步时间 |
+| `exchg` | `varchar(30)` | YES |  | 交易所 |
+| `exchg_code` | `varchar(6)` | YES |  | 交易所编码 |
+| `high_trans` | `decimal(10,4)` | YES |  | 最高成交 |
+| `latest_trans` | `decimal(10,4)` | YES |  | 收盘价 |
+| `low_trans` | `decimal(10,4)` | YES |  | 最低成交 |
+| `open_price` | `decimal(10,4)` | YES |  | 今日开盘 |
+| `pre_close` | `decimal(10,4)` | YES |  | 昨日收盘 |
+| `sec_category` | `varchar(30)` | YES |  | 证券种类 |
+| `sec_code` | `varchar(10)` | YES | MUL | 证券代码 |
+| `sec_id` | `varchar(32)` | YES |  | 证券id |
+| `sec_short_name` | `varchar(40)` | YES |  | 证券简称 |
+| `td_date` | `date` | YES | MUL | 交易日期 |
+| `total_trans_num` | `decimal(10,0)` | YES |  | 总笔数 |
+| `trans_amt_orig_currency` | `decimal(18,2)` | YES |  | 成交金额(原币) |
+| `trans_amt_rmb` | `decimal(18,2)` | YES |  | 成交金额(人民币) |
+| `trans_vol` | `decimal(12,0)` | YES |  | 成交数量 |
+| `turnover_ratio` | `decimal(12,4)` | YES |  | 换手率 |
+| `chg_ratio` | `decimal(10,4)` | YES |  | 涨跌幅 |
+| `currency_ctgry` | `varchar(30)` | YES |  | 货币种类 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

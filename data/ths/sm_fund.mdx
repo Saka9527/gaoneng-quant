@@ -1,6 +1,6 @@
 ---
 title: "sm_fund"
-description: "sm_fund"
+description: "阳光私募产品信息表"
 ---
 
 - 说明: 阳光私募产品信息表
@@ -11,25 +11,25 @@ description: "sm_fund"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
-| 5 | `product_name` | `varchar(1000)` | YES |  |  |  | 基金名称 |
-| 6 | `record_encode` | `varchar(300)` | YES |  |  |  | 备案编码 |
-| 7 | `supervisor_code` | `varchar(20)` | YES |  |  |  | 管理人机构代码 |
-| 8 | `supervisor_name` | `varchar(600)` | YES |  |  |  | 管理人名称 |
-| 9 | `tactics_code_first` | `varchar(50)` | YES |  |  |  | 一级策略代码 |
-| 10 | `tactics_code_sec` | `varchar(50)` | YES |  |  |  | 二级策略代码 |
-| 11 | `tactics_first` | `varchar(256)` | YES |  |  |  | 一级策略名称 |
-| 12 | `tactics_sec` | `varchar(256)` | YES |  |  |  | 二级策略名称 |
-| 13 | `end_date` | `date` | YES |  |  |  | 终止日期 |
-| 14 | `established_date` | `date` | YES |  |  |  | 成立日期 |
-| 15 | `product_code` | `varchar(20)` | YES |  |  |  | 基金代码 |
-| 16 | `product_id` | `varchar(32)` | YES |  |  |  | 产品ID |
-| 17 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建时间 |
+| `mtime` | `datetime` | YES |  | 记录修改时间 |
+| `rtime` | `datetime` | YES |  | 记录同步时间 |
+| `product_name` | `varchar(1000)` | YES |  | 基金名称 |
+| `record_encode` | `varchar(300)` | YES |  | 备案编码 |
+| `supervisor_code` | `varchar(20)` | YES |  | 管理人机构代码 |
+| `supervisor_name` | `varchar(600)` | YES |  | 管理人名称 |
+| `tactics_code_first` | `varchar(50)` | YES |  | 一级策略代码 |
+| `tactics_code_sec` | `varchar(50)` | YES |  | 二级策略代码 |
+| `tactics_first` | `varchar(256)` | YES |  | 一级策略名称 |
+| `tactics_sec` | `varchar(256)` | YES |  | 二级策略名称 |
+| `end_date` | `date` | YES |  | 终止日期 |
+| `established_date` | `date` | YES |  | 成立日期 |
+| `product_code` | `varchar(20)` | YES |  | 基金代码 |
+| `product_id` | `varchar(32)` | YES |  | 产品ID |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

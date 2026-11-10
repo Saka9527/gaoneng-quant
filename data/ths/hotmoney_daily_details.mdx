@@ -1,6 +1,6 @@
 ---
 title: "hotmoney_daily_details"
-description: "hotmoney_daily_details"
+description: "中国股票龙虎榜单日明细"
 ---
 
 - 说明: 中国股票龙虎榜单日明细
@@ -11,28 +11,28 @@ description: "hotmoney_daily_details"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录同步时间 |
-| 5 | `sell_amount` | `decimal(20,4)` | YES |  |  |  | 卖出额(万元) |
-| 6 | `list_reason` | `varchar(200)` | YES |  |  |  | 上榜原因 |
-| 7 | `prop_of_ba_to_tt` | `decimal(20,4)` | YES |  |  |  | 占总成交额比例(%) |
-| 8 | `prop_of_sa_to_tt` | `decimal(20,4)` | YES |  |  |  | 占总成交额比例(%) |
-| 9 | `turnover_ratio` | `decimal(12,4)` | YES |  |  |  | 换手率(%) |
-| 10 | `code` | `varchar(32)` | YES |  |  |  | 股票代码 |
-| 11 | `secname` | `varchar(200)` | YES |  |  |  | 证券名称 |
-| 12 | `enddate` | `varchar(40)` | YES |  |  |  | 截止日期 |
-| 13 | `close_price` | `decimal(10,4)` | YES |  |  |  | 收盘价 |
-| 14 | `chg_ratio` | `decimal(10,4)` | YES |  |  |  | 涨跌幅(%) |
-| 15 | `total_volume` | `decimal(20,4)` | YES |  |  |  | 总成交量(万股) |
-| 16 | `total_turnover` | `decimal(20,4)` | YES |  |  |  | 总成交额(万元) |
-| 17 | `hotmoney_turnover` | `decimal(20,4)` | YES |  |  |  | 龙虎榜成交额(万元) |
-| 18 | `buy_amount` | `decimal(20,4)` | YES |  |  |  | 买入额(万元) |
-| 19 | `info_type_code` | `varchar(20)` | YES |  |  |  | 信息类别编码 |
-| 20 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建时间 |
+| `mtime` | `datetime` | YES |  | 记录修改时间 |
+| `rtime` | `datetime` | YES |  | 记录同步时间 |
+| `sell_amount` | `decimal(20,4)` | YES |  | 卖出额(万元) |
+| `list_reason` | `varchar(200)` | YES |  | 上榜原因 |
+| `prop_of_ba_to_tt` | `decimal(20,4)` | YES |  | 占总成交额比例(%) |
+| `prop_of_sa_to_tt` | `decimal(20,4)` | YES |  | 占总成交额比例(%) |
+| `turnover_ratio` | `decimal(12,4)` | YES |  | 换手率(%) |
+| `code` | `varchar(32)` | YES |  | 股票代码 |
+| `secname` | `varchar(200)` | YES |  | 证券名称 |
+| `enddate` | `varchar(40)` | YES |  | 截止日期 |
+| `close_price` | `decimal(10,4)` | YES |  | 收盘价 |
+| `chg_ratio` | `decimal(10,4)` | YES |  | 涨跌幅(%) |
+| `total_volume` | `decimal(20,4)` | YES |  | 总成交量(万股) |
+| `total_turnover` | `decimal(20,4)` | YES |  | 总成交额(万元) |
+| `hotmoney_turnover` | `decimal(20,4)` | YES |  | 龙虎榜成交额(万元) |
+| `buy_amount` | `decimal(20,4)` | YES |  | 买入额(万元) |
+| `info_type_code` | `varchar(20)` | YES |  | 信息类别编码 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

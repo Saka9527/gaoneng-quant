@@ -1,6 +1,6 @@
 ---
 title: "lc_express_perf"
-description: "lc_express_perf"
+description: "中国股票业绩快报"
 ---
 
 - 说明: 中国股票业绩快报
@@ -11,41 +11,41 @@ description: "lc_express_perf"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `corp_code` | `varchar(20)` | YES |  |  |  | 公司代码 |
-| 6 | `report_period` | `date` | YES |  |  |  | 报告期 |
-| 7 | `announcement_date` | `date` | YES |  |  |  | 公告日期 |
-| 8 | `revenue` | `decimal(18,4)` | YES |  |  |  | 营业收入 |
-| 9 | `op` | `decimal(18,4)` | YES |  |  |  | 营业利润 |
-| 10 | `total_profit` | `decimal(18,4)` | YES |  |  |  | 利润总额 |
-| 11 | `net_profit_atsopc` | `decimal(18,4)` | YES |  |  |  | 归属母公司股东的净利润 |
-| 12 | `basic_eps` | `decimal(18,4)` | YES |  |  |  | 基本每股收益 |
-| 13 | `fully_dlt_roe` | `decimal(18,4)` | YES |  |  |  | 全面摊薄净资产收益率 |
-| 14 | `total_asset` | `decimal(18,4)` | YES |  |  |  | 总资产 |
-| 15 | `net_asset` | `decimal(18,4)` | YES |  |  |  | 净资产 |
-| 16 | `perf_brief_explain` | `varchar(2000)` | YES |  |  |  | 业绩简要说明 |
-| 17 | `is_audited` | `decimal(5,0)` | YES |  |  |  | 是否审计 |
-| 18 | `wgt_avg_roe` | `decimal(18,4)` | YES |  |  |  | 加权平均净资产收益率 |
-| 19 | `or_adjust_last_year` | `decimal(18,4)` | YES |  |  |  | 营业收入(上年同期调整) |
-| 20 | `op_adjust_last_year` | `decimal(18,4)` | YES |  |  |  | 营业利润(上年同期调整) |
-| 21 | `total_profit_yoy` | `decimal(18,4)` | YES |  |  |  | 利润总额(上年同期调整) |
-| 22 | `net_profit_atsopc_yoy` | `decimal(18,4)` | YES |  |  |  | 归属于母公司股东的净利润(上年同期调整) |
-| 23 | `basic_eps_yoy` | `decimal(18,4)` | YES |  |  |  | 基本每股收益(上年同期调整) |
-| 24 | `fully_dlt_roe_yoy` | `decimal(18,4)` | YES |  |  |  | 全面摊薄净资产收益率(上年同期调整) |
-| 25 | `wgt_avg_roe_yoy` | `decimal(18,4)` | YES |  |  |  | 加权平均净资产收益率(上年同期调整) |
-| 26 | `initial_total_assets` | `decimal(18,4)` | YES |  |  |  | 总资产(期初) |
-| 27 | `initial_net_assets` | `decimal(18,4)` | YES |  |  |  | 净资产(期初) |
-| 28 | `net_profit_per_share` | `decimal(18,4)` | YES |  |  |  | 每股净资产 |
-| 29 | `initial_net_profit_ps` | `decimal(18,4)` | YES |  |  |  | 每股净资产(期初) |
-| 30 | `related_identifier` | `decimal(20,0)` | YES |  |  |  | 关联标志 |
-| 31 | `net_profit_aft_nrg_ats` | `decimal(18,4)` | YES |  |  |  | 扣除非经常性损益后的归属于母公司股东净利润 |
-| 32 | `net_profit_aft_nrg_ats_yoy` | `decimal(18,4)` | YES |  |  |  | 扣除非经常性损益后的归属于母公司股东净利润(上年同期调整) |
-| 33 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `corp_code` | `varchar(20)` | YES |  | 公司代码 |
+| `report_period` | `date` | YES |  | 报告期 |
+| `announcement_date` | `date` | YES |  | 公告日期 |
+| `revenue` | `decimal(18,4)` | YES |  | 营业收入 |
+| `op` | `decimal(18,4)` | YES |  | 营业利润 |
+| `total_profit` | `decimal(18,4)` | YES |  | 利润总额 |
+| `net_profit_atsopc` | `decimal(18,4)` | YES |  | 归属母公司股东的净利润 |
+| `basic_eps` | `decimal(18,4)` | YES |  | 基本每股收益 |
+| `fully_dlt_roe` | `decimal(18,4)` | YES |  | 全面摊薄净资产收益率 |
+| `total_asset` | `decimal(18,4)` | YES |  | 总资产 |
+| `net_asset` | `decimal(18,4)` | YES |  | 净资产 |
+| `perf_brief_explain` | `varchar(2000)` | YES |  | 业绩简要说明 |
+| `is_audited` | `decimal(5,0)` | YES |  | 是否审计 |
+| `wgt_avg_roe` | `decimal(18,4)` | YES |  | 加权平均净资产收益率 |
+| `or_adjust_last_year` | `decimal(18,4)` | YES |  | 营业收入(上年同期调整) |
+| `op_adjust_last_year` | `decimal(18,4)` | YES |  | 营业利润(上年同期调整) |
+| `total_profit_yoy` | `decimal(18,4)` | YES |  | 利润总额(上年同期调整) |
+| `net_profit_atsopc_yoy` | `decimal(18,4)` | YES |  | 归属于母公司股东的净利润(上年同期调整) |
+| `basic_eps_yoy` | `decimal(18,4)` | YES |  | 基本每股收益(上年同期调整) |
+| `fully_dlt_roe_yoy` | `decimal(18,4)` | YES |  | 全面摊薄净资产收益率(上年同期调整) |
+| `wgt_avg_roe_yoy` | `decimal(18,4)` | YES |  | 加权平均净资产收益率(上年同期调整) |
+| `initial_total_assets` | `decimal(18,4)` | YES |  | 总资产(期初) |
+| `initial_net_assets` | `decimal(18,4)` | YES |  | 净资产(期初) |
+| `net_profit_per_share` | `decimal(18,4)` | YES |  | 每股净资产 |
+| `initial_net_profit_ps` | `decimal(18,4)` | YES |  | 每股净资产(期初) |
+| `related_identifier` | `decimal(20,0)` | YES |  | 关联标志 |
+| `net_profit_aft_nrg_ats` | `decimal(18,4)` | YES |  | 扣除非经常性损益后的归属于母公司股东净利润 |
+| `net_profit_aft_nrg_ats_yoy` | `decimal(18,4)` | YES |  | 扣除非经常性损益后的归属于母公司股东净利润(上年同期调整) |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

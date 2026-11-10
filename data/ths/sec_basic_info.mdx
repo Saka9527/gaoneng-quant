@@ -1,6 +1,6 @@
 ---
 title: "sec_basic_info"
-description: "sec_basic_info"
+description: "证券基本资料"
 ---
 
 - 说明: 证券基本资料
@@ -11,40 +11,40 @@ description: "sec_basic_info"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `sec_issuer_id` | `varchar(20)` | YES |  |  |  | 证券发行主体id |
-| 6 | `sec_code` | `varchar(40)` | YES |  |  |  | 证券代码 |
-| 7 | `sec_short_name_cn` | `varchar(200)` | YES |  |  |  | 证券简称(中文) |
-| 8 | `phonetic_short_name` | `varchar(50)` | YES |  |  |  | 拼音简称 |
-| 9 | `sec_full_name` | `varchar(400)` | YES |  |  |  | 证券全称 |
-| 10 | `sec_type_code` | `varchar(12)` | YES |  |  |  | 证券类别编码 |
-| 11 | `sec_type` | `varchar(60)` | YES | MUL |  |  | 证券类别 |
-| 12 | `td_mkt_encode` | `varchar(12)` | YES |  |  |  | 交易市场编码 |
-| 13 | `td_mkt` | `varchar(60)` | YES |  |  |  | 交易市场 |
-| 14 | `listed_date` | `datetime` | YES |  |  |  | 上市日期 |
-| 15 | `stop_listing_date` | `date` | YES |  |  |  | 终止上市日期 |
-| 16 | `issue_org_id` | `varchar(11)` | YES |  |  |  | 发行机构id |
-| 17 | `listed_status_code` | `varchar(12)` | YES |  |  |  | 上市状态编码 |
-| 18 | `listed_status` | `varchar(60)` | YES |  |  |  | 上市状态 |
-| 19 | `thscode` | `varchar(32)` | YES |  |  |  | 同花顺代码 |
-| 20 | `isin` | `varchar(32)` | YES |  |  |  | 全球证券分类识别码 |
-| 21 | `sec_id` | `varchar(32)` | YES | MUL |  |  | 证券id |
-| 22 | `is_listing` | `decimal(1,0)` | YES |  |  |  | 是否上市 |
-| 23 | `is_delisted` | `decimal(1,0)` | YES |  |  |  | 是否摘牌 |
-| 24 | `listed_board_code` | `varchar(12)` | YES |  |  |  | 上市板编码 |
-| 25 | `listed_board_name` | `varchar(30)` | YES |  |  |  | 上市板名称 |
-| 26 | `td_currency_code` | `varchar(12)` | YES |  |  |  | 交易货币代码 |
-| 27 | `td_currency_name` | `varchar(30)` | YES |  |  |  | 交易货币名称 |
-| 28 | `sec_short_name_en` | `varchar(100)` | YES |  |  |  | 证券简称(英文) |
-| 29 | `sec_full_name_en` | `varchar(200)` | YES |  |  |  | 证券英文全称 |
-| 30 | `original_td_code` | `varchar(20)` | YES |  |  |  | 原始公布交易代码 |
-| 31 | `cusip` | `varchar(12)` | YES |  |  |  | 美国统一证券识别编码 |
-| 32 | `isvalid` | `decimal(1,0)` | YES | MUL | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `sec_issuer_id` | `varchar(20)` | YES |  | 证券发行主体id |
+| `sec_code` | `varchar(40)` | YES |  | 证券代码 |
+| `sec_short_name_cn` | `varchar(200)` | YES |  | 证券简称(中文) |
+| `phonetic_short_name` | `varchar(50)` | YES |  | 拼音简称 |
+| `sec_full_name` | `varchar(400)` | YES |  | 证券全称 |
+| `sec_type_code` | `varchar(12)` | YES |  | 证券类别编码 |
+| `sec_type` | `varchar(60)` | YES | MUL | 证券类别 |
+| `td_mkt_encode` | `varchar(12)` | YES |  | 交易市场编码 |
+| `td_mkt` | `varchar(60)` | YES |  | 交易市场 |
+| `listed_date` | `datetime` | YES |  | 上市日期 |
+| `stop_listing_date` | `date` | YES |  | 终止上市日期 |
+| `issue_org_id` | `varchar(11)` | YES |  | 发行机构id |
+| `listed_status_code` | `varchar(12)` | YES |  | 上市状态编码 |
+| `listed_status` | `varchar(60)` | YES |  | 上市状态 |
+| `thscode` | `varchar(32)` | YES |  | 同花顺代码 |
+| `isin` | `varchar(32)` | YES |  | 全球证券分类识别码 |
+| `sec_id` | `varchar(32)` | YES | MUL | 证券id |
+| `is_listing` | `decimal(1,0)` | YES |  | 是否上市 |
+| `is_delisted` | `decimal(1,0)` | YES |  | 是否摘牌 |
+| `listed_board_code` | `varchar(12)` | YES |  | 上市板编码 |
+| `listed_board_name` | `varchar(30)` | YES |  | 上市板名称 |
+| `td_currency_code` | `varchar(12)` | YES |  | 交易货币代码 |
+| `td_currency_name` | `varchar(30)` | YES |  | 交易货币名称 |
+| `sec_short_name_en` | `varchar(100)` | YES |  | 证券简称(英文) |
+| `sec_full_name_en` | `varchar(200)` | YES |  | 证券英文全称 |
+| `original_td_code` | `varchar(20)` | YES |  | 原始公布交易代码 |
+| `cusip` | `varchar(12)` | YES |  | 美国统一证券识别编码 |
+| `isvalid` | `decimal(1,0)` | YES | MUL | 是否有效 |
 
 ## 索引
 

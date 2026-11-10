@@ -1,6 +1,6 @@
 ---
 title: "lc_inner_holding_chg"
-description: "lc_inner_holding_chg"
+description: "中国股票董监高及相关人持股变动"
 ---
 
 - 说明: 中国股票董监高及相关人持股变动
@@ -11,27 +11,27 @@ description: "lc_inner_holding_chg"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `seq_num` | `decimal(3,0)` | YES |  |  |  | 序号 |
-| 6 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券id |
-| 7 | `share_changer_name` | `varchar(100)` | YES |  |  |  | 股份变动人姓名 |
-| 8 | `chg_date` | `date` | YES |  |  |  | 变动日期 |
-| 9 | `chg_shares_num` | `decimal(20,0)` | YES |  |  |  | 变动股份数量 |
-| 10 | `trans_avg_price` | `decimal(10,4)` | YES |  |  |  | 成交均价 |
-| 11 | `trans_avg_price_currency_code` | `varchar(12)` | YES |  |  |  | 成交均价货币代码 |
-| 12 | `trans_avg_price_currency_name` | `varchar(30)` | YES |  |  |  | 成交均价货币名称 |
-| 13 | `chg_reason_name` | `varchar(30)` | YES |  |  |  | 变动原因名称 |
-| 14 | `chg_ratio` | `decimal(8,4)` | YES |  |  |  | 变动比例(‰) |
-| 15 | `daily_shares_balance_otd` | `decimal(20,0)` | YES |  |  |  | 当日结存股数 |
-| 16 | `rr_of_chgr_and_manage` | `varchar(100)` | YES |  |  |  | 变动人与董监高的关系 |
-| 17 | `manage_name` | `varchar(100)` | YES |  |  |  | 董监高人员姓名 |
-| 18 | `duty` | `varchar(100)` | YES |  |  |  | 职务 |
-| 19 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `seq_num` | `decimal(3,0)` | YES |  | 序号 |
+| `sec_id` | `varchar(32)` | YES |  | 证券id |
+| `share_changer_name` | `varchar(100)` | YES |  | 股份变动人姓名 |
+| `chg_date` | `date` | YES |  | 变动日期 |
+| `chg_shares_num` | `decimal(20,0)` | YES |  | 变动股份数量 |
+| `trans_avg_price` | `decimal(10,4)` | YES |  | 成交均价 |
+| `trans_avg_price_currency_code` | `varchar(12)` | YES |  | 成交均价货币代码 |
+| `trans_avg_price_currency_name` | `varchar(30)` | YES |  | 成交均价货币名称 |
+| `chg_reason_name` | `varchar(30)` | YES |  | 变动原因名称 |
+| `chg_ratio` | `decimal(8,4)` | YES |  | 变动比例(‰) |
+| `daily_shares_balance_otd` | `decimal(20,0)` | YES |  | 当日结存股数 |
+| `rr_of_chgr_and_manage` | `varchar(100)` | YES |  | 变动人与董监高的关系 |
+| `manage_name` | `varchar(100)` | YES |  | 董监高人员姓名 |
+| `duty` | `varchar(100)` | YES |  | 职务 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

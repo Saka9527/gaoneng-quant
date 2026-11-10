@@ -1,6 +1,6 @@
 ---
 title: "ls_index_daily_quotation"
-description: "ls_index_daily_quotation"
+description: "中国股票指数日收盘行情"
 ---
 
 - 说明: 中国股票指数日收盘行情
@@ -11,31 +11,31 @@ description: "ls_index_daily_quotation"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建时间 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改时间 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录同步时间 |
-| 5 | `index_code` | `varchar(40)` | YES |  |  |  | 指数代码 |
-| 6 | `index_short_name` | `varchar(100)` | YES |  |  |  | 指数简称 |
-| 7 | `last_close` | `decimal(24,4)` | YES |  |  |  | 昨日收市 |
-| 8 | `latest_index` | `decimal(24,4)` | YES |  |  |  | 最近指数 |
-| 9 | `low_index` | `decimal(24,4)` | YES |  |  |  | 最低指数 |
-| 10 | `market_value` | `decimal(24,2)` | YES |  |  |  | 总市值 |
-| 11 | `open_index` | `decimal(24,4)` | YES |  |  |  | 开市指数 |
-| 12 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券id |
-| 13 | `td_date` | `date` | YES | MUL |  |  | 交易日期 |
-| 14 | `total_shares` | `decimal(24,4)` | YES |  |  |  | 总股本 |
-| 15 | `trans_amt` | `decimal(24,2)` | YES |  |  |  | 成交金额 |
-| 16 | `chg` | `decimal(24,4)` | YES |  |  |  | 涨跌 |
-| 17 | `vol` | `decimal(24,2)` | YES |  |  |  | 成交量 |
-| 18 | `chg_ratio` | `decimal(24,4)` | YES |  |  |  | 涨跌幅(%) |
-| 19 | `exchange` | `varchar(60)` | YES |  |  |  | 交易所 |
-| 20 | `exchg_code` | `varchar(30)` | YES |  |  |  | 交易所编码 |
-| 21 | `high_index` | `decimal(24,4)` | YES |  |  |  | 最高指数 |
-| 22 | `turnover_rate` | `decimal(24,4)` | YES |  |  |  | 换手率 |
-| 23 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建时间 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改时间 |
+| `rtime` | `datetime(6)` | YES |  | 记录同步时间 |
+| `index_code` | `varchar(40)` | YES |  | 指数代码 |
+| `index_short_name` | `varchar(100)` | YES |  | 指数简称 |
+| `last_close` | `decimal(24,4)` | YES |  | 昨日收市 |
+| `latest_index` | `decimal(24,4)` | YES |  | 最近指数 |
+| `low_index` | `decimal(24,4)` | YES |  | 最低指数 |
+| `market_value` | `decimal(24,2)` | YES |  | 总市值 |
+| `open_index` | `decimal(24,4)` | YES |  | 开市指数 |
+| `sec_id` | `varchar(32)` | YES |  | 证券id |
+| `td_date` | `date` | YES | MUL | 交易日期 |
+| `total_shares` | `decimal(24,4)` | YES |  | 总股本 |
+| `trans_amt` | `decimal(24,2)` | YES |  | 成交金额 |
+| `chg` | `decimal(24,4)` | YES |  | 涨跌 |
+| `vol` | `decimal(24,2)` | YES |  | 成交量 |
+| `chg_ratio` | `decimal(24,4)` | YES |  | 涨跌幅(%) |
+| `exchange` | `varchar(60)` | YES |  | 交易所 |
+| `exchg_code` | `varchar(30)` | YES |  | 交易所编码 |
+| `high_index` | `decimal(24,4)` | YES |  | 最高指数 |
+| `turnover_rate` | `decimal(24,4)` | YES |  | 换手率 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

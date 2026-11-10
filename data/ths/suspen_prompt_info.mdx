@@ -1,6 +1,6 @@
 ---
 title: "suspen_prompt_info"
-description: "suspen_prompt_info"
+description: "中国股票停牌提示信息"
 ---
 
 - 说明: 中国股票停牌提示信息
@@ -11,27 +11,27 @@ description: "suspen_prompt_info"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `prompt_date` | `date` | YES |  |  |  | 提示日期 |
-| 6 | `suspen_date` | `date` | YES |  |  |  | 停牌日期 |
-| 7 | `resump_date` | `date` | YES |  |  |  | 复牌日期 |
-| 8 | `suspen_dur` | `varchar(40)` | YES |  |  |  | 停牌期限 |
-| 9 | `suspen_reason` | `varchar(400)` | YES |  |  |  | 停牌原因 |
-| 10 | `resump_reason` | `varchar(400)` | YES |  |  |  | 复牌原因 |
-| 11 | `annouced_resump_reason` | `varchar(400)` | YES |  |  |  | 公司公告的停牌原因 |
-| 12 | `suspen_sd` | `varchar(10)` | YES |  |  |  | 停牌起始时间 |
-| 13 | `resump_time` | `varchar(10)` | YES |  |  |  | 复牌时间 |
-| 14 | `annou_fore_resump_date` | `date` | YES |  |  |  | 公告预计复牌日 |
-| 15 | `annou_fore_latest_resump_date` | `date` | YES |  |  |  | 公告预计最晚复牌日 |
-| 16 | `sec_code` | `varchar(10)` | YES |  |  |  | 证券代码 |
-| 17 | `sec_name` | `varchar(40)` | YES |  |  |  | 证券名称 |
-| 18 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券id |
-| 19 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `prompt_date` | `date` | YES |  | 提示日期 |
+| `suspen_date` | `date` | YES |  | 停牌日期 |
+| `resump_date` | `date` | YES |  | 复牌日期 |
+| `suspen_dur` | `varchar(40)` | YES |  | 停牌期限 |
+| `suspen_reason` | `varchar(400)` | YES |  | 停牌原因 |
+| `resump_reason` | `varchar(400)` | YES |  | 复牌原因 |
+| `annouced_resump_reason` | `varchar(400)` | YES |  | 公司公告的停牌原因 |
+| `suspen_sd` | `varchar(10)` | YES |  | 停牌起始时间 |
+| `resump_time` | `varchar(10)` | YES |  | 复牌时间 |
+| `annou_fore_resump_date` | `date` | YES |  | 公告预计复牌日 |
+| `annou_fore_latest_resump_date` | `date` | YES |  | 公告预计最晚复牌日 |
+| `sec_code` | `varchar(10)` | YES |  | 证券代码 |
+| `sec_name` | `varchar(40)` | YES |  | 证券名称 |
+| `sec_id` | `varchar(32)` | YES |  | 证券id |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

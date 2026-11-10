@@ -1,6 +1,6 @@
 ---
 title: "shhk_szhk_foreign_held_cost"
-description: "shhk_szhk_foreign_held_cost"
+description: "沪港通及深港通外资持股成本"
 ---
 
 - 说明: 沪港通及深港通外资持股成本
@@ -11,24 +11,24 @@ description: "shhk_szhk_foreign_held_cost"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `is_otd_value` | `decimal(2,0)` | YES |  |  |  | 是否当日值 |
-| 6 | `mkt_type` | `decimal(2,0)` | YES |  |  |  | 市场类型 |
-| 7 | `net_buy_amt` | `decimal(18,4)` | YES |  |  |  | 净买入额 |
-| 8 | `net_buy_vol` | `decimal(18,0)` | YES |  |  |  | 净买入量 |
-| 9 | `sec_id` | `varchar(100)` | YES |  |  |  | 证券id |
-| 10 | `buy_amt_accum` | `decimal(18,4)` | YES |  |  |  | 累计买入金额 |
-| 11 | `td_date` | `date` | YES | MUL |  |  | 交易日期 |
-| 12 | `buy_cost_accum` | `decimal(18,4)` | YES |  |  |  | 累计买入成本 |
-| 13 | `buy_cost_ps` | `decimal(18,4)` | YES |  |  |  | 每股买入成本 |
-| 14 | `currency_encode` | `varchar(12)` | YES |  |  |  | 货币编码 |
-| 15 | `held_vol` | `decimal(18,0)` | YES |  |  |  | 持股量 |
-| 16 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建日期 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改日期 |
+| `rtime` | `datetime(6)` | YES |  | 记录通讯到用户端日期 |
+| `is_otd_value` | `decimal(2,0)` | YES |  | 是否当日值 |
+| `mkt_type` | `decimal(2,0)` | YES |  | 市场类型 |
+| `net_buy_amt` | `decimal(18,4)` | YES |  | 净买入额 |
+| `net_buy_vol` | `decimal(18,0)` | YES |  | 净买入量 |
+| `sec_id` | `varchar(100)` | YES |  | 证券id |
+| `buy_amt_accum` | `decimal(18,4)` | YES |  | 累计买入金额 |
+| `td_date` | `date` | YES | MUL | 交易日期 |
+| `buy_cost_accum` | `decimal(18,4)` | YES |  | 累计买入成本 |
+| `buy_cost_ps` | `decimal(18,4)` | YES |  | 每股买入成本 |
+| `currency_encode` | `varchar(12)` | YES |  | 货币编码 |
+| `held_vol` | `decimal(18,0)` | YES |  | 持股量 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

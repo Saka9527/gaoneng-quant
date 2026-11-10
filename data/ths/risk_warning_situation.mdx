@@ -1,6 +1,6 @@
 ---
 title: "risk_warning_situation"
-description: "risk_warning_situation"
+description: "中国股票风险预警情况"
 ---
 
 - 说明: 中国股票风险预警情况
@@ -11,24 +11,24 @@ description: "risk_warning_situation"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime(6)` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime(6)` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime(6)` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `vseq` | `decimal(20,0)` | YES |  |  |  | 关联标志 |
-| 6 | `imp_change_type_code` | `decimal(1,0)` | YES |  |  |  | 实施变更类型编码 |
-| 7 | `announcement_date` | `date` | YES |  |  |  | 公告日期 |
-| 8 | `latest_announcement_date` | `date` | YES |  |  |  | 最新提示公告日期 |
-| 9 | `sec_code` | `varchar(32)` | YES |  |  |  | 证券代码 |
-| 10 | `sec_id` | `varchar(32)` | YES |  |  |  | 证券id |
-| 11 | `implementation_date` | `date` | YES |  |  |  | 实施日期 |
-| 12 | `announcement_type` | `varchar(100)` | YES |  |  |  | 公告类型 |
-| 13 | `hat_type` | `varchar(500)` | YES |  |  |  | 戴帽类型 |
-| 14 | `hat_type_code` | `varchar(100)` | YES |  |  |  | 戴帽类型编码 |
-| 15 | `imp_change_reason` | `mediumtext` | YES |  |  |  | 实施变更原因 |
-| 16 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime(6)` | YES |  | 记录创建日期 |
+| `mtime` | `datetime(6)` | YES |  | 记录修改日期 |
+| `rtime` | `datetime(6)` | YES |  | 记录通讯到用户端日期 |
+| `vseq` | `decimal(20,0)` | YES |  | 关联标志 |
+| `imp_change_type_code` | `decimal(1,0)` | YES |  | 实施变更类型编码 |
+| `announcement_date` | `date` | YES |  | 公告日期 |
+| `latest_announcement_date` | `date` | YES |  | 最新提示公告日期 |
+| `sec_code` | `varchar(32)` | YES |  | 证券代码 |
+| `sec_id` | `varchar(32)` | YES |  | 证券id |
+| `implementation_date` | `date` | YES |  | 实施日期 |
+| `announcement_type` | `varchar(100)` | YES |  | 公告类型 |
+| `hat_type` | `varchar(500)` | YES |  | 戴帽类型 |
+| `hat_type_code` | `varchar(100)` | YES |  | 戴帽类型编码 |
+| `imp_change_reason` | `mediumtext` | YES |  | 实施变更原因 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 

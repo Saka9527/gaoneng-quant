@@ -1,6 +1,6 @@
 ---
 title: "fund_basic_info"
-description: "fund_basic_info"
+description: "基金基本信息"
 ---
 
 - 说明: 基金基本信息
@@ -11,71 +11,71 @@ description: "fund_basic_info"
 
 ## 字段
 
-| # | 字段 | 类型 | 空 | 键 | 默认 | 额外 | 注释 |
-|---|------|------|----|----|------|------|------|
-| 1 | `seq` | `decimal(20,0)` | NO | PRI |  |  | 记录唯一标识 |
-| 2 | `ctime` | `datetime` | YES |  |  |  | 记录创建日期 |
-| 3 | `mtime` | `datetime` | YES |  |  |  | 记录修改日期 |
-| 4 | `rtime` | `datetime` | YES |  |  |  | 记录通讯到用户端日期 |
-| 5 | `td_code` | `varchar(20)` | YES |  |  |  | 交易代码 |
-| 6 | `fund_code` | `varchar(20)` | YES | MUL |  |  | 基金代码 |
-| 7 | `abbreviation` | `varchar(500)` | YES |  |  |  | 基金简称 |
-| 8 | `fund_name` | `varchar(500)` | YES |  |  |  | 基金名称 |
-| 9 | `fund_type` | `varchar(1)` | YES |  |  |  | 基金类型 |
-| 10 | `dur` | `decimal(18,4)` | YES |  |  |  | 存续期限 |
-| 11 | `established_date` | `date` | YES |  |  |  | 成立日期 |
-| 12 | `invest_style` | `varchar(12)` | YES |  |  |  | 投资风格 |
-| 13 | `fund_invest_type` | `varchar(1)` | YES |  |  |  | 基金投资类型 |
-| 14 | `back_code` | `varchar(600)` | YES |  |  |  | 后端代码 |
-| 15 | `mandate_sd` | `date` | YES |  |  |  | 托管开始日期 |
-| 16 | `mandate_ed` | `date` | YES |  |  |  | 托管结束日期 |
-| 17 | `if_index_fund` | `varchar(1)` | YES |  |  |  | 是否指数基金 |
-| 18 | `name_en` | `varchar(500)` | YES |  |  |  | 英文名称 |
-| 19 | `mandate_fee_rate` | `decimal(18,4)` | YES |  |  |  | 托管费率 |
-| 20 | `manage_fee_rate` | `decimal(18,4)` | YES |  |  |  | 管理费率 |
-| 21 | `fee_rate_extraction_standard` | `varchar(500)` | YES |  |  |  | 费率提取标准 |
-| 22 | `maturity_date` | `date` | YES |  |  |  | 到期日期 |
-| 23 | `fund_manager_id` | `varchar(200)` | YES |  |  |  | 基金管理人id |
-| 24 | `fund_superviser_name` | `varchar(500)` | YES |  |  |  | 基金管理人名称 |
-| 25 | `fund_mandator_id` | `varchar(200)` | YES |  |  |  | 基金托管人id |
-| 26 | `fund_mandator_name` | `varchar(500)` | YES |  |  |  | 基金托管人名称 |
-| 27 | `sales_service_fee` | `decimal(18,4)` | YES |  |  |  | 销售服务费率 |
-| 28 | `income_transfer_method` | `decimal(1,0)` | YES |  |  |  | 收益结转方式 |
-| 29 | `rolling_period` | `decimal(8,0)` | YES |  |  |  | 滚动周期 |
-| 30 | `mmf_return_calculate` | `decimal(2,0)` | YES |  |  |  | 货币市场基金收益计算方式 |
-| 31 | `shareholding_period` | `decimal(8,4)` | YES |  |  |  | 份额持有期 |
-| 32 | `dividend_method` | `decimal(1,0)` | YES |  |  |  | 分红方式 |
-| 33 | `operation_period` | `decimal(18,2)` | YES |  |  |  | 运作期 |
-| 34 | `value_dded_fee_rate` | `decimal(18,4)` | YES |  |  |  | 增值服务费率 |
-| 35 | `index_licensed_use_fee_rate` | `decimal(18,4)` | YES |  |  |  | 指数许可使用费率 |
-| 36 | `settlement_mode` | `varchar(18)` | YES |  |  |  | 基金结算模式 |
-| 37 | `origi_shareholding_period` | `decimal(18,4)` | YES |  |  |  | 原始公布份额持有期 |
-| 38 | `origi_shareholding_period_unit` | `varchar(10)` | YES |  |  |  | 原始公布份额持有期单位 |
-| 39 | `origi_operation_period` | `decimal(18,4)` | YES |  |  |  | 原始公布运作期 |
-| 40 | `origi_operation_period_unit` | `varchar(10)` | YES |  |  |  | 原始公布运作期单位 |
-| 41 | `invest_socpe` | `mediumtext` | YES |  |  |  | 投资范围 |
-| 42 | `risk_income_feature` | `mediumtext` | YES |  |  |  | 风险收益特征 |
-| 43 | `invest_area` | `mediumtext` | YES |  |  |  | 投资区域 |
-| 44 | `invest_area_explain` | `mediumtext` | YES |  |  |  | 投资区域说明 |
-| 45 | `mkt_risk_prompt` | `mediumtext` | YES |  |  |  | 市场风险提示 |
-| 46 | `manage_risk_prompt` | `mediumtext` | YES |  |  |  | 管理风险提示 |
-| 47 | `tech_risk_prompt` | `mediumtext` | YES |  |  |  | 技术风险提示 |
-| 48 | `redemp_risk_prompt` | `mediumtext` | YES |  |  |  | 赎回风险提示 |
-| 49 | `othr_risk_prompt` | `mediumtext` | YES |  |  |  | 其他风险提示 |
-| 50 | `float_manage_rate_explain` | `mediumtext` | YES |  |  |  | 浮动管理费率说明 |
-| 51 | `operation_period_explain` | `mediumtext` | YES |  |  |  | 运作期描述 |
-| 52 | `index_licensed_use_rate_exp` | `mediumtext` | YES |  |  |  | 指数许可使用费说明 |
-| 53 | `income_distribution_explain` | `mediumtext` | YES |  |  |  | 收益分配说明 |
-| 54 | `fixed_manage_fee_explain` | `mediumtext` | YES |  |  |  | 固定管理费用说明 |
-| 55 | `invest_objective` | `longtext` | YES |  |  |  | 投资目标 |
-| 56 | `invest_objective_adj` | `longtext` | YES |  |  |  | 投资目标(调整) |
-| 57 | `invest_strategy` | `longtext` | YES |  |  |  | 投资策略 |
-| 58 | `invest_strategy_adj` | `longtext` | YES |  |  |  | 投资策略(调整) |
-| 59 | `perf_comparative_benchmark` | `longtext` | YES |  |  |  | 业绩比较基准 |
-| 60 | `perf_comparative_benchmark_adj` | `longtext` | YES |  |  |  | 业绩比较基准(调整) |
-| 61 | `profit_transfer_date_explain` | `longtext` | YES |  |  |  | 收益结转日说明 |
-| 62 | `investment_philosophy` | `longtext` | YES |  |  |  | 投资理念 |
-| 63 | `isvalid` | `decimal(1,0)` | YES |  | 1 |  | 是否有效 |
+| 字段 | 类型 | 空 | 键 | 说明 |
+|------|------|----|----|------|
+| `seq` | `decimal(20,0)` | NO | PRI | 记录唯一标识 |
+| `ctime` | `datetime` | YES |  | 记录创建日期 |
+| `mtime` | `datetime` | YES |  | 记录修改日期 |
+| `rtime` | `datetime` | YES |  | 记录通讯到用户端日期 |
+| `td_code` | `varchar(20)` | YES |  | 交易代码 |
+| `fund_code` | `varchar(20)` | YES | MUL | 基金代码 |
+| `abbreviation` | `varchar(500)` | YES |  | 基金简称 |
+| `fund_name` | `varchar(500)` | YES |  | 基金名称 |
+| `fund_type` | `varchar(1)` | YES |  | 基金类型 |
+| `dur` | `decimal(18,4)` | YES |  | 存续期限 |
+| `established_date` | `date` | YES |  | 成立日期 |
+| `invest_style` | `varchar(12)` | YES |  | 投资风格 |
+| `fund_invest_type` | `varchar(1)` | YES |  | 基金投资类型 |
+| `back_code` | `varchar(600)` | YES |  | 后端代码 |
+| `mandate_sd` | `date` | YES |  | 托管开始日期 |
+| `mandate_ed` | `date` | YES |  | 托管结束日期 |
+| `if_index_fund` | `varchar(1)` | YES |  | 是否指数基金 |
+| `name_en` | `varchar(500)` | YES |  | 英文名称 |
+| `mandate_fee_rate` | `decimal(18,4)` | YES |  | 托管费率 |
+| `manage_fee_rate` | `decimal(18,4)` | YES |  | 管理费率 |
+| `fee_rate_extraction_standard` | `varchar(500)` | YES |  | 费率提取标准 |
+| `maturity_date` | `date` | YES |  | 到期日期 |
+| `fund_manager_id` | `varchar(200)` | YES |  | 基金管理人id |
+| `fund_superviser_name` | `varchar(500)` | YES |  | 基金管理人名称 |
+| `fund_mandator_id` | `varchar(200)` | YES |  | 基金托管人id |
+| `fund_mandator_name` | `varchar(500)` | YES |  | 基金托管人名称 |
+| `sales_service_fee` | `decimal(18,4)` | YES |  | 销售服务费率 |
+| `income_transfer_method` | `decimal(1,0)` | YES |  | 收益结转方式 |
+| `rolling_period` | `decimal(8,0)` | YES |  | 滚动周期 |
+| `mmf_return_calculate` | `decimal(2,0)` | YES |  | 货币市场基金收益计算方式 |
+| `shareholding_period` | `decimal(8,4)` | YES |  | 份额持有期 |
+| `dividend_method` | `decimal(1,0)` | YES |  | 分红方式 |
+| `operation_period` | `decimal(18,2)` | YES |  | 运作期 |
+| `value_dded_fee_rate` | `decimal(18,4)` | YES |  | 增值服务费率 |
+| `index_licensed_use_fee_rate` | `decimal(18,4)` | YES |  | 指数许可使用费率 |
+| `settlement_mode` | `varchar(18)` | YES |  | 基金结算模式 |
+| `origi_shareholding_period` | `decimal(18,4)` | YES |  | 原始公布份额持有期 |
+| `origi_shareholding_period_unit` | `varchar(10)` | YES |  | 原始公布份额持有期单位 |
+| `origi_operation_period` | `decimal(18,4)` | YES |  | 原始公布运作期 |
+| `origi_operation_period_unit` | `varchar(10)` | YES |  | 原始公布运作期单位 |
+| `invest_socpe` | `mediumtext` | YES |  | 投资范围 |
+| `risk_income_feature` | `mediumtext` | YES |  | 风险收益特征 |
+| `invest_area` | `mediumtext` | YES |  | 投资区域 |
+| `invest_area_explain` | `mediumtext` | YES |  | 投资区域说明 |
+| `mkt_risk_prompt` | `mediumtext` | YES |  | 市场风险提示 |
+| `manage_risk_prompt` | `mediumtext` | YES |  | 管理风险提示 |
+| `tech_risk_prompt` | `mediumtext` | YES |  | 技术风险提示 |
+| `redemp_risk_prompt` | `mediumtext` | YES |  | 赎回风险提示 |
+| `othr_risk_prompt` | `mediumtext` | YES |  | 其他风险提示 |
+| `float_manage_rate_explain` | `mediumtext` | YES |  | 浮动管理费率说明 |
+| `operation_period_explain` | `mediumtext` | YES |  | 运作期描述 |
+| `index_licensed_use_rate_exp` | `mediumtext` | YES |  | 指数许可使用费说明 |
+| `income_distribution_explain` | `mediumtext` | YES |  | 收益分配说明 |
+| `fixed_manage_fee_explain` | `mediumtext` | YES |  | 固定管理费用说明 |
+| `invest_objective` | `longtext` | YES |  | 投资目标 |
+| `invest_objective_adj` | `longtext` | YES |  | 投资目标(调整) |
+| `invest_strategy` | `longtext` | YES |  | 投资策略 |
+| `invest_strategy_adj` | `longtext` | YES |  | 投资策略(调整) |
+| `perf_comparative_benchmark` | `longtext` | YES |  | 业绩比较基准 |
+| `perf_comparative_benchmark_adj` | `longtext` | YES |  | 业绩比较基准(调整) |
+| `profit_transfer_date_explain` | `longtext` | YES |  | 收益结转日说明 |
+| `investment_philosophy` | `longtext` | YES |  | 投资理念 |
+| `isvalid` | `decimal(1,0)` | YES |  | 是否有效 |
 
 ## 索引
 
