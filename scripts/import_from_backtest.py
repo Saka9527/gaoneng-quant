@@ -403,39 +403,6 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                     ],
                 },
                 {
-                    "tab": "因子研究",
-                    "icon": "sigma",
-                    "groups": [
-                        {
-                            "group": nest,
-                            "pages": [
-                                "factor/overview",
-                                "factor/guide",
-                                "factor/operators",
-                                "factor/catalog",
-                                {
-                                    "group": "选股公式",
-                                    "expanded": False,
-                                    "pages": [
-                                        "factor/formulas",
-                                        "factor/rising-channel",
-                                        "factor/pullback",
-                                        "factor/rocket",
-                                        "factor/assist-cross",
-                                        "factor/short-wave",
-                                        "factor/main-force",
-                                    ],
-                                },
-                                "factor/authoring",
-                                "factor/precompute",
-                                "factor/tracking",
-                                "factor/lifecycle",
-                                "factor/advanced",
-                            ],
-                        }
-                    ],
-                },
-                {
                     "tab": "回测",
                     "icon": "chart-line",
                     "pages": [
@@ -485,6 +452,39 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                             "group": "选股服务",
                             "openapi": "api/factor-service.openapi.json",
                         },
+                    ],
+                },
+                {
+                    "tab": "因子研究",
+                    "icon": "sigma",
+                    "groups": [
+                        {
+                            "group": nest,
+                            "pages": [
+                                "factor/overview",
+                                "factor/guide",
+                                "factor/operators",
+                                "factor/catalog",
+                                {
+                                    "group": "选股公式",
+                                    "expanded": False,
+                                    "pages": [
+                                        "factor/formulas",
+                                        "factor/rising-channel",
+                                        "factor/pullback",
+                                        "factor/rocket",
+                                        "factor/assist-cross",
+                                        "factor/short-wave",
+                                        "factor/main-force",
+                                    ],
+                                },
+                                "factor/authoring",
+                                "factor/precompute",
+                                "factor/tracking",
+                                "factor/lifecycle",
+                                "factor/advanced",
+                            ],
+                        }
                     ],
                 },
                 {
