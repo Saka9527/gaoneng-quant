@@ -427,8 +427,6 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                                     ],
                                 },
                                 "factor/authoring",
-                                "factor/publish",
-                                "factor/library",
                                 "factor/precompute",
                                 "factor/tracking",
                                 "factor/lifecycle",

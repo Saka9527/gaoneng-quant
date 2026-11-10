@@ -72,8 +72,6 @@
                 ]
               },
               "factor/authoring",
-              "factor/publish",
-              "factor/library",
               "factor/precompute",
               "factor/tracking",
               "factor/lifecycle",
