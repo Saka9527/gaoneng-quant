@@ -464,7 +464,6 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                                 "factor/overview",
                                 "factor/guide",
                                 "factor/operators",
-                                "factor/catalog",
                                 {
                                     "group": "选股公式",
                                     "expanded": False,
