@@ -127,7 +127,7 @@ function draw() {
   const TOP = 95, H = 220, MID = TOP + H / 2;
 
   frame(350, 55, 1145, 300, { label: "单日循环", theme: "purple" });
-  frame(320, 430, 730, 185, { label: "规则与成本", theme: "orange" });
+  frame(415, 430, 745, 185, { label: "规则与成本", theme: "orange" });
 
   stage(25, TOP, 285, H, {
     title: "按交易日历推进到当日", lines: ["信号看昨收", "成交用次日开盘"],
@@ -136,13 +136,13 @@ function draw() {
   blockArrow(318, 370, MID);
 
   stage(375, TOP, 320, H, {
-    title: "① 卖出处理", lines: ["持股到期 / 卖出信号", "次日开盘卖出", "拒单：T+1 · 跌停 · 停牌"],
-    ic: "log-out", badge: "ban", theme: "red",
+    title: "① 买入处理", lines: ["再平衡日 + 买入信号", "排序 · 过滤 · 仓位预算", "次日开盘买入"],
+    ic: "shopping-cart", badge: "list-ordered", theme: "green",
   });
   blockArrow(703, 757, MID);
   stage(765, TOP, 320, H, {
-    title: "② 买入处理", lines: ["再平衡日 + 买入信号", "排序 · 过滤 · 仓位预算", "次日开盘买入"],
-    ic: "shopping-cart", badge: "list-ordered", theme: "green",
+    title: "② 卖出处理", lines: ["持股到期 / 卖出信号", "次日开盘卖出", "拒单：T+1 · 跌停 · 停牌"],
+    ic: "log-out", badge: "ban", theme: "red",
   });
   blockArrow(1093, 1147, MID);
   stage(1155, TOP, 320, H, {
@@ -150,13 +150,13 @@ function draw() {
     ic: "notebook-pen", badge: "chart-line", theme: "purple",
   });
 
-  dashedDown(440, TOP + H, 470, "信号");
-  dashedDown(660, TOP + H, 470, "成本");
-  dashedDown(930, TOP + H, 470, "规则");
+  dashedDown(535, TOP + H, 470, "规则");
+  dashedDown(835, TOP + H, 470, "信号");
+  dashedDown(1045, TOP + H, 470, "成本");
 
-  mini(345, 470, 190, 110, { title: "信号注册表", ic: "list-checks", theme: "mint" });
-  mini(565, 470, 190, 110, { title: "交易成本", ic: "coins", theme: "amber" });
-  mini(835, 470, 190, 110, { title: "可交易规则", ic: "shield-check", theme: "rose" });
+  mini(440, 470, 190, 110, { title: "可交易规则", ic: "shield-check", theme: "rose" });
+  mini(740, 470, 190, 110, { title: "信号注册表", ic: "list-checks", theme: "mint" });
+  mini(950, 470, 190, 110, { title: "交易成本", ic: "coins", theme: "amber" });
 
   document.body.dataset.ready = "1";
 }
