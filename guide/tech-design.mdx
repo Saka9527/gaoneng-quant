@@ -149,23 +149,7 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
 
 ---
 
-## 8. API 面（评审用摘要）
-
-统一响应：`{ success, code, message, data, timestamp }`
-
-| 域 | 方法 | 路径 | 说明 |
-|----|------|------|------|
-| 组合 | GET | `/api/v1/portfolio/meta` | 枚举/默认值（买卖信号来自 Catalog） |
-| 组合 | POST | `/api/v1/portfolio/run` | 同步回测（瘦身结果） |
-| 组合 | POST | `/api/v1/portfolio/submit` | 与 `/run` 相同，当前请求内跑完 |
-| 组合 | GET | `/api/v1/portfolio/jobs/{id}` | 状态/进度/摘要 |
-| 组合 | GET | `/api/v1/portfolio/jobs/{id}/trades` | 成交分页，默认 limit=50 |
-| 因子组合 | POST | `/api/v1/product/factor-combo/*` | 预览/保存/刷新板块 |
-| 股票池 | POST | `/api/v1/universe/market-warmup` | 预热 Panel |
-
----
-
-## 9. 已知边界与后续方向
+## 8. 已知边界与后续方向
 
 供评审拍板优先级：
 
