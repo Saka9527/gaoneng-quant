@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>买卖信号注册表扩展设计</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+<script src="https://unpkg.com/roughjs@4.6.6/bundled/rough.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.js"></script>
+<style>
+  html, body { margin: 0; background: #ffffff; }
+  #canvas { display: block; }
+  .hand { font-family: "LXGW WenKai", "KaiTi", serif; }
+  .sans { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; }
+</style>
+</head>
+<body>
+<svg id="canvas" xmlns="http://www.w3.org/2000/svg" width="1400" height="640" viewBox="0 0 1400 640">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.10" />
+    </filter>
+  </defs>
+  <rect width="1400" height="640" fill="#ffffff" />
+</svg>
+<script>
+const svg = document.getElementById("canvas");
+const rc = rough.svg(svg, { options: { seed: 41 } });
+const NS = "http://www.w3.org/2000/svg";
+
+const THEMES = {
+  blue:   { fill: "#eef4ff", stroke: "#3f6fd1", tag: "#d6e4ff" },
+  red:    { fill: "#fdeeee", stroke: "#cf4a4a", tag: "#f8d3d3" },
+  green:  { fill: "#ecf8ec", stroke: "#3f9a4f", tag: "#cdebc9" },
+  purple: { fill: "#f4efff", stroke: "#7b4fd0", tag: "#e2d6fb" },
+  orange: { fill: "#fff5e6", stroke: "#e08a1e", tag: "#fde0b6" },
+  gray:   { fill: "#f6f6f6", stroke: "#7a7a7a", tag: "#e6e6e6" },
+};
+
+function el(tag, attrs, parent = svg) {
+  const node = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+  parent.appendChild(node);
+  return node;
+}
+
+function text(x, y, value, { size = 16, weight = 400, color = "#222", anchor = "middle", cls = "sans" } = {}) {
+  const t = el("text", { x, y, "font-size": size, "font-weight": weight, fill: color, "text-anchor": anchor, "dominant-baseline": "middle", class: cls });
+  t.textContent = value;
+  return t;
+}
+
+function roundedPath(x, y, w, h, r) {
+  return `M${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h - r} Q${x + w},${y + h} ${x + w - r},${y + h} H${x + r} Q${x},${y + h} ${x},${y + h - r} V${y + r} Q${x},${y} ${x + r},${y} Z`;
+}
+
+function pascal(name) {
+  return name.split("-").map((s) => s[0].toUpperCase() + s.slice(1)).join("");
+}
+
+const ICON_ALIASES = { "circle-plus": ["CirclePlus", "PlusCircle"] };
+
+function icon(name, cx, cy, size, color, width = 1.8) {
+  const keys = ICON_ALIASES[name] || [pascal(name)];
+  const node = keys.map((k) => lucide.icons[k]).find(Boolean);
+  if (!node) { console.warn("missing icon", name); return; }
+  const e = lucide.createElement(node);
+  e.setAttribute("x", cx - size / 2);
+  e.setAttribute("y", cy - size / 2);
+  e.setAttribute("width", size);
+  e.setAttribute("height", size);
+  e.setAttribute("stroke", color);
+  e.setAttribute("stroke-width", width);
+  svg.appendChild(e);
+}
+
+function box(x, y, w, h, { title, ic, badge, theme, size = 21, dashed = false, sub }) {
+  const t = THEMES[theme];
+  const g = el("g", { filter: "url(#shadow)" });
+  const opts = { fill: t.fill, fillStyle: "solid", stroke: t.stroke, strokeWidth: 2.4, roughness: 1.2 };
+  if (dashed) opts.strokeLineDash = [10, 7];
+  g.appendChild(rc.rectangle(x, y, w, h, opts));
+  const cx = x + w / 2, cy = y + h / 2;
+  const iconY = sub ? cy - 34 : cy - 24;
+  svg.appendChild(rc.circle(cx, iconY, 54, { fill: "#ffffff", fillStyle: "solid", stroke: t.stroke, strokeWidth: 1.2, roughness: 0.8 }));
+  icon(ic, cx, iconY, 30, t.stroke, 1.9);
+  text(cx, iconY + 50, title, { size, weight: 800, color: "#1e1e1e" });
+  if (sub) text(cx, iconY + 78, sub, { size: 15, color: "#4a4a4a" });
+  if (badge) icon(badge, x + w - 24, y + h - 22, 22, t.stroke, 1.6);
+}
+
+function frame(x, y, w, h, { label, theme }) {
+  const t = THEMES[theme];
+  svg.appendChild(rc.path(roundedPath(x, y, w, h, 16), { stroke: "#6b6b6b", strokeWidth: 1.4, strokeLineDash: [8, 7], roughness: 1.2, fill: "none" }));
+  const tw = label.length * 19 + 30;
+  svg.appendChild(rc.path(roundedPath(x + 18, y - 17, tw, 34, 9), { fill: t.tag, fillStyle: "solid", stroke: t.stroke, strokeWidth: 1.5, roughness: 1 }));
+  text(x + 18 + tw / 2, y + 1, label, { size: 18, weight: 700, color: "#1f1f1f", cls: "hand" });
+}
+
+function arrowHead(x, y, dir, color) {
+  const s = 13;
+  const pts = dir === "right"
+    ? [[x, y], [x - s, y - s * 0.6], [x - s, y + s * 0.6]]
+    : [[x, y], [x - s * 0.6, y + s], [x + s * 0.6, y + s]];
+  svg.appendChild(rc.polygon(pts, { fill: color, fillStyle: "solid", stroke: color, strokeWidth: 1, roughness: 0.4 }));
+}
+
+function curved(x1, y1, x2, y2) {
+  const mx = (x1 + x2) / 2;
+  const d = `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2 - 12},${y2}`;
+  svg.appendChild(rc.path(d, { stroke: "#4a4a4a", strokeWidth: 3.2, roughness: 0.9, fill: "none" }));
+  arrowHead(x2, y2, "right", "#4a4a4a");
+}
+
+function chip(x, y, value) {
+  const w = value.length * 17 + 18;
+  el("rect", { x: x - w / 2, y: y - 14, width: w, height: 28, rx: 9, fill: "#ffffff", stroke: "#bdbdbd", "stroke-width": 1.2 });
+  text(x, y + 1, value, { size: 16, weight: 700, color: "#333", cls: "hand" });
+}
+
+function draw() {
+  frame(30, 50, 350, 430, { label: "① 信号规则", theme: "blue" });
+  frame(520, 50, 360, 430, { label: "② 统一登记", theme: "orange" });
+  frame(1020, 50, 350, 430, { label: "③ 使用方", theme: "green" });
+
+  box(60, 85, 290, 160, { title: "买入信号", ic: "trending-up", badge: "log-in", theme: "blue" });
+  box(60, 285, 290, 160, { title: "卖出信号", ic: "trending-down", badge: "log-out", theme: "red" });
+
+  curved(352, 165, 548, 235);
+  curved(352, 365, 548, 295);
+
+  box(550, 155, 300, 210, { title: "信号注册表", ic: "list-checks", badge: "plug", theme: "orange", size: 23 });
+
+  curved(852, 235, 1048, 165);
+  curved(852, 295, 1048, 365);
+
+  box(1050, 85, 290, 160, { title: "枚举接口", ic: "braces", badge: "list", theme: "green" });
+  box(1050, 285, 290, 160, { title: "日频循环", ic: "repeat", badge: "calendar-days", theme: "purple" });
+
+  svg.appendChild(rc.line(700, 515, 700, 378, { stroke: "#5a5a5a", strokeWidth: 2.2, strokeLineDash: [9, 7], roughness: 0.8 }));
+  arrowHead(700, 367, "up", "#5a5a5a");
+  chip(700, 432, "登记");
+
+  const ext = THEMES.gray;
+  const g = el("g", { filter: "url(#shadow)" });
+  g.appendChild(rc.rectangle(520, 515, 360, 100, { fill: ext.fill, fillStyle: "solid", stroke: ext.stroke, strokeWidth: 2.2, strokeLineDash: [10, 7], roughness: 1.1 }));
+  svg.appendChild(rc.circle(570, 565, 52, { fill: "#ffffff", fillStyle: "solid", stroke: ext.stroke, strokeWidth: 1.2, roughness: 0.8 }));
+  icon("circle-plus", 570, 565, 28, ext.stroke, 1.9);
+  text(732, 548, "扩展：新增一条规则", { size: 19, weight: 800, color: "#1e1e1e" });
+  text(732, 582, "登记后重启服务", { size: 15, color: "#4a4a4a" });
+
+  document.body.dataset.ready = "1";
+}
+
+document.fonts.load('700 18px "LXGW WenKai"').then(() => document.fonts.ready).then(draw);
+</script>
+</body>
+</html>
