@@ -14,13 +14,13 @@
 </style>
 </head>
 <body>
-<svg id="canvas" xmlns="http://www.w3.org/2000/svg" width="1440" height="1270" viewBox="0 0 1440 1270">
+<svg id="canvas" xmlns="http://www.w3.org/2000/svg" width="1440" height="1230" viewBox="0 0 1440 1230">
   <defs>
     <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
       <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.10" />
     </filter>
   </defs>
-  <rect width="1440" height="1270" fill="#ffffff" />
+  <rect width="1440" height="1230" fill="#ffffff" />
 </svg>
 <script>
 const svg = document.getElementById("canvas");
@@ -180,7 +180,6 @@ function draw() {
   chip(1005, 1015, "读取");
   chip(1250, 1012, "读写");
 
-  text(60, 1240, "鉴权可选。产品页与接口同进程。", { size: 14, color: "#8a8a8a", anchor: "start" });
   document.body.dataset.ready = "1";
 }
 
