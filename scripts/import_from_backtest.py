@@ -493,6 +493,7 @@ def write_docs_json(dest_map: dict[str, str]) -> None:
                         "research/factor-decomposition",
                         "research/nl-factor",
                         "research/ai-qa",
+                        "research/ai-quant",
                     ],
                 },
             ]
