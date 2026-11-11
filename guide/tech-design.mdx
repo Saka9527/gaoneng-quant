@@ -146,13 +146,3 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
 | 进程 `reportCache` | 净值曲线、逐笔成交、期末持仓。 |
 | `bt_portfolio_strategy` | 用户保存的交易配置 |
 | `gn_factor` / `gn_factor_signal` / `gn_factor_combo` | 因子与组合 |
-
----
-
-## 8. 已知边界与后续方向
-
-1. **概念板块成分**：对齐 `ths_index_his_stocks`  
-2. **绩效口径**：是否引入无风险利率、样本标准差、年化换手标准定义；是否用脚本对账  
-3. **规则插件化**：再平衡 / 仓位 / `buyTiming`（现仅 OPEN 且引擎固定开盘）  
-4. **撮合增强**（非盘口）：成交量约束、VWAP/收盘价可选成交价  
-5. **盘口撮合**：需求明确前不做；成本远高于日频增强
