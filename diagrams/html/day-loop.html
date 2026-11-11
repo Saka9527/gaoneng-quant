@@ -14,13 +14,13 @@
 </style>
 </head>
 <body>
-<svg id="canvas" xmlns="http://www.w3.org/2000/svg" width="1520" height="640" viewBox="0 0 1520 640">
+<svg id="canvas" xmlns="http://www.w3.org/2000/svg" width="1520" height="670" viewBox="0 0 1520 670">
   <defs>
     <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
       <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.10" />
     </filter>
   </defs>
-  <rect width="1520" height="640" fill="#ffffff" />
+  <rect width="1520" height="670" fill="#ffffff" />
 </svg>
 <script>
 const svg = document.getElementById("canvas");
@@ -123,11 +123,22 @@ function dashedDown(x, y1, y2, label) {
   text(x, ly + 1, label, { size: 16, weight: 700, color: "#333", cls: "hand" });
 }
 
+function dashed(x1, y1, x2, y2) {
+  svg.appendChild(rc.line(x1, y1, x2, y2, { stroke: "#5a5a5a", strokeWidth: 2.2, strokeLineDash: [9, 7], roughness: 0.8 }));
+}
+
+function braceDown(x1, x2, y0) {
+  const xm = (x1 + x2) / 2, d = 15;
+  const path = `M${x1},${y0} Q${x1},${y0 + d} ${x1 + 22},${y0 + d} L${xm - 20},${y0 + d} Q${xm},${y0 + d} ${xm},${y0 + 2 * d} Q${xm},${y0 + d} ${xm + 20},${y0 + d} L${x2 - 22},${y0 + d} Q${x2},${y0 + d} ${x2},${y0}`;
+  svg.appendChild(rc.path(path, { stroke: "#4a4a4a", strokeWidth: 3, roughness: 0.8, fill: "none" }));
+  return [xm, y0 + 2 * d];
+}
+
 function draw() {
   const TOP = 95, H = 220, MID = TOP + H / 2;
 
   frame(350, 55, 1145, 300, { label: "单日循环", theme: "purple" });
-  frame(415, 430, 745, 185, { label: "规则与成本", theme: "orange" });
+  frame(370, 470, 720, 170, { label: "规则与成本", theme: "orange" });
 
   stage(25, TOP, 285, H, {
     title: "按交易日历推进到当日", lines: ["信号看昨收", "成交用次日开盘"],
@@ -150,13 +161,14 @@ function draw() {
     ic: "notebook-pen", badge: "chart-line", theme: "purple",
   });
 
-  dashedDown(535, TOP + H, 470, "规则");
-  dashedDown(835, TOP + H, 470, "信号");
-  dashedDown(1045, TOP + H, 470, "成本");
+  dashed(535, TOP + H, 535, 372);
+  dashed(925, TOP + H, 925, 372);
+  const [tipX, tipY] = braceDown(535, 925, 372);
+  dashedDown(tipX, tipY, 470, "规则 · 信号 · 成本");
 
-  mini(440, 470, 190, 110, { title: "可交易规则", ic: "shield-check", theme: "rose" });
-  mini(740, 470, 190, 110, { title: "信号注册表", ic: "list-checks", theme: "mint" });
-  mini(950, 470, 190, 110, { title: "交易成本", ic: "coins", theme: "amber" });
+  mini(395, 505, 200, 110, { title: "可交易规则", ic: "shield-check", theme: "rose" });
+  mini(630, 505, 200, 110, { title: "信号注册表", ic: "list-checks", theme: "mint" });
+  mini(865, 505, 200, 110, { title: "交易成本", ic: "coins", theme: "amber" });
 
   document.body.dataset.ready = "1";
 }
