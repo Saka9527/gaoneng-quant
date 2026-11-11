@@ -16,7 +16,8 @@ const SRC = `<!doctype html>
   .nav { display: flex; gap: 8px; margin-top: auto; }
   button { font: inherit; color: inherit; background: transparent; border: 1px solid rgba(255,255,255,.2); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
   button:disabled { opacity: .4; cursor: default; }
-  .node { border-radius: 12px; padding: 10px 12px; min-width: 148px; background: #111827; border: 1px solid rgba(255,255,255,.14); }
+  .node { border-radius: 12px; padding: 10px 12px; width: 170px; box-sizing: border-box; background: #111827; border: 1px solid rgba(255,255,255,.14); }
+  .node .react-flow__handle { opacity: 0; }
   .node.on { border-color: #60a5fa; box-shadow: 0 0 0 1px #60a5fa; }
   .node .k { font-size: 11px; color: #93c5fd; }
   .node .t { font-size: 14px; font-weight: 650; margin-top: 2px; }
@@ -31,36 +32,42 @@ const SRC = `<!doctype html>
 <script src="https://cdn.jsdelivr.net/npm/reactflow@11.11.4/dist/umd/index.js"></script>
 <script>
 const React = window.React;
-const { ReactFlow, Background, Controls, Handle, Position } = window.ReactFlow;
+const { ReactFlow, Background, Handle, Position, MarkerType } = window.ReactFlow;
 
-const steps = ["config", "result", "run", "engine", "screen", "trades"];
+const steps = ["config", "run", "engine", "result", "screen", "trades"];
 const meta = {
-  config: { kicker: "1", title: "工作台配置", sub: "候选池 + 交易模型", body: "配置候选池和交易模型，然后进入结果页。" },
-  result: { kicker: "2", title: "结果页", sub: "", body: "打开结果页。首屏展示指标和净值，成交表再按页从内存读取。" },
-  run: { kicker: "3", title: "同步回测", sub: "", body: "在当前请求里跑完同步回测。" },
-  engine: { kicker: "4", title: "组合撮合引擎", sub: "", body: "日频撮合。净值、成交和期末持仓留在进程内存，任务表只写摘要。" },
+  config: { kicker: "1", title: "工作台配置", sub: "候选池 + 交易模型", body: "配置候选池和交易模型，然后提交同步回测。" },
+  run: { kicker: "2", title: "同步回测", sub: "", body: "在当前请求里跑完同步回测。" },
+  engine: { kicker: "3", title: "组合撮合引擎", sub: "", body: "日频撮合。净值、成交和期末持仓留在进程内存，任务表只写摘要。" },
+  result: { kicker: "4", title: "结果页", sub: "", body: "撮合完成后打开结果页。首屏展示指标和净值，成交表再按页从内存读取。" },
   screen: { kicker: "5", title: "指标与净值", sub: "首屏", body: "首屏返回指标和净值曲线。" },
   trades: { kicker: "6", title: "成交分页", sub: "", body: "结果页表格按页从本进程内存读取成交。" },
   cache: { kicker: "内存", title: "进程内存", sub: "净值 · 成交 · 持仓", body: "净值曲线、逐笔成交、期末持仓都在进程内存。成交分页读这里。" },
   job: { kicker: "落库", title: "任务摘要", sub: "", body: "任务表保存收益、耗时和拒单次数。曲线和成交写成空数组。" }
 };
 const positions = {
-  config: { x: 0, y: 20 }, result: { x: 230, y: 20 }, run: { x: 460, y: 20 }, engine: { x: 690, y: 20 },
-  job: { x: 0, y: 210 }, cache: { x: 230, y: 210 }, screen: { x: 460, y: 210 }, trades: { x: 690, y: 210 }
+  config: { x: 0, y: 0 },   run: { x: 240, y: 0 },
+  job: { x: 0, y: 130 },    engine: { x: 240, y: 130 },
+  cache: { x: 0, y: 260 },  result: { x: 240, y: 260 },
+  trades: { x: 0, y: 390 }, screen: { x: 240, y: 390 }
 };
 const links = [
-  ["config", "result"], ["result", "run"], ["run", "engine"], ["engine", "screen"], ["screen", "trades"],
-  ["engine", "cache"], ["engine", "job"]
+  ["config", "run", "r", "l"], ["run", "engine", "b", "t"], ["engine", "result", "b", "t"],
+  ["result", "screen", "b", "t"], ["screen", "trades", "l", "r"],
+  ["engine", "job", "l", "r"], ["engine", "cache", "l", "r"]
 ];
 
 function StepNode({ data }) {
+  const side = (pos, id) => [
+    React.createElement(Handle, { key: "s" + id, type: "source", position: pos, id: "s" + id }),
+    React.createElement(Handle, { key: "t" + id, type: "target", position: pos, id: "t" + id })
+  ];
   return React.createElement("div", { className: "node" + (data.on ? " on" : "") },
-    React.createElement(Handle, { type: "target", position: Position.Left }),
+    ...side(Position.Left, "l"), ...side(Position.Top, "t"),
     React.createElement("div", { className: "k" }, data.kicker),
     React.createElement("div", { className: "t" }, data.title),
     data.sub ? React.createElement("div", { className: "s" }, data.sub) : null,
-    React.createElement(Handle, { type: "source", position: Position.Right, id: "r" }),
-    React.createElement(Handle, { type: "source", position: Position.Bottom, id: "b" })
+    ...side(Position.Right, "r"), ...side(Position.Bottom, "b")
   );
 }
 const nodeTypes = { step: StepNode };
@@ -71,18 +78,22 @@ function App() {
   const nodes = Object.keys(meta).map((id) => ({
     id, type: "step", position: positions[id], data: { ...meta[id], on: id === active }
   }));
-  const edges = links.map(([source, target], i) => ({
-    id: "e" + i, source, target, sourceHandle: target === "cache" || target === "job" ? "b" : "r",
-    style: { stroke: source === active || target === active ? "#60a5fa" : "#475569" }
-  }));
+  const edges = links.map(([source, target, from, to], i) => {
+    const color = source === active || target === active ? "#60a5fa" : "#475569";
+    return {
+      id: "e" + i, source, target, sourceHandle: "s" + from, targetHandle: "t" + to, type: "smoothstep",
+      style: { stroke: color, strokeWidth: 1.5 },
+      markerEnd: { type: MarkerType.ArrowClosed, color, width: 16, height: 16 }
+    };
+  });
   const item = meta[active];
   return React.createElement("div", { className: "wrap" },
     React.createElement("div", { className: "canvas" },
       React.createElement(ReactFlow, {
-        nodes, edges, nodeTypes, fitView: true, minZoom: 0.4, maxZoom: 1.5,
+        nodes, edges, nodeTypes, fitView: true, fitViewOptions: { padding: 0.06 }, minZoom: 0.4, maxZoom: 1.5,
         proOptions: { hideAttribution: true },
         onNodeClick: (_, node) => setActive(node.id)
-      }, React.createElement(Background, { color: "#1e293b", gap: 18 }), React.createElement(Controls, null))
+      }, React.createElement(Background, { color: "#1e293b", gap: 18 }))
     ),
     React.createElement("aside", { className: "side" },
       React.createElement("div", { className: "kicker" }, item.kicker),
