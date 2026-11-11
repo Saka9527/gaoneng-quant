@@ -10,7 +10,6 @@ sidebarTitle: "部署"
 | **JDK 21** + 本服务 JAR | 是 | HTTP API / 产品 UI / 回测引擎 |
 | **MySQL 8**（`gngltdb`） | 是 | 业务表 `bt_*` / `gn_*`；`quant.ths.mode=mirror` 时兼作行情副本 |
 | **Redis 6+** | 强烈建议 | 单票日线 JSON 缓存；无 Redis 时冷路径更慢 |
-| 同花顺库 `lm_ths_db` | 可选 | `mode=ths` 直读，或仅作镜像同步源 |
 | Python 3.10+ | 运维可选 | 镜像增量或全量同步 |
 
 ---
