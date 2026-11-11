@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>候选池解析与行情加载路径</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+<script src="https://unpkg.com/roughjs@4.6.6/bundled/rough.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.js"></script>
+<style>
+  html, body { margin: 0; background: #ffffff; }
+  #canvas { display: block; }
+  .hand { font-family: "LXGW WenKai", "KaiTi", serif; }
+  .sans { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; }
+</style>
+</head>
+<body>
+<svg id="canvas" xmlns="http://www.w3.org/2000/svg" width="1540" height="600" viewBox="0 0 1540 600">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.10" />
+    </filter>
+  </defs>
+  <rect width="1540" height="600" fill="#ffffff" />
+</svg>
+<script>
+const svg = document.getElementById("canvas");
+const rc = rough.svg(svg, { options: { seed: 23 } });
+const NS = "http://www.w3.org/2000/svg";
+
+const THEMES = {
+  blue:   { fill: "#eef4ff", stroke: "#3f6fd1", tag: "#d6e4ff" },
+  green:  { fill: "#ecf8ec", stroke: "#3f9a4f", tag: "#cdebc9" },
+  purple: { fill: "#f4efff", stroke: "#7b4fd0", tag: "#e2d6fb" },
+  orange: { fill: "#fff5e6", stroke: "#e08a1e", tag: "#fde0b6" },
+  red:    { fill: "#fdeeee", stroke: "#cf4a4a", tag: "#f8d3d3" },
+  pink:   { fill: "#fde4e4", stroke: "#d65f5f" },
+  amber:  { fill: "#fff1d6", stroke: "#d99a2b" },
+  mint:   { fill: "#e3f3e3", stroke: "#4f9a5a" },
+};
+
+function el(tag, attrs, parent = svg) {
+  const node = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+  parent.appendChild(node);
+  return node;
+}
+
+function text(x, y, value, { size = 16, weight = 400, color = "#222", anchor = "middle", cls = "sans" } = {}) {
+  const t = el("text", { x, y, "font-size": size, "font-weight": weight, fill: color, "text-anchor": anchor, "dominant-baseline": "middle", class: cls });
+  t.textContent = value;
+  return t;
+}
+
+function roundedPath(x, y, w, h, r) {
+  return `M${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h - r} Q${x + w},${y + h} ${x + w - r},${y + h} H${x + r} Q${x},${y + h} ${x},${y + h - r} V${y + r} Q${x},${y} ${x + r},${y} Z`;
+}
+
+const ICON_ALIASES = {
+  "chart-candlestick": ["ChartCandlestick", "CandlestickChart"],
+  "chart-column": ["ChartColumn", "BarChart3", "ChartBar"],
+  "scan-search": ["ScanSearch"],
+};
+
+function pascal(name) {
+  return name.split("-").map((s) => s[0].toUpperCase() + s.slice(1)).join("");
+}
+
+function icon(name, cx, cy, size, color, width = 1.8) {
+  const keys = ICON_ALIASES[name] || [pascal(name)];
+  const node = keys.map((k) => lucide.icons[k]).find(Boolean);
+  if (!node) { console.warn("missing icon", name); return; }
+  const e = lucide.createElement(node);
+  e.setAttribute("x", cx - size / 2);
+  e.setAttribute("y", cy - size / 2);
+  e.setAttribute("width", size);
+  e.setAttribute("height", size);
+  e.setAttribute("stroke", color);
+  e.setAttribute("stroke-width", width);
+  svg.appendChild(e);
+}
+
+function box(x, y, w, h, { title, lead, ic, badge, theme, size = 20 }) {
+  const t = THEMES[theme];
+  const g = el("g", { filter: "url(#shadow)" });
+  g.appendChild(rc.rectangle(x, y, w, h, { fill: t.fill, fillStyle: "solid", stroke: t.stroke, strokeWidth: 2.4, roughness: 1.2 }));
+  const cy = y + h / 2;
+  svg.appendChild(rc.circle(x + w / 2, cy - 30, 58, { fill: "#ffffff", fillStyle: "solid", stroke: t.stroke, strokeWidth: 1.2, roughness: 0.8 }));
+  icon(ic, x + w / 2, cy - 30, 32, t.stroke, 1.9);
+  if (lead) {
+    const lw = lead.length * 15 + 14;
+    svg.appendChild(rc.path(roundedPath(x + w / 2 - lw / 2, cy + 6, lw, 22, 7), { fill: t.stroke, fillStyle: "solid", stroke: t.stroke, strokeWidth: 1, roughness: 0.6 }));
+    text(x + w / 2, cy + 18, lead, { size: 13, weight: 700, color: "#ffffff" });
+    text(x + w / 2, cy + 48, title, { size, weight: 800, color: "#1e1e1e" });
+  } else {
+    text(x + w / 2, cy + 28, title, { size, weight: 800, color: "#1e1e1e" });
+  }
+  if (badge) icon(badge, x + w - 26, y + h - 24, 24, t.stroke, 1.6);
+}
+
+function mini(x, y, w, h, { title, ic, theme }) {
+  const t = THEMES[theme];
+  const g = el("g", { filter: "url(#shadow)" });
+  g.appendChild(rc.rectangle(x, y, w, h, { fill: t.fill, fillStyle: "solid", stroke: t.stroke, strokeWidth: 2.2, roughness: 1.1 }));
+  svg.appendChild(rc.circle(x + 50, y + h / 2, 52, { fill: "#ffffff", fillStyle: "solid", stroke: t.stroke, strokeWidth: 1.2, roughness: 0.8 }));
+  icon(ic, x + 50, y + h / 2, 28, t.stroke, 1.9);
+  text(x + 88 + (w - 88) / 2, y + h / 2 + 1, title, { size: 20, weight: 800, color: "#1e1e1e" });
+}
+
+function frame(x, y, w, h, { label, theme }) {
+  const t = THEMES[theme];
+  svg.appendChild(rc.path(roundedPath(x, y, w, h, 16), { stroke: "#6b6b6b", strokeWidth: 1.4, strokeLineDash: [8, 7], roughness: 1.2, fill: "none" }));
+  const tw = label.length * 19 + 30;
+  svg.appendChild(rc.path(roundedPath(x + 18, y - 17, tw, 34, 9), { fill: t.tag, fillStyle: "solid", stroke: t.stroke, strokeWidth: 1.5, roughness: 1 }));
+  text(x + 18 + tw / 2, y + 1, label, { size: 18, weight: 700, color: "#1f1f1f", cls: "hand" });
+}
+
+function blockArrow(x1, x2, y) {
+  const body = 16, head = 26, len = x2 - x1;
+  const pts = [[x1, y - body / 2], [x2 - head, y - body / 2], [x2 - head, y - body / 2 - 9], [x2, y], [x2 - head, y + body / 2 + 9], [x2 - head, y + body / 2], [x1, y + body / 2]];
+  svg.appendChild(rc.polygon(pts, { fill: "#9b9b9b", fillStyle: "solid", stroke: "#2f2f2f", strokeWidth: 1.8, roughness: 1 }));
+}
+
+function curvedArrow(x1, y1, x2, y2, label, labelPos) {
+  const mx = (x1 + x2) / 2;
+  const d = `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2 - 12},${y2}`;
+  svg.appendChild(rc.path(d, { stroke: "#4a4a4a", strokeWidth: 3.2, roughness: 0.9, fill: "none" }));
+  const s = 13;
+  svg.appendChild(rc.polygon([[x2, y2], [x2 - s, y2 - s * 0.6], [x2 - s, y2 + s * 0.6]], { fill: "#4a4a4a", fillStyle: "solid", stroke: "#4a4a4a", strokeWidth: 1, roughness: 0.4 }));
+  const [lx, ly] = labelPos;
+  const w = label.length * 17 + 18;
+  el("rect", { x: lx - w / 2, y: ly - 14, width: w, height: 28, rx: 9, fill: "#ffffff", stroke: "#bdbdbd", "stroke-width": 1.2 });
+  text(lx, ly + 1, label, { size: 16, weight: 700, color: "#333", cls: "hand" });
+}
+
+function converge(x1, y1, x2, y2) {
+  const d = `M${x1},${y1} C${x1 + 30},${y1} ${x2 - 34},${y2} ${x2 - 12},${y2}`;
+  svg.appendChild(rc.path(d, { stroke: "#4a4a4a", strokeWidth: 3.2, roughness: 0.9, fill: "none" }));
+}
+
+function brace(bx, top, bottom) {
+  const cy = (top + bottom) / 2;
+  const d = `M${bx + 26},${top} Q${bx + 11},${top} ${bx + 11},${top + 22} L${bx + 11},${cy - 20} Q${bx + 11},${cy} ${bx},${cy} Q${bx + 11},${cy} ${bx + 11},${cy + 20} L${bx + 11},${bottom - 22} Q${bx + 11},${bottom} ${bx + 26},${bottom}`;
+  svg.appendChild(rc.path(d, { stroke: "#4a4a4a", strokeWidth: 3, roughness: 0.8, fill: "none" }));
+}
+
+function draw() {
+  const AXIS = 310;
+
+  frame(30, 60, 550, 500, { label: "① 候选来源", theme: "blue" });
+  frame(610, 60, 260, 500, { label: "② 解析", theme: "purple" });
+  frame(900, 60, 270, 500, { label: "③ 行情加载", theme: "orange" });
+  frame(1200, 60, 310, 500, { label: "④ 输出", theme: "red" });
+
+  box(50, AXIS - 90, 220, 180, { title: "因子词典组合", ic: "book-open", badge: "sigma", theme: "blue" });
+  blockArrow(278, 334, AXIS);
+  box(340, AXIS - 90, 220, 180, { title: "股票池文件", ic: "file-text", badge: "list", theme: "green" });
+  blockArrow(568, 624, AXIS);
+  box(630, AXIS - 90, 220, 180, { title: "解析候选代码", ic: "scan-search", badge: "filter", theme: "purple" });
+
+  box(925, 100, 220, 170, { lead: "优先", title: "内存行情面板", ic: "memory-stick", badge: "zap", theme: "orange", size: 19 });
+  box(925, 350, 220, 170, { lead: "否则", title: "按票加载日 K", ic: "chart-candlestick", badge: "download", theme: "orange", size: 19 });
+
+  curvedArrow(852, AXIS - 30, 921, 185, "已预热", [872, 222]);
+  curvedArrow(852, AXIS + 30, 921, 435, "未命中", [872, 398]);
+
+  converge(1148, 185, 1204, AXIS);
+  converge(1148, 435, 1204, AXIS);
+  svg.appendChild(rc.polygon([[1212, AXIS], [1198, AXIS - 8], [1198, AXIS + 8]], { fill: "#4a4a4a", fillStyle: "solid", stroke: "#4a4a4a", strokeWidth: 1, roughness: 0.4 }));
+  brace(1214, 100, 520);
+
+  mini(1246, 100, 246, 110, { title: "紧凑行情", ic: "chart-column", theme: "pink" });
+  mini(1246, 255, 246, 110, { title: "对比指数", ic: "git-compare", theme: "amber" });
+  mini(1246, 410, 246, 110, { title: "市场上下文", ic: "globe", theme: "mint" });
+
+  document.body.dataset.ready = "1";
+}
+
+document.fonts.load('700 18px "LXGW WenKai"').then(() => document.fonts.ready).then(draw);
+</script>
+</body>
+</html>
