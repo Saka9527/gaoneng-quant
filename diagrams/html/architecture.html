@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>量化回测系统架构</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+<script src="https://unpkg.com/roughjs@4.6.6/bundled/rough.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.js"></script>
+<style>
+  html, body { margin: 0; background: #ffffff; }
+  #canvas { display: block; }
+  .hand { font-family: "LXGW WenKai", "KaiTi", serif; }
+  .sans { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; }
+</style>
+</head>
+<body>
+<svg id="canvas" xmlns="http://www.w3.org/2000/svg" width="1440" height="1270" viewBox="0 0 1440 1270">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.10" />
+    </filter>
+  </defs>
+  <rect width="1440" height="1270" fill="#ffffff" />
+</svg>
+<script>
+const svg = document.getElementById("canvas");
+const rc = rough.svg(svg, { options: { seed: 11 } });
+const NS = "http://www.w3.org/2000/svg";
+
+const THEMES = {
+  blue:   { fill: "#e8f0fe", stroke: "#5b7fcf", iconBg: "#c9dafc", text: "#1f2a44", sub: "#4b5875", tag: "#cfe0ff", tagStroke: "#4a72c8" },
+  orange: { fill: "#fdf1e3", stroke: "#d49450", iconBg: "#fbd9b0", text: "#3b2a17", sub: "#6d5640", tag: "#fbd3a0", tagStroke: "#c9822f" },
+  red:    { fill: "#d9483b", stroke: "#a8322a", iconBg: "#f2958b", text: "#ffffff", sub: "#ffe4e0" },
+  green:  { fill: "#e8f5e6", stroke: "#6aab6a", iconBg: "#c6e7c4", text: "#1f3a1f", sub: "#4c6b4c", tag: "#cdebc9", tagStroke: "#5a9a5a" },
+  purple: { fill: "#f0eafb", stroke: "#8b74c9", iconBg: "#dccff7", text: "#2c2342", sub: "#5c5078", tag: "#ddd0f7", tagStroke: "#7a62bd" },
+};
+
+function el(tag, attrs, parent = svg) {
+  const node = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+  parent.appendChild(node);
+  return node;
+}
+
+function text(x, y, value, { size = 16, weight = 400, color = "#222", anchor = "middle", cls = "sans" } = {}) {
+  const t = el("text", { x, y, "font-size": size, "font-weight": weight, fill: color, "text-anchor": anchor, "dominant-baseline": "middle", class: cls });
+  t.textContent = value;
+  return t;
+}
+
+function roundedPath(x, y, w, h, r) {
+  return `M${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h - r} Q${x + w},${y + h} ${x + w - r},${y + h} H${x + r} Q${x},${y + h} ${x},${y + h - r} V${y + r} Q${x},${y} ${x + r},${y} Z`;
+}
+
+const ICON_ALIASES = {
+  "chart-candlestick": ["ChartCandlestick", "CandlestickChart"],
+  "chart-line": ["ChartLine", "LineChart"],
+};
+
+function pascal(name) {
+  return name.split("-").map((s) => s[0].toUpperCase() + s.slice(1)).join("");
+}
+
+function icon(name, cx, cy, size, color) {
+  const keys = ICON_ALIASES[name] || [pascal(name)];
+  const node = keys.map((k) => lucide.icons[k]).find(Boolean);
+  if (!node) { console.warn("missing icon", name); return; }
+  const elNode = lucide.createElement(node);
+  elNode.setAttribute("x", cx - size / 2);
+  elNode.setAttribute("y", cy - size / 2);
+  elNode.setAttribute("width", size);
+  elNode.setAttribute("height", size);
+  elNode.setAttribute("stroke", color);
+  elNode.setAttribute("stroke-width", "1.7");
+  svg.appendChild(elNode);
+}
+
+function card(x, y, w, h, { title, sub, ic, theme, size = 18 }) {
+  const t = THEMES[theme];
+  const g = el("g", { filter: "url(#shadow)" });
+  g.appendChild(rc.path(roundedPath(x, y, w, h, 14), { fill: t.fill, fillStyle: "solid", stroke: t.stroke, strokeWidth: 1.6, roughness: 1.1 }));
+  const icx = x + 42, icy = y + h / 2;
+  svg.appendChild(rc.circle(icx, icy, 50, { fill: t.iconBg, fillStyle: "solid", stroke: "none", roughness: 0.6 }));
+  icon(ic, icx, icy, 28, theme === "red" ? "#ffffff" : "#2b2b2b");
+  const tx = x + 76 + (w - 76) / 2;
+  text(tx, y + h / 2 - (sub ? 12 : 0), title, { size, weight: 700, color: t.text });
+  if (sub) text(tx, y + h / 2 + 15, `（${sub}）`, { size: 13.5, color: t.sub });
+}
+
+function frame(x, y, w, h, { label, theme, dash = [9, 7], stroke = "#4b4b4b" }) {
+  svg.appendChild(rc.path(roundedPath(x, y, w, h, 18), { stroke, strokeWidth: 1.5, strokeLineDash: dash, roughness: 1.3, fill: "none" }));
+  if (label) {
+    const t = THEMES[theme];
+    const tw = label.length * 20 + 36;
+    svg.appendChild(rc.path(roundedPath(x + 26, y - 19, tw, 38, 10), { fill: t.tag, fillStyle: "solid", stroke: t.tagStroke, strokeWidth: 1.6, roughness: 1 }));
+    text(x + 26 + tw / 2, y + 1, label, { size: 20, weight: 700, color: "#1f1f1f", cls: "hand" });
+  }
+}
+
+function arrowHead(x, y, dir, color = "#3a3a3a", s = 9) {
+  const pts = {
+    down:  [[x, y], [x - s * 0.6, y - s], [x + s * 0.6, y - s]],
+    up:    [[x, y], [x - s * 0.6, y + s], [x + s * 0.6, y + s]],
+    right: [[x, y], [x - s, y - s * 0.6], [x - s, y + s * 0.6]],
+    left:  [[x, y], [x + s, y - s * 0.6], [x + s, y + s * 0.6]],
+  }[dir];
+  svg.appendChild(rc.polygon(pts, { fill: color, fillStyle: "solid", stroke: color, strokeWidth: 1, roughness: 0.3 }));
+}
+
+function wire(points, { end = "down", start = null, color = "#3a3a3a" } = {}) {
+  svg.appendChild(rc.linearPath(points, { stroke: color, strokeWidth: 1.6, roughness: 0.7, bowing: 0.6 }));
+  const [ex, ey] = points[points.length - 1];
+  arrowHead(ex, ey, end, color);
+  if (start) { const [sx, sy] = points[0]; arrowHead(sx, sy, start, color); }
+}
+
+function chip(x, y, value) {
+  const w = value.length * 15 + 16;
+  el("rect", { x: x - w / 2, y: y - 12, width: w, height: 24, rx: 8, fill: "#ffffff", stroke: "#c9c9c9", "stroke-width": 1 });
+  text(x, y + 1, value, { size: 13.5, weight: 600, color: "#444", cls: "hand" });
+}
+
+function bigArrow(x, y1, y2, label) {
+  const w = 16, head = 30, hw = 30;
+  const pts = [[x - w / 2, y1], [x + w / 2, y1], [x + w / 2, y2 - head], [x + hw / 2 + 4, y2 - head], [x, y2], [x - hw / 2 - 4, y2 - head], [x - w / 2, y2 - head]];
+  svg.appendChild(rc.polygon(pts, { fill: "#e0594d", fillStyle: "solid", stroke: "#b83c32", strokeWidth: 1.4, roughness: 0.9 }));
+  if (label) text(x + 30, (y1 + y2) / 2 - 4, label, { size: 21, weight: 700, color: "#2b2b2b", anchor: "start", cls: "hand" });
+}
+
+function draw() {
+  text(720, 58, "量化回测系统架构", { size: 44, weight: 700, color: "#1a1a1a", cls: "hand" });
+
+  // 客户端
+  frame(60, 110, 1320, 170, { label: "客户端", theme: "blue" });
+  card(380, 147, 300, 100, { title: "选股回测工作台", sub: "组合配置 · 结果查看", ic: "layout-dashboard", theme: "blue" });
+  card(760, 147, 300, 100, { title: "接口调试", sub: "接口集合 · 在线调试", ic: "terminal", theme: "blue" });
+
+  bigArrow(560, 284, 396, "请求");
+
+  // 应用服务
+  frame(60, 350, 1320, 640, { label: "应用服务 · Spring Boot", theme: "orange" });
+  frame(412, 822, 616, 140, { theme: "green", dash: [6, 6], stroke: "#7fb27f" });
+
+  // wires inside the app layer (drawn first so cards sit on top)
+  wire([[400, 490], [400, 515], [230, 515], [230, 540]]);            // 入口 → 选股
+  wire([[720, 490], [720, 540]]);                                     // 入口 → 编排
+  wire([[720, 640], [720, 690]]);                                     // 编排 → 撮合
+  wire([[890, 590], [1210, 590], [1210, 690]]);                       // 编排 → 行情面板
+  wire([[890, 740], [1080, 740]], { end: "right" });                  // 撮合 → 行情面板
+  wire([[720, 790], [720, 845]]);                                     // 撮合 → 交易规则
+  wire([[720, 808], [520, 808], [520, 845]]);                         // 撮合 → 信号规则
+  wire([[720, 808], [920, 808], [920, 845]]);                         // 撮合 → 绩效
+
+  // wires into the data layer
+  wire([[230, 640], [230, 1080]]);                                    // 选股 → 业务库
+  wire([[550, 572], [380, 572], [380, 1058], [320, 1058], [320, 1080]]); // 编排 → 业务库
+  wire([[550, 610], [400, 610], [400, 1058], [500, 1058], [500, 1080]]); // 编排 → 股票池
+  wire([[1130, 790], [1130, 1015], [880, 1015], [880, 1080]]);       // 行情面板 → 行情库
+  wire([[1250, 793], [1250, 1080]], { start: "up" });                 // 行情面板 ⇄ 缓存
+
+  card(350, 400, 420, 90, { title: "接口入口层", sub: "路由 · 参数校验", ic: "door-open", theme: "orange" });
+  card(100, 540, 260, 100, { title: "因子组合选股服务", sub: "交集 · 并集 · 成分", ic: "filter", theme: "orange", size: 17 });
+  card(550, 540, 340, 100, { title: "组合回测编排服务", sub: "同步回测 · 任务摘要", ic: "workflow", theme: "red", size: 20 });
+  card(550, 690, 340, 100, { title: "组合撮合引擎", sub: "次日开盘成交", ic: "cog", theme: "orange" });
+  card(1080, 690, 260, 100, { title: "行情面板与缓存", sub: "复权 K 线 · 预热", ic: "chart-candlestick", theme: "orange", size: 17 });
+  card(430, 845, 180, 96, { title: "信号规则注册表", sub: "买卖点", ic: "list-checks", theme: "green", size: 15 });
+  card(630, 845, 180, 96, { title: "交易规则/成本", sub: "涨跌停 · 费用", ic: "scale", theme: "green", size: 15 });
+  card(830, 845, 180, 96, { title: "绩效计算", sub: "收益与回撤", ic: "chart-line", theme: "green", size: 15 });
+
+  // 数据平面
+  frame(60, 1040, 1320, 160, { label: "数据平面", theme: "purple" });
+  card(100, 1080, 260, 90, { title: "业务库", sub: "gngltdb", ic: "database", theme: "purple" });
+  card(440, 1080, 240, 90, { title: "股票池文件", sub: "候选代码", ic: "file-text", theme: "purple" });
+  card(760, 1080, 240, 90, { title: "行情库/镜像", sub: "THS", ic: "server", theme: "purple" });
+  card(1080, 1080, 260, 90, { title: "缓存", sub: "Redis", ic: "zap", theme: "purple" });
+
+  chip(230, 1012, "写入");
+  chip(350, 1058, "写入");
+  chip(450, 1058, "读取");
+  chip(1005, 1015, "读取");
+  chip(1250, 1012, "读写");
+
+  text(60, 1240, "鉴权可选。产品页与接口同进程。", { size: 14, color: "#8a8a8a", anchor: "start" });
+  document.body.dataset.ready = "1";
+}
+
+document.fonts.load('700 44px "LXGW WenKai"').then(() => document.fonts.ready).then(draw);
+</script>
+</body>
+</html>
