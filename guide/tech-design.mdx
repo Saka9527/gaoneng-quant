@@ -109,7 +109,7 @@ import { BacktestFlow } from "/snippets/portfolio-flow.jsx";
   <img src="/images/tech/signal-catalog.png" alt="信号注册表扩展" />
 </Frame>
 
-- 内置买入：`SMA_GOLDEN` / `UNIVERSE_RANK`。卖出：`MA_DEATH` / `MA_TOP_DIV` / `HOLD_PERIOD`，以及 RSI、BOLL、KDJ、MACD、阴线、均线条件。默认卖出仍是 `MA_DEATH`。新指标卖出在开跑前写入 `boolean[]`，日循环只读标记
+- 内置买入：`SMA_GOLDEN` / `UNIVERSE_RANK`。卖出：`MA_DEATH` / `MA_TOP_DIV` / `HOLD_PERIOD`，以及 RSI、BOLL、KDJ、MACD、阴线、均线条件。默认卖出仍是 `MA_DEATH`。
 - 回测开始时把选中的规则绑好，热路径不再按名字查找
 - 枚举选项：`GET /portfolio/meta` 的 `buySignal` / `sellSignal` **来自已登记的规则**
 - **扩展**：新增一条规则并登记后重启
