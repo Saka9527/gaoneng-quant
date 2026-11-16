@@ -217,6 +217,83 @@
           "research/ai-qa",
           "research/ai-quant"
         ]
+      },
+      {
+        "tab": "知识库",
+        "icon": "books",
+        "groups": [
+          {
+            "group": " ",
+            "pages": [
+              "knowledge/overview",
+              "knowledge/sources",
+              "knowledge/finance-basics",
+              "knowledge/quant-math",
+              {
+                "group": "技术指标",
+                "expanded": false,
+                "pages": [
+                  "knowledge/indicators/overview",
+                  "knowledge/indicators/trend",
+                  "knowledge/indicators/momentum",
+                  "knowledge/indicators/volatility",
+                  "knowledge/indicators/volume",
+                  "knowledge/indicators/patterns"
+                ]
+              },
+              {
+                "group": "量化因子",
+                "expanded": false,
+                "pages": [
+                  "knowledge/factors/overview",
+                  "knowledge/factors/value",
+                  "knowledge/factors/growth",
+                  "knowledge/factors/quality",
+                  "knowledge/factors/momentum",
+                  "knowledge/factors/vol-liquidity",
+                  "knowledge/factors/alternative"
+                ]
+              },
+              {
+                "group": "量化策略",
+                "expanded": false,
+                "pages": [
+                  "knowledge/strategies/overview",
+                  "knowledge/strategies/trend-following",
+                  "knowledge/strategies/mean-reversion",
+                  "knowledge/strategies/multi-factor",
+                  "knowledge/strategies/arbitrage-cta",
+                  "knowledge/strategies/event-driven"
+                ]
+              },
+              {
+                "group": "回测评估",
+                "expanded": false,
+                "pages": [
+                  "knowledge/evaluation/overview",
+                  "knowledge/evaluation/metrics",
+                  "knowledge/evaluation/overfitting",
+                  "knowledge/evaluation/ashare-pitfalls"
+                ]
+              },
+              "knowledge/portfolio",
+              "knowledge/execution",
+              "knowledge/risk",
+              "knowledge/ml-ai",
+              {
+                "group": "A股规则",
+                "expanded": false,
+                "pages": [
+                  "knowledge/cn-market/overview",
+                  "knowledge/cn-market/trading-session",
+                  "knowledge/cn-market/limit-st-suspend",
+                  "knowledge/cn-market/disclosure",
+                  "knowledge/cn-market/indices"
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   }

@@ -1,0 +1,39 @@
+---
+title: "量化策略体系"
+description: "趋势、均值回归、多因子、套利、CTA 与事件驱动等策略范式总览。"
+sidebarTitle: "简介"
+---
+
+量化策略把可重复规则落到开平仓与仓位上。本栏目按常见范式分类，便于问答先对齐「策略属于哪一类假设」。平台文档可参考 [RiceQuant](https://www.ricequant.com/doc/)、[QuantConnect](https://www.quantconnect.com/docs/) 的策略与回测说明。
+
+## 范式地图
+
+| 范式 | 页面 | 核心假设 |
+|------|------|----------|
+| 趋势跟踪 | [趋势跟踪](/knowledge/strategies/trend-following) | 价格延续已形成的方向 |
+| 均值回归 | [均值回归](/knowledge/strategies/mean-reversion) | 价格或价差回到均衡 |
+| 多因子选股 | [多因子](/knowledge/strategies/multi-factor) | 截面特征能解释预期收益差异 |
+| 套利 / CTA | [套利与CTA](/knowledge/strategies/arbitrage-cta) | 相对定价或期货趋势/期限结构 |
+| 事件驱动 | [事件驱动](/knowledge/strategies/event-driven) | 公司或宏观事件后存在可交易反应 |
+
+## 策略要素清单
+
+无论哪种范式，定义里应写清：
+
+1. 股票池与交易universe
+2. 信号与触发条件（含数据时点）
+3. 仓位与再平衡规则
+4. 成本、涨跌停、停牌假设
+5. 风险限额与退出条件
+6. 评估指标与样本外方案，见 [回测评估](/knowledge/evaluation/overview)
+
+## 与因子、执行的关系
+
+- 因子提供特征；策略决定如何交易这些特征。
+- 执行决定信号能否以假设价格成交，见 [交易执行](/knowledge/execution)。
+- A 股制度约束见 [A股规则](/knowledge/cn-market/overview)。
+
+## 来源
+
+- [RiceQuant 文档](https://www.ricequant.com/doc/)
+- [QuantConnect Docs](https://www.quantconnect.com/docs/)

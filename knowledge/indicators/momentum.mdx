@@ -1,0 +1,49 @@
+---
+title: "动量指标"
+description: "RSI、MACD、随机指标等动量类技术指标的定义与使用边界。"
+sidebarTitle: "动量"
+---
+
+动量指标衡量价格变动的速度与强度，多为振荡器，有的有界（如 RSI），有的无界（如 MACD）。对应 TA-Lib Momentum Indicators。
+
+## 常用指标
+
+| 名称 | 缩写 | 要点 |
+|------|------|------|
+| 相对强弱指数 | RSI | 基于平均涨跌幅，常见 0–100；超买超卖阈值因品种而异 |
+| MACD | MACD | 快慢 EMA 差及信号线；柱状图表动能变化 |
+| 随机指标 | STOCH / STOCHF | 收盘价在窗口高低点中的位置；KDJ 为常见变体口径 |
+| 商品通道指数 | CCI | 价格相对均线偏离，可超界 |
+| 动量 / 变化率 | MOM / ROC | 价格变化绝对值或比率 |
+| ADX / DX | ADX | 趋势强度，不指示方向；常与 +DI/-DI 联用 |
+| Aroon | AROON | 距窗口高低点的时间位置 |
+| 资金流量指数 | MFI | 带成交量的 RSI 类指标 |
+
+具体输入参数与输出列以 [TA-Lib 动量组](https://ta-lib.github.io/ta-lib-python/func_groups/momentum_indicators.html) 为准。
+
+## 使用方式
+
+1. **阈值规则**：如 RSI 下穿/上穿某水平；需防震荡市反复触发。
+2. **背离**：价格新高而指标未新高（或相反），属启发式，需独立验证。
+3. **作为特征**：连续值送入模型或截面排序，见 [动量因子](/knowledge/factors/momentum)。
+
+## 口径提示
+
+- RSI 的平滑方法（Wilder 等）会影响数值，复现时锁定算法。
+- MACD 常用参数（12,26,9）只是习惯，不是最优。
+- KDJ 与 STOCH 的计算细节在不同行情软件可能略有差异，问答应写明来源软件或公式。
+
+## A 股注意点
+
+- 一字涨跌停日动量指标可能极端或失真。
+- 指数与个股、主板与创业板/科创板的波动尺度不同，同一阈值不可硬套。
+
+## 常见误用
+
+- 在强趋势中反复「抄底逃顶」用超买超卖。
+- 把 ADX 高当成上涨信号（ADX 只表强度）。
+- 未声明复权与停牌处理就比较历史 RSI。
+
+## 来源
+
+- [TA-Lib Momentum Indicators](https://ta-lib.github.io/ta-lib-python/func_groups/momentum_indicators.html)

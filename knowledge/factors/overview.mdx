@@ -1,0 +1,44 @@
+---
+title: "量化因子体系"
+description: "因子定义、输出形态、常见风格分类与研究流程概览。"
+sidebarTitle: "简介"
+---
+
+因子是对资产某类可测特征的数值化表达，用于解释或预测截面/时序收益差异。本栏目按常见风格分类归纳；研究流水线可参考 [Qlib](https://github.com/microsoft/qlib) 等框架，产品侧流程见 [因子研究简介](/factor/overview)。
+
+## 输出形态
+
+| 形态 | 含义 | 典型用法 |
+|------|------|----------|
+| 连续得分 | 每日每票一个数值 | 排序、分层、加权合成 |
+| 布尔信号 | 是否满足条件 | 股票池、事件触发 |
+
+## 常见风格分类
+
+| 风格 | 页面 | 直觉 |
+|------|------|------|
+| 价值 | [价值](/knowledge/factors/value) | 价格相对基本面是否便宜 |
+| 成长 | [成长](/knowledge/factors/growth) | 收入/盈利扩张速度 |
+| 质量 | [质量](/knowledge/factors/quality) | 盈利质量、杠杆与稳定性 |
+| 动量 | [动量](/knowledge/factors/momentum) | 过去收益或价量趋势 |
+| 波动 / 流动性 | [波动与流动性](/knowledge/factors/vol-liquidity) | 风险与交易成本相关特征 |
+| 另类 | [另类](/knowledge/factors/alternative) | 资金流、舆情、卫星等非传统数据 |
+
+## 研究环节（概念）
+
+1. **定义**：输入字段、窗口、缺失值、行业中性与去极值。
+2. **计算**：按交易日批量产出，避免未来函数。
+3. **检验**：IC、分层收益、换手、相关性，见 [评价指标](/knowledge/evaluation/metrics)。
+4. **合成与组合**：多因子加权、约束优化，见 [多因子策略](/knowledge/strategies/multi-factor)。
+5. **跟踪**：衰减、拥挤与制度变迁。
+
+## A 股注意点
+
+- 财务因子注意报告期、公告日与点-in-time，防止用到当时未知的财报。
+- 涨跌停与停牌影响可交易性，信号有效不等于可成交。
+- 行业分类（如申万）版本变更会影响行业中性结果。
+
+## 来源
+
+- [Microsoft Qlib](https://github.com/microsoft/qlib)
+- 公开多因子研究框架与教材（见 [来源](/knowledge/sources)）

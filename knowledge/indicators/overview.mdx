@@ -1,0 +1,45 @@
+---
+title: "技术指标体系"
+description: "技术指标的定义、TA-Lib 功能族分类，以及在量化中的使用边界。"
+sidebarTitle: "简介"
+---
+
+技术指标由价格、成交量等市场数据计算得到的辅助序列，用于描述趋势、动量、波动与成交行为。本栏目按功能族归纳常用指标，命名尽量与 [TA-Lib](https://ta-lib.github.io/ta-lib-python/) 对齐，便于实现对照。
+
+## 能做什么、不能做什么
+
+| 能 | 不能 |
+|----|------|
+| 结构化描述价量状态，作为特征或规则条件 | 单独保证预测准确或稳定盈利 |
+| 统一输入输出，便于回测复现 | 替代基本面、拥挤度与交易成本分析 |
+| 与因子、事件规则组合 | 忽略复权、停牌与涨跌停造成的缺口 |
+
+## 功能族（本栏目导航）
+
+| 族 | 页面 | 典型例子 |
+|----|------|----------|
+| 趋势 / 重叠 | [趋势指标](/knowledge/indicators/trend) | SMA、EMA、布林带、SAR |
+| 动量 | [动量指标](/knowledge/indicators/momentum) | RSI、MACD、KDJ/Stochastic |
+| 波动率 | [波动率指标](/knowledge/indicators/volatility) | ATR、真实波幅 |
+| 成交量 | [成交量指标](/knowledge/indicators/volume) | OBV、AD、MFI |
+| 形态 | [形态指标](/knowledge/indicators/patterns) | K 线形态识别 |
+
+TA-Lib 另有价格变换、统计函数、周期（Hilbert）与数学运算等族；问答若遇到具体函数名，以 TA-Lib 文档的输入输出为准。
+
+## 计算口径约定
+
+1. **复权**：比较历史价量形态时，明确前复权 / 后复权 / 不复权。
+2. **窗口**：同一指标不同 `timeperiod` 是不同特征，需写入定义。
+3. **缺失与停牌**：停牌日是否跳过、是否前向填充，必须固定。
+4. **OHLC 来源**：使用哪一档行情（日线/分钟）决定信号频率。
+
+## 与因子、策略的关系
+
+- 指标常直接作为 [动量类因子](/knowledge/factors/momentum) 或规则条件。
+- 趋势跟踪、均值回归策略常建立在指标阈值上，见 [量化策略](/knowledge/strategies/overview)。
+- 产品内选股公式示例见 [因子研究](/factor/overview)，本知识库只讲通用定义。
+
+## 来源
+
+- [TA-Lib Python 文档](https://ta-lib.github.io/ta-lib-python/)
+- [TA-Lib 函数列表](https://ta-lib.github.io/ta-lib-python/funcs.html)
