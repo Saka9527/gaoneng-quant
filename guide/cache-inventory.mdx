@@ -126,11 +126,7 @@ industryByCode: Map<代码, 申万一级行业>
 
 ## 6. 回测报告
 
-键是 `jobId`。Caffeine 缓存：`quant.report-cache.max-entries` 默认 512，`expire-hours` 默认 1（按最后访问计）。按约 2 万日活、功能同时在线约 2000 估：真正同时盯结果页的远少于 2000，512 份加 1 小时闲置回收可周转；单份含成交约 1～2 MB，堆上大约 0.5～1 GB。超限或闲置超时后淘汰，分页成交和补净值曲线会拿不到。
-
-因子侧：`quant.factor-cache.constituent-books` 默认 32，`factor-lane` 默认 16，`buy-codes-by-day` 默认 32。组件跨请求复用，不是按用户各存一份。
-
-上线后看命中：`POST /run` 的 `data.timing`（单次），以及 `GET /api/v1/portfolio/hot-path-stats`（进程累计的 `avgWarmComputeMs` / `avgColdComputeMs` 与各层 `hitRate`）。`POST .../hot-path-stats/reset` 可清零。
+键是 `jobId`。`quant.report-cache.max-entries` 默认 512，`expire-hours` 默认 1（按最后访问）。超限或闲置超时后淘汰。
 
 ```text
 报告
@@ -140,7 +136,7 @@ industryByCode: Map<代码, 申万一级行业>
   期末持仓快照
 ```
 
-库里只留 `bt_job` 的请求和指标摘要，成交笔数是一个数字，没有逐笔。成交、净值曲线、期末持仓只在这份内存里。进程退出或报告被淘汰后，分页接口拿不到成交。
+库里只留 `bt_job` 摘要。成交、净值、持仓只在这份内存里；进程退出或报告被淘汰后，分页接口拿不到成交。
 
 ---
 
