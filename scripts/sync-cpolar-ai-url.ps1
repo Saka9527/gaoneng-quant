@@ -79,8 +79,8 @@ if (-not $Push) {
 
 Push-Location $repoRoot
 try {
-    git add -- "snippets/ai-advisory-config.js"
-    $status = git status --porcelain -- "snippets/ai-advisory-config.js"
+    git add -- "snippets/ai-advisory-config.jsx"
+    $status = git status --porcelain -- "snippets/ai-advisory-config.jsx"
     if (-not $status) {
         Write-Host "Nothing to commit."
         exit 0
