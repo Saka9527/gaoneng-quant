@@ -1,0 +1,26 @@
+html[data-current-path="/ai-advisory"] #footer,
+html[data-current-path="/ai-advisory"] #pagination,
+html[data-current-path="/ai-advisory"] #page-title,
+html[data-current-path="/ai-advisory"] [data-page-header] {
+  display: none !important;
+}
+
+html[data-current-path="/ai-advisory"] #content,
+html[data-current-path="/ai-advisory"] #content-area,
+html[data-current-path="/ai-advisory"] #content-container,
+html[data-current-path="/ai-advisory"] main,
+html[data-current-path="/ai-advisory"] [data-page-mode="custom"] {
+  max-width: none !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+html[data-current-path="/ai-advisory"] body {
+  overflow: hidden;
+}
+
+html[data-current-path="/ai-advisory"] .aic-shell {
+  width: 100% !important;
+  min-height: calc(100dvh - 7.5rem) !important;
+}

@@ -11,6 +11,14 @@
   "interaction": {
     "drilldown": false
   },
+  "navbar": {
+    "links": [
+      {
+        "label": "AI投顾调试",
+        "href": "/ai-advisory"
+      }
+    ]
+  },
   "api": {
     "playground": {
       "display": "interactive"
@@ -293,6 +301,13 @@
               }
             ]
           }
+        ]
+      },
+      {
+        "tab": "AI投顾调试",
+        "icon": "comments",
+        "pages": [
+          "ai-advisory"
         ]
       }
     ]
