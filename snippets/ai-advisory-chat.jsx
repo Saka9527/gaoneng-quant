@@ -272,10 +272,13 @@ export const AiAdvisoryChat = () => {
   border-radius: 0;
   overflow: hidden;
   display: grid;
-  grid-template-columns: var(--sidebar-width, 18rem) minmax(0, 49.5rem);
-  justify-content: start;
+  grid-template-columns: var(--sidebar-width, 18rem) minmax(0, 1fr);
+  justify-content: stretch;
   column-gap: 2.75rem;
   width: 100%;
+  max-width: 92rem;
+  margin-left: auto;
+  margin-right: auto;
   min-height: 320px;
   padding-left: 2rem;
   padding-right: 2rem;
@@ -368,6 +371,7 @@ html.dark .aic-hist-item.active {
   padding: 20px 0 8px;
   min-height: 0;
   width: 100%;
+  max-width: 49.5rem;
   box-sizing: border-box;
 }
 .aic-thread {
@@ -439,6 +443,7 @@ html.dark .aic-cursor::after {
   background: transparent;
   flex-shrink: 0;
   width: 100%;
+  max-width: 49.5rem;
   box-sizing: border-box;
 }
 .aic-composer-inner {
@@ -489,6 +494,7 @@ html.dark .aic-send {
     column-gap: 1.25rem;
     padding-left: 1rem;
     padding-right: 1rem;
+    max-width: none;
   }
 }
 @keyframes aic-spin { to { transform: rotate(360deg); } }

@@ -20,16 +20,20 @@ html[data-current-path="/ai-advisory"] body {
   overflow: hidden;
 }
 
-/* Match mint docs: sidebar ~2rem inset + 18rem wide, content starts ~363px */
+/*
+  Wide screens: center the whole AI panel like Mintlify docs shell (~1472px),
+  instead of pinning columns to the left edge of the viewport.
+*/
 html[data-current-path="/ai-advisory"] .aic-shell {
   display: grid !important;
-  grid-template-columns: var(--sidebar-width, 18rem) minmax(0, 49.5rem) !important;
-  justify-content: start !important;
+  grid-template-columns: var(--sidebar-width, 18rem) minmax(0, 1fr) !important;
+  justify-content: stretch !important;
   align-items: stretch !important;
   column-gap: 2.75rem !important;
   width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
+  max-width: 92rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   padding-left: 2rem !important;
   padding-right: 2rem !important;
   border: 0 !important;
@@ -50,15 +54,18 @@ html[data-current-path="/ai-advisory"] .aic-main {
   width: 100% !important;
   max-width: none !important;
   align-items: stretch !important;
+  min-width: 0 !important;
 }
 
 html[data-current-path="/ai-advisory"] .aic-list,
 html[data-current-path="/ai-advisory"] .aic-composer {
   display: block !important;
-  justify-content: flex-start !important;
+  width: 100% !important;
+  max-width: 49.5rem !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
-  width: 100% !important;
   box-sizing: border-box !important;
 }
 
@@ -89,4 +96,13 @@ html[data-current-path="/ai-advisory"] .aic-box {
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
+}
+
+@media (max-width: 900px) {
+  html[data-current-path="/ai-advisory"] .aic-shell {
+    grid-template-columns: 12rem minmax(0, 1fr) !important;
+    column-gap: 1.25rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
 }
