@@ -13,7 +13,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$configPath = Join-Path $repoRoot "snippets\ai-advisory-config.js"
+$configPath = Join-Path $repoRoot "snippets\ai-advisory-config.jsx"
 
 function Get-CpolarPublicUrl {
     param([string]$Dashboard, [string]$Hint)

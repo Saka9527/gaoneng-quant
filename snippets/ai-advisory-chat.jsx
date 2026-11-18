@@ -1,4 +1,4 @@
-import { AI_CHAT_API_BASE as DEFAULT_API_BASE } from "/snippets/ai-advisory-config.js";
+import { AI_CHAT_API_BASE as DEFAULT_API_BASE } from "/snippets/ai-advisory-config.jsx";
 
 const USER_ID = "mintlify-debug";
 const API_BASE_KEY = "gn-ai-chat-api-base";
