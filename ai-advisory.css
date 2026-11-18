@@ -20,18 +20,73 @@ html[data-current-path="/ai-advisory"] body {
   overflow: hidden;
 }
 
+/* Match mint docs: sidebar ~2rem inset + 18rem wide, content starts ~363px */
 html[data-current-path="/ai-advisory"] .aic-shell {
+  display: grid !important;
+  grid-template-columns: var(--sidebar-width, 18rem) minmax(0, 49.5rem) !important;
+  justify-content: start !important;
+  align-items: stretch !important;
+  column-gap: 2.75rem !important;
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
   min-height: calc(100dvh - 7.5rem) !important;
 }
 
 html[data-current-path="/ai-advisory"] .aic-side {
-  width: var(--sidebar-width, 18rem) !important;
+  width: 100% !important;
+  max-width: none !important;
+  border-right: 0 !important;
+  background: transparent !important;
+}
+
+html[data-current-path="/ai-advisory"] .aic-main {
+  width: 100% !important;
+  max-width: none !important;
+  align-items: stretch !important;
+}
+
+html[data-current-path="/ai-advisory"] .aic-list,
+html[data-current-path="/ai-advisory"] .aic-composer {
+  display: block !important;
+  justify-content: flex-start !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html[data-current-path="/ai-advisory"] .aic-list {
+  padding-top: 1.25rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+html[data-current-path="/ai-advisory"] .aic-composer {
+  padding-top: 0.5rem !important;
+  padding-bottom: 1.25rem !important;
+  border: 0 !important;
+  background: transparent !important;
 }
 
 html[data-current-path="/ai-advisory"] .aic-thread,
 html[data-current-path="/ai-advisory"] .aic-composer-inner {
-  max-width: var(--content-width, 48rem) !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+html[data-current-path="/ai-advisory"] .aic-bubble {
+  max-width: 100% !important;
+}
+
+html[data-current-path="/ai-advisory"] .aic-box {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
 }

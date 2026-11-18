@@ -271,19 +271,22 @@ export const AiAdvisoryChat = () => {
   border: 0;
   border-radius: 0;
   overflow: hidden;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: var(--sidebar-width, 18rem) minmax(0, 49.5rem);
+  justify-content: start;
+  column-gap: 2.75rem;
   width: 100%;
   min-height: 320px;
+  padding-left: 2rem;
+  padding-right: 2rem;
   background: transparent;
   box-sizing: border-box;
 }
 .aic-side {
-  width: var(--sidebar-width, 18rem);
-  flex-shrink: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid rgba(127,127,127,.22);
+  border-right: 0;
   background: transparent;
   min-height: 0;
   box-sizing: border-box;
@@ -352,36 +355,33 @@ html.dark .aic-hist-item.active {
   opacity: .55;
 }
 .aic-main {
-  flex: 1;
   min-width: 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  width: 100%;
 }
 .aic-list {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 24px 8px;
+  padding: 20px 0 8px;
   min-height: 0;
   width: 100%;
   box-sizing: border-box;
-  display: flex;
-  justify-content: center;
 }
 .aic-thread {
   width: 100%;
-  max-width: var(--content-width, 48rem);
   display: flex;
   flex-direction: column;
   gap: 12px;
   box-sizing: border-box;
 }
-.aic-row { display: flex; }
+.aic-row { display: flex; width: 100%; }
 .aic-row.user { justify-content: flex-end; }
 .aic-row.assistant { justify-content: flex-start; }
 .aic-bubble {
-  max-width: min(640px, 92%);
+  max-width: 100%;
   padding: 10px 14px;
   border-radius: 14px;
   white-space: pre-wrap;
@@ -435,17 +435,14 @@ html.dark .aic-cursor::after {
 }
 .aic-composer {
   border: 0;
-  padding: 8px 24px 20px;
+  padding: 8px 0 20px;
   background: transparent;
   flex-shrink: 0;
   width: 100%;
   box-sizing: border-box;
-  display: flex;
-  justify-content: center;
 }
 .aic-composer-inner {
   width: 100%;
-  max-width: var(--content-width, 48rem);
   box-sizing: border-box;
 }
 .aic-box {
@@ -486,8 +483,13 @@ html.dark .aic-send {
   color: #0b1220;
 }
 .aic-send:disabled { opacity: .5; cursor: not-allowed; }
-@media (max-width: 720px) {
-  .aic-side { width: 11.5rem; }
+@media (max-width: 900px) {
+  .aic-shell {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    column-gap: 1.25rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 @keyframes aic-spin { to { transform: rotate(360deg); } }
 @keyframes aic-blink { 50% { opacity: 0; } }
