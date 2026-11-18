@@ -11,11 +11,8 @@ html[data-current-path="/ai-advisory"] #content-container,
 html[data-current-path="/ai-advisory"] main {
   max-width: none !important;
   width: 100% !important;
-  margin: 0 auto !important;
-  padding-left: 1.5rem !important;
-  padding-right: 1.5rem !important;
-  padding-top: 0.75rem !important;
-  padding-bottom: 0.75rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
   box-sizing: border-box !important;
 }
 
@@ -25,8 +22,16 @@ html[data-current-path="/ai-advisory"] body {
 
 html[data-current-path="/ai-advisory"] .aic-shell {
   width: 100% !important;
-  max-width: 1120px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  min-height: calc(100dvh - 9rem) !important;
+  max-width: none !important;
+  margin: 0 !important;
+  min-height: calc(100dvh - 7.5rem) !important;
+}
+
+html[data-current-path="/ai-advisory"] .aic-side {
+  width: var(--sidebar-width, 18rem) !important;
+}
+
+html[data-current-path="/ai-advisory"] .aic-thread,
+html[data-current-path="/ai-advisory"] .aic-composer-inner {
+  max-width: var(--content-width, 48rem) !important;
 }

@@ -268,30 +268,28 @@ export const AiAdvisoryChat = () => {
       <style>{`
 .aic-shell {
   color: inherit;
-  border: 1px solid rgba(127,127,127,.22);
-  border-radius: 14px;
+  border: 0;
+  border-radius: 0;
   overflow: hidden;
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
   min-height: 320px;
-  background: rgba(127,127,127,.03);
+  background: transparent;
   box-sizing: border-box;
 }
 .aic-side {
-  width: 260px;
+  width: var(--sidebar-width, 18rem);
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   border-right: 1px solid rgba(127,127,127,.22);
-  background: rgba(127,127,127,.05);
+  background: transparent;
   min-height: 0;
+  box-sizing: border-box;
 }
 .aic-side-head {
-  padding: 12px;
-  border-bottom: 1px solid rgba(127,127,127,.18);
+  padding: 12px 14px;
   flex-shrink: 0;
 }
 .aic-new {
@@ -359,19 +357,21 @@ html.dark .aic-hist-item.active {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 .aic-list {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 20px 12px;
+  padding: 20px 24px 8px;
   min-height: 0;
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
 }
 .aic-thread {
   width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
+  max-width: var(--content-width, 48rem);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -434,17 +434,18 @@ html.dark .aic-cursor::after {
   color: rgb(var(--primary-light));
 }
 .aic-composer {
-  border-top: 1px solid rgba(127,127,127,.22);
-  padding: 12px 20px 16px;
-  background: rgba(127,127,127,.04);
+  border: 0;
+  padding: 8px 24px 20px;
+  background: transparent;
   flex-shrink: 0;
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
 }
 .aic-composer-inner {
   width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
+  max-width: var(--content-width, 48rem);
   box-sizing: border-box;
 }
 .aic-box {
@@ -454,7 +455,7 @@ html.dark .aic-cursor::after {
   border: 1px solid rgba(127,127,127,.32);
   border-radius: 14px;
   padding: 8px;
-  background: rgba(127,127,127,.04);
+  background: rgba(127,127,127,.06);
   width: 100%;
   box-sizing: border-box;
 }
@@ -486,7 +487,7 @@ html.dark .aic-send {
 }
 .aic-send:disabled { opacity: .5; cursor: not-allowed; }
 @media (max-width: 720px) {
-  .aic-side { width: 200px; }
+  .aic-side { width: 11.5rem; }
 }
 @keyframes aic-spin { to { transform: rotate(360deg); } }
 @keyframes aic-blink { 50% { opacity: 0; } }
