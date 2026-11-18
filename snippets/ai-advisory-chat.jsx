@@ -268,14 +268,17 @@ export const AiAdvisoryChat = () => {
       <style>{`
 .aic-shell {
   color: inherit;
-  border: 0;
-  border-radius: 0;
+  border: 1px solid rgba(127,127,127,.22);
+  border-radius: 14px;
   overflow: hidden;
   display: flex;
   flex-direction: row;
   width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
   min-height: 320px;
-  background: transparent;
+  background: rgba(127,127,127,.03);
+  box-sizing: border-box;
 }
 .aic-side {
   width: 260px;
@@ -360,19 +363,25 @@ html.dark .aic-hist-item.active {
 .aic-list {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 24px 12px;
+  padding: 20px 20px 12px;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+.aic-thread {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 0;
-  width: 100%;
   box-sizing: border-box;
 }
 .aic-row { display: flex; }
 .aic-row.user { justify-content: flex-end; }
 .aic-row.assistant { justify-content: flex-start; }
 .aic-bubble {
-  max-width: min(960px, 85%);
+  max-width: min(640px, 92%);
   padding: 10px 14px;
   border-radius: 14px;
   white-space: pre-wrap;
@@ -432,6 +441,12 @@ html.dark .aic-cursor::after {
   width: 100%;
   box-sizing: border-box;
 }
+.aic-composer-inner {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
 .aic-box {
   display: flex;
   gap: 8px;
@@ -440,8 +455,8 @@ html.dark .aic-cursor::after {
   border-radius: 14px;
   padding: 8px;
   background: rgba(127,127,127,.04);
-  max-width: 960px;
-  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 .aic-input {
   flex: 1;
@@ -513,64 +528,68 @@ html.dark .aic-send {
 
       <div className="aic-main">
         <div className="aic-list" ref={listRef}>
-          {loadingHistory ? (
-            <div className="aic-row assistant">
-              <div className="aic-thinking">
-                <span className="aic-spinner" aria-hidden="true" />
-                <span>加载历史…</span>
-              </div>
-            </div>
-          ) : null}
-          {!loadingHistory
-            ? messages.map((m) => (
-                <div key={m.id} className={"aic-row " + m.role}>
-                  <div>
-                    <div
-                      className={
-                        "aic-bubble" +
-                        (m.streaming && m.role === "assistant"
-                          ? " aic-cursor"
-                          : "")
-                      }
-                    >
-                      {m.text}
-                    </div>
-                    {m.source ? (
-                      <div className="aic-meta">来源：{m.source}</div>
-                    ) : null}
-                  </div>
+          <div className="aic-thread">
+            {loadingHistory ? (
+              <div className="aic-row assistant">
+                <div className="aic-thinking">
+                  <span className="aic-spinner" aria-hidden="true" />
+                  <span>加载历史…</span>
                 </div>
-              ))
-            : null}
-          {thinking ? (
-            <div className="aic-row assistant">
-              <div className="aic-thinking">
-                <span className="aic-spinner" aria-hidden="true" />
-                <span>{thinking}</span>
               </div>
-            </div>
-          ) : null}
+            ) : null}
+            {!loadingHistory
+              ? messages.map((m) => (
+                  <div key={m.id} className={"aic-row " + m.role}>
+                    <div>
+                      <div
+                        className={
+                          "aic-bubble" +
+                          (m.streaming && m.role === "assistant"
+                            ? " aic-cursor"
+                            : "")
+                        }
+                      >
+                        {m.text}
+                      </div>
+                      {m.source ? (
+                        <div className="aic-meta">来源：{m.source}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                ))
+              : null}
+            {thinking ? (
+              <div className="aic-row assistant">
+                <div className="aic-thinking">
+                  <span className="aic-spinner" aria-hidden="true" />
+                  <span>{thinking}</span>
+                </div>
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <div className="aic-composer">
-          <div className="aic-box">
-            <textarea
-              className="aic-input"
-              value={input}
-              disabled={busy || loadingHistory}
-              placeholder="输入问题，Enter 发送，Shift+Enter 换行"
-              rows={2}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
-            />
-            <button
-              type="button"
-              className="aic-send"
-              disabled={busy || loadingHistory || !input.trim()}
-              onClick={() => ask(input)}
-            >
-              发送
-            </button>
+          <div className="aic-composer-inner">
+            <div className="aic-box">
+              <textarea
+                className="aic-input"
+                value={input}
+                disabled={busy || loadingHistory}
+                placeholder="输入问题，Enter 发送，Shift+Enter 换行"
+                rows={2}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={onKeyDown}
+              />
+              <button
+                type="button"
+                className="aic-send"
+                disabled={busy || loadingHistory || !input.trim()}
+                onClick={() => ask(input)}
+              >
+                发送
+              </button>
+            </div>
           </div>
         </div>
       </div>
