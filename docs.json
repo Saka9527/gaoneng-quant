@@ -11,14 +11,6 @@
   "interaction": {
     "drilldown": false
   },
-  "navbar": {
-    "links": [
-      {
-        "label": "AI投顾调试",
-        "href": "/ai-advisory"
-      }
-    ]
-  },
   "api": {
     "playground": {
       "display": "interactive"
