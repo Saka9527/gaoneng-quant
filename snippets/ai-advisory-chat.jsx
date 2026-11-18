@@ -1,7 +1,21 @@
-const API_BASE = "https://253f41f2.r9.cpolar.cn";
-const STREAM_URL = API_BASE + "/api/ai/chat/stream";
-const SESSIONS_URL = API_BASE + "/api/ai/sessions";
+import { AI_CHAT_API_BASE as DEFAULT_API_BASE } from "/snippets/ai-advisory-config.js";
+
 const USER_ID = "mintlify-debug";
+const API_BASE_KEY = "gn-ai-chat-api-base";
+
+function normalizeApiBase(url) {
+  return String(url || "")
+    .trim()
+    .replace(/\/+$/, "");
+}
+
+function readStoredApiBase() {
+  try {
+    const saved = localStorage.getItem(API_BASE_KEY);
+    if (saved) return normalizeApiBase(saved);
+  } catch (e) {}
+  return normalizeApiBase(DEFAULT_API_BASE);
+}
 
 const WELCOME = {
   id: "welcome",
@@ -108,10 +122,22 @@ function Icon({ name }) {
       </svg>
     );
   }
+  if (name === "gear") {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 1v2.2M12 20.8V23M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M1 12h2.2M20.8 12H23M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" />
+      </svg>
+    );
+  }
   return null;
 }
 
 export const AiAdvisoryChat = () => {
+  const [apiBase, setApiBase] = useState(normalizeApiBase(DEFAULT_API_BASE));
+  const [apiDraft, setApiDraft] = useState(normalizeApiBase(DEFAULT_API_BASE));
+  const [showApiSettings, setShowApiSettings] = useState(false);
+  const [apiNote, setApiNote] = useState("");
   const [messages, setMessages] = useState([WELCOME]);
   const [sessions, setSessions] = useState([]);
   const [activeId, setActiveId] = useState("");
@@ -128,10 +154,15 @@ export const AiAdvisoryChat = () => {
   const listRef = useRef(null);
   const idRef = useRef(1);
 
-  const refreshSessions = async () => {
+  const streamUrl = apiBase + "/api/ai/chat/stream";
+  const sessionsUrl = apiBase + "/api/ai/sessions";
+
+  const refreshSessions = async (base) => {
+    const root = normalizeApiBase(base || apiBase);
+    if (!root) return;
     try {
       const resp = await fetch(
-        SESSIONS_URL + "?userId=" + encodeURIComponent(USER_ID)
+        root + "/api/ai/sessions?userId=" + encodeURIComponent(USER_ID)
       );
       if (!resp.ok) return;
       const data = await resp.json();
@@ -140,8 +171,42 @@ export const AiAdvisoryChat = () => {
   };
 
   useEffect(() => {
-    refreshSessions();
+    const next = readStoredApiBase();
+    setApiBase(next);
+    setApiDraft(next);
   }, []);
+
+  useEffect(() => {
+    refreshSessions(apiBase);
+  }, [apiBase]);
+
+  const applyApiBase = (next, persist) => {
+    const normalized = normalizeApiBase(next);
+    if (!normalized) {
+      setApiNote("请填写有效的 API 地址");
+      return;
+    }
+    setApiBase(normalized);
+    setApiDraft(normalized);
+    setApiNote("");
+    if (persist) {
+      try {
+        localStorage.setItem(API_BASE_KEY, normalized);
+      } catch (e) {}
+    }
+    setShowApiSettings(false);
+  };
+
+  const resetApiBase = () => {
+    const fallback = normalizeApiBase(DEFAULT_API_BASE);
+    try {
+      localStorage.removeItem(API_BASE_KEY);
+    } catch (e) {}
+    setApiBase(fallback);
+    setApiDraft(fallback);
+    setApiNote("");
+    setShowApiSettings(false);
+  };
 
   useEffect(() => {
     if (listRef.current) {
@@ -181,7 +246,7 @@ export const AiAdvisoryChat = () => {
     setActiveId(session.id);
     try {
       const resp = await fetch(
-        SESSIONS_URL + "/" + encodeURIComponent(session.id) + "/messages"
+        sessionsUrl + "/" + encodeURIComponent(session.id) + "/messages"
       );
       if (!resp.ok) throw new Error("HTTP " + resp.status);
       const rows = await resp.json();
@@ -225,7 +290,7 @@ export const AiAdvisoryChat = () => {
     }
     try {
       const resp = await fetch(
-        SESSIONS_URL + "/" + encodeURIComponent(sessionId),
+        sessionsUrl + "/" + encodeURIComponent(sessionId),
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -250,7 +315,7 @@ export const AiAdvisoryChat = () => {
     setPendingDeleteId("");
     try {
       const resp = await fetch(
-        SESSIONS_URL + "/" + encodeURIComponent(session.id),
+        sessionsUrl + "/" + encodeURIComponent(session.id),
         { method: "DELETE" }
       );
       if (!resp.ok && resp.status !== 204) throw new Error("HTTP " + resp.status);
@@ -313,7 +378,7 @@ export const AiAdvisoryChat = () => {
     });
 
     try {
-      const resp = await fetch(STREAM_URL, {
+      const resp = await fetch(streamUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -462,9 +527,10 @@ export const AiAdvisoryChat = () => {
   min-height: 0;
   box-sizing: border-box;
 }
-.aic-side-head { padding: 12px 0; flex-shrink: 0; }
+.aic-side-head { padding: 12px 0; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; }
+.aic-new-row { display: flex; gap: 8px; align-items: stretch; }
 .aic-new {
-  width: 100%;
+  flex: 1;
   font: inherit;
   color: inherit;
   cursor: pointer;
@@ -477,6 +543,71 @@ export const AiAdvisoryChat = () => {
 }
 .aic-new:hover { background: rgba(127,127,127,.16); }
 .aic-new:disabled { opacity: .5; cursor: not-allowed; }
+.aic-gear {
+  width: 42px;
+  flex-shrink: 0;
+  border: 1px solid rgba(127,127,127,.35);
+  background: rgba(127,127,127,.08);
+  border-radius: 10px;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.aic-gear:hover, .aic-gear.open { background: rgba(127,127,127,.16); }
+.aic-api-box {
+  border: 1px solid rgba(127,127,127,.28);
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(127,127,127,.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.aic-api-label {
+  font-size: 12px;
+  opacity: .7;
+}
+.aic-api-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(127,127,127,.35);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  padding: 8px 10px;
+  outline: none;
+}
+.aic-api-actions { display: flex; gap: 6px; }
+.aic-api-btn {
+  flex: 1;
+  border: 1px solid rgba(127,127,127,.35);
+  background: rgba(127,127,127,.08);
+  border-radius: 8px;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  padding: 7px 8px;
+  cursor: pointer;
+}
+.aic-api-btn.primary {
+  background: rgb(var(--primary));
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+html.dark .aic-api-btn.primary {
+  background: rgb(var(--primary-light));
+  color: #0b1220;
+}
+.aic-api-note {
+  font-size: 11px;
+  opacity: .7;
+  word-break: break-all;
+}
 .aic-side-label {
   padding: 8px 4px 6px;
   font-size: 12px;
@@ -797,14 +928,66 @@ html.dark .aic-send {
 
       <aside className="aic-side">
         <div className="aic-side-head">
-          <button
-            type="button"
-            className="aic-new"
-            onClick={resetChat}
-            disabled={busy}
-          >
-            ＋ 新会话
-          </button>
+          <div className="aic-new-row">
+            <button
+              type="button"
+              className="aic-new"
+              onClick={resetChat}
+              disabled={busy}
+            >
+              ＋ 新会话
+            </button>
+            <button
+              type="button"
+              className={"aic-gear" + (showApiSettings ? " open" : "")}
+              title="API 地址"
+              aria-label="API 地址"
+              onClick={() => {
+                setApiDraft(apiBase);
+                setApiNote("");
+                setShowApiSettings(!showApiSettings);
+              }}
+            >
+              <Icon name="gear" />
+            </button>
+          </div>
+          {showApiSettings ? (
+            <div className="aic-api-box">
+              <div className="aic-api-label">AI API（cpolar 日更时可临时覆盖）</div>
+              <input
+                className="aic-api-input"
+                value={apiDraft}
+                placeholder="https://xxxx.r9.cpolar.cn"
+                onChange={(e) => setApiDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    applyApiBase(apiDraft, true);
+                  }
+                  if (e.key === "Escape") setShowApiSettings(false);
+                }}
+              />
+              <div className="aic-api-actions">
+                <button
+                  type="button"
+                  className="aic-api-btn primary"
+                  onClick={() => applyApiBase(apiDraft, true)}
+                >
+                  保存
+                </button>
+                <button
+                  type="button"
+                  className="aic-api-btn"
+                  onClick={resetApiBase}
+                >
+                  恢复默认
+                </button>
+              </div>
+              <div className="aic-api-note">
+                {apiNote || "当前：" + apiBase}
+              </div>
+            </div>
+          ) : null}
         </div>
         <div className="aic-side-label">历史会话</div>
         <div className="aic-history">
