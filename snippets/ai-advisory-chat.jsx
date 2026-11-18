@@ -40,6 +40,12 @@ function titleOf(session) {
   return t || "未命名会话";
 }
 
+function clip(text, n) {
+  const s = String(text || "").replace(/\s+/g, " ").trim();
+  if (s.length <= n) return s;
+  return s.slice(0, n) + "…";
+}
+
 export const AiAdvisoryChat = () => {
   const [messages, setMessages] = useState([WELCOME]);
   const [sessions, setSessions] = useState([]);
@@ -48,6 +54,12 @@ export const AiAdvisoryChat = () => {
   const [busy, setBusy] = useState(false);
   const [thinking, setThinking] = useState("");
   const [loadingHistory, setLoadingHistory] = useState(false);
+  const [editingId, setEditingId] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [menuId, setMenuId] = useState("");
+  const [quote, setQuote] = useState("");
+  const [copiedId, setCopiedId] = useState("");
+  const [pendingDeleteId, setPendingDeleteId] = useState("");
   const sessionIdRef = useRef("");
   const listRef = useRef(null);
   const idRef = useRef(1);
@@ -73,12 +85,21 @@ export const AiAdvisoryChat = () => {
     }
   }, [messages, thinking, busy]);
 
+  useEffect(() => {
+    const onDoc = () => setMenuId("");
+    document.addEventListener("click", onDoc);
+    return () => document.removeEventListener("click", onDoc);
+  }, []);
+
   const resetChat = () => {
     if (busy) return;
     sessionIdRef.current = "";
     setActiveId("");
     setThinking("");
     setInput("");
+    setQuote("");
+    setEditingId("");
+    setMenuId("");
     setMessages([
       Object.assign({}, WELCOME, { id: "welcome-" + Date.now() }),
     ]);
@@ -86,10 +107,12 @@ export const AiAdvisoryChat = () => {
 
   const openSession = async (session) => {
     if (!session || !session.id || busy) return;
-    if (session.id === activeId) return;
+    if (session.id === activeId && !editingId) return;
     setLoadingHistory(true);
     setThinking("");
     setInput("");
+    setQuote("");
+    setMenuId("");
     sessionIdRef.current = session.id;
     setActiveId(session.id);
     try {
@@ -123,14 +146,92 @@ export const AiAdvisoryChat = () => {
     }
   };
 
+  const startRename = (session, e) => {
+    if (e) e.stopPropagation();
+    setMenuId("");
+    setEditingId(session.id);
+    setEditTitle(titleOf(session));
+  };
+
+  const saveRename = async (sessionId) => {
+    const next = (editTitle || "").trim();
+    if (!next) {
+      setEditingId("");
+      return;
+    }
+    try {
+      const resp = await fetch(
+        SESSIONS_URL + "/" + encodeURIComponent(sessionId),
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: next }),
+        }
+      );
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      await refreshSessions();
+    } catch (e) {}
+    setEditingId("");
+  };
+
+  const requestDelete = (session, e) => {
+    if (e) e.stopPropagation();
+    setMenuId("");
+    if (!session || !session.id || busy) return;
+    setPendingDeleteId(session.id);
+  };
+
+  const confirmDelete = async (session, e) => {
+    if (e) e.stopPropagation();
+    if (!session || !session.id || busy) return;
+    setPendingDeleteId("");
+    try {
+      const resp = await fetch(
+        SESSIONS_URL + "/" + encodeURIComponent(session.id),
+        { method: "DELETE" }
+      );
+      if (!resp.ok && resp.status !== 204) throw new Error("HTTP " + resp.status);
+      if (sessionIdRef.current === session.id) resetChat();
+      await refreshSessions();
+    } catch (err) {}
+  };
+
+  const copyText = async (messageId, text) => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text || "");
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text || "";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setCopiedId(messageId);
+      setTimeout(() => setCopiedId(""), 1500);
+    } catch (e) {}
+  };
+
+  const quoteMessage = (text) => {
+    const t = (text || "").trim();
+    if (!t) return;
+    setQuote(t);
+  };
+
   const ask = async (raw) => {
     const q = (raw || "").trim();
     if (!q || busy) return;
+    const quoteText = (quote || "").trim();
+    const sendText = quoteText
+      ? "引用内容：\n---\n" + quoteText + "\n---\n\n" + q
+      : q;
     const userId = "u-" + idRef.current++;
     const assistantId = "a-" + idRef.current++;
     const wasNew = !sessionIdRef.current;
     setBusy(true);
     setInput("");
+    setQuote("");
     setThinking("已收到问题");
     setMessages((prev) => {
       const base =
@@ -138,7 +239,12 @@ export const AiAdvisoryChat = () => {
           ? []
           : prev;
       return base.concat([
-        { id: userId, role: "user", text: q },
+        {
+          id: userId,
+          role: "user",
+          text: q,
+          quote: quoteText || "",
+        },
         { id: assistantId, role: "assistant", text: "", streaming: true },
       ]);
     });
@@ -152,7 +258,7 @@ export const AiAdvisoryChat = () => {
           "Cache-Control": "no-cache",
         },
         body: JSON.stringify({
-          message: q,
+          message: sendText,
           userId: USER_ID,
           sessionId: sessionIdRef.current || null,
           history: [],
@@ -244,7 +350,7 @@ export const AiAdvisoryChat = () => {
                 text:
                   "服务暂不可用：" +
                   (e && e.message ? e.message : String(e)) +
-                  "。请确认 AI 服务已在本机 8088 启动。",
+                  "。请确认 AI 服务与 cpolar 隧道已启动。",
                 streaming: false,
                 source: "error",
               })
@@ -289,15 +395,11 @@ export const AiAdvisoryChat = () => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  border-right: 0;
   background: transparent;
   min-height: 0;
   box-sizing: border-box;
 }
-.aic-side-head {
-  padding: 12px 14px;
-  flex-shrink: 0;
-}
+.aic-side-head { padding: 12px 0; flex-shrink: 0; }
 .aic-new {
   width: 100%;
   font: inherit;
@@ -313,7 +415,7 @@ export const AiAdvisoryChat = () => {
 .aic-new:hover { background: rgba(127,127,127,.16); }
 .aic-new:disabled { opacity: .5; cursor: not-allowed; }
 .aic-side-label {
-  padding: 12px 14px 6px;
+  padding: 8px 4px 6px;
   font-size: 12px;
   opacity: .65;
   flex-shrink: 0;
@@ -321,20 +423,35 @@ export const AiAdvisoryChat = () => {
 .aic-history {
   flex: 1;
   overflow-y: auto;
-  padding: 4px 8px 12px;
+  padding: 0 0 12px;
   min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-.aic-hist-item {
+.aic-hist-row {
+  position: relative;
+  border-radius: 8px;
+}
+.aic-hist-row:hover,
+.aic-hist-row.open,
+.aic-hist-row.active {
+  background: rgba(127,127,127,.12);
+}
+.aic-hist-row.active {
+  box-shadow: inset 2px 0 0 rgb(var(--primary));
+}
+html.dark .aic-hist-row.active {
+  box-shadow: inset 2px 0 0 rgb(var(--primary-light));
+}
+.aic-hist-main {
   font: inherit;
   color: inherit;
   cursor: pointer;
   border: 0;
   background: transparent;
   border-radius: 8px;
-  padding: 9px 10px;
+  padding: 9px 64px 9px 10px;
   text-align: left;
   font-size: 13px;
   line-height: 1.35;
@@ -344,16 +461,83 @@ export const AiAdvisoryChat = () => {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.aic-hist-item:hover { background: rgba(127,127,127,.12); }
-.aic-hist-item.active {
-  background: rgba(59,130,246,.16);
-  box-shadow: inset 2px 0 0 rgb(var(--primary));
+.aic-hist-actions {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+  gap: 2px;
+  align-items: center;
 }
-html.dark .aic-hist-item.active {
-  box-shadow: inset 2px 0 0 rgb(var(--primary-light));
+.aic-hist-row:hover .aic-hist-actions,
+.aic-hist-row.open .aic-hist-actions {
+  display: inline-flex;
+}
+.aic-icon-btn {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: .75;
+  padding: 0;
+}
+.aic-icon-btn:hover { background: rgba(127,127,127,.2); opacity: 1; }
+.aic-menu {
+  position: absolute;
+  right: 4px;
+  top: calc(100% - 2px);
+  z-index: 5;
+  min-width: 108px;
+  border: 1px solid rgba(127,127,127,.3);
+  border-radius: 8px;
+  background: rgba(20,24,32,.96);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  padding: 4px;
+}
+html:not(.dark) .aic-menu {
+  background: #fff;
+  color: #111;
+}
+.aic-menu button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  border-radius: 6px;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.aic-menu button:hover { background: rgba(127,127,127,.14); }
+.aic-menu button.danger { color: #f87171; }
+.aic-edit-box {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+}
+.aic-edit-input {
+  flex: 1;
+  font: inherit;
+  color: inherit;
+  border: 1px solid rgba(127,127,127,.35);
+  border-radius: 6px;
+  background: transparent;
+  padding: 6px 8px;
+  min-width: 0;
 }
 .aic-hist-empty {
-  padding: 10px;
+  padding: 10px 4px;
   font-size: 12px;
   opacity: .55;
 }
@@ -378,12 +562,16 @@ html.dark .aic-hist-item.active {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   box-sizing: border-box;
 }
 .aic-row { display: flex; width: 100%; }
 .aic-row.user { justify-content: flex-end; }
 .aic-row.assistant { justify-content: flex-start; }
+.aic-msg {
+  max-width: 100%;
+  min-width: 0;
+}
 .aic-bubble {
   max-width: 100%;
   padding: 10px 14px;
@@ -406,11 +594,42 @@ html.dark .aic-row.user .aic-bubble {
   background: rgba(127,127,127,.12);
   border-bottom-left-radius: 4px;
 }
+.aic-quote-tag {
+  font-size: 12px;
+  opacity: .75;
+  margin-bottom: 6px;
+  padding: 6px 8px;
+  border-left: 2px solid rgba(127,127,127,.45);
+  background: rgba(127,127,127,.08);
+  border-radius: 0 6px 6px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
 .aic-meta {
   font-size: 12px;
   opacity: .65;
   margin-top: 4px;
 }
+.aic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+.aic-act {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  opacity: .72;
+}
+.aic-act:hover { background: rgba(127,127,127,.14); opacity: 1; }
 .aic-thinking {
   display: inline-flex;
   align-items: center;
@@ -426,17 +645,13 @@ html.dark .aic-row.user .aic-bubble {
   border-radius: 50%;
   animation: aic-spin .7s linear infinite;
 }
-html.dark .aic-spinner {
-  border-top-color: rgb(var(--primary-light));
-}
+html.dark .aic-spinner { border-top-color: rgb(var(--primary-light)); }
 .aic-cursor::after {
   content: "▍";
   animation: aic-blink 1s step-end infinite;
   color: rgb(var(--primary));
 }
-html.dark .aic-cursor::after {
-  color: rgb(var(--primary-light));
-}
+html.dark .aic-cursor::after { color: rgb(var(--primary-light)); }
 .aic-composer {
   border: 0;
   padding: 8px 0 20px;
@@ -446,9 +661,30 @@ html.dark .aic-cursor::after {
   max-width: 49.5rem;
   box-sizing: border-box;
 }
-.aic-composer-inner {
-  width: 100%;
-  box-sizing: border-box;
+.aic-composer-inner { width: 100%; box-sizing: border-box; }
+.aic-quote-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(127,127,127,.1);
+  border-left: 3px solid rgb(var(--primary));
+  font-size: 12px;
+  line-height: 1.45;
+}
+html.dark .aic-quote-bar {
+  border-left-color: rgb(var(--primary-light));
+}
+.aic-quote-bar-text {
+  flex: 1;
+  min-width: 0;
+  max-height: 4.2em;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  opacity: .85;
 }
 .aic-box {
   display: flex;
@@ -518,18 +754,127 @@ html.dark .aic-send {
             <div className="aic-hist-empty">暂无历史，发送一条消息后会出现在这里</div>
           ) : (
             sessions.map((s) => (
-              <button
+              <div
                 key={s.id}
-                type="button"
                 className={
-                  "aic-hist-item" + (s.id === activeId ? " active" : "")
+                  "aic-hist-row" +
+                  (s.id === activeId ? " active" : "") +
+                  (menuId === s.id ? " open" : "")
                 }
-                title={titleOf(s)}
-                disabled={busy || loadingHistory}
-                onClick={() => openSession(s)}
               >
-                {titleOf(s)}
-              </button>
+                {editingId === s.id ? (
+                  <div className="aic-edit-box">
+                    <input
+                      className="aic-edit-input"
+                      value={editTitle}
+                      autoFocus
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          saveRename(s.id);
+                        }
+                        if (e.key === "Escape") setEditingId("");
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="aic-icon-btn"
+                      title="保存"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        saveRename(s.id);
+                      }}
+                    >
+                      ✓
+                    </button>
+                    <button
+                      type="button"
+                      className="aic-icon-btn"
+                      title="取消"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingId("");
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      className="aic-hist-main"
+                      title={titleOf(s)}
+                      disabled={busy || loadingHistory}
+                      onClick={() => openSession(s)}
+                    >
+                      {titleOf(s)}
+                    </button>
+                    <div className="aic-hist-actions">
+                      <button
+                        type="button"
+                        className="aic-icon-btn"
+                        title="编辑"
+                        aria-label="编辑会话"
+                        onClick={(e) => startRename(s, e)}
+                      >
+                        ✎
+                      </button>
+                      <button
+                        type="button"
+                        className="aic-icon-btn"
+                        title="更多"
+                        aria-label="更多操作"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMenuId(menuId === s.id ? "" : s.id);
+                        }}
+                      >
+                        ···
+                      </button>
+                    </div>
+                    {menuId === s.id ? (
+                      <div className="aic-menu" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          onClick={(e) => startRename(s, e)}
+                        >
+                          重命名
+                        </button>
+                        <button
+                          type="button"
+                          className="danger"
+                          onClick={(e) => requestDelete(s, e)}
+                        >
+                          删除
+                        </button>
+                      </div>
+                    ) : null}
+                    {pendingDeleteId === s.id ? (
+                      <div className="aic-menu" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          className="danger"
+                          onClick={(e) => confirmDelete(s, e)}
+                        >
+                          确认删除
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPendingDeleteId("");
+                          }}
+                        >
+                          取消
+                        </button>
+                      </div>
+                    ) : null}
+                  </>
+                )}
+              </div>
             ))
           )}
         </div>
@@ -549,7 +894,12 @@ html.dark .aic-send {
             {!loadingHistory
               ? messages.map((m) => (
                   <div key={m.id} className={"aic-row " + m.role}>
-                    <div>
+                    <div className="aic-msg">
+                      {m.quote ? (
+                        <div className="aic-quote-tag" title={m.quote}>
+                          引用：{clip(m.quote, 48)}
+                        </div>
+                      ) : null}
                       <div
                         className={
                           "aic-bubble" +
@@ -562,6 +912,24 @@ html.dark .aic-send {
                       </div>
                       {m.source ? (
                         <div className="aic-meta">来源：{m.source}</div>
+                      ) : null}
+                      {m.role === "assistant" && m.text && !m.streaming ? (
+                        <div className="aic-actions">
+                          <button
+                            type="button"
+                            className="aic-act"
+                            onClick={() => copyText(m.id, m.text)}
+                          >
+                            {copiedId === m.id ? "已复制" : "复制"}
+                          </button>
+                          <button
+                            type="button"
+                            className="aic-act"
+                            onClick={() => quoteMessage(m.text)}
+                          >
+                            引用
+                          </button>
+                        </div>
                       ) : null}
                     </div>
                   </div>
@@ -580,6 +948,19 @@ html.dark .aic-send {
 
         <div className="aic-composer">
           <div className="aic-composer-inner">
+            {quote ? (
+              <div className="aic-quote-bar">
+                <div className="aic-quote-bar-text">{clip(quote, 180)}</div>
+                <button
+                  type="button"
+                  className="aic-icon-btn"
+                  title="取消引用"
+                  onClick={() => setQuote("")}
+                >
+                  ×
+                </button>
+              </div>
+            ) : null}
             <div className="aic-box">
               <textarea
                 className="aic-input"
