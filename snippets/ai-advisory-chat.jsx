@@ -46,6 +46,71 @@ function clip(text, n) {
   return s.slice(0, n) + "…";
 }
 
+function Icon({ name }) {
+  const common = {
+    width: 14,
+    height: 14,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    "aria-hidden": "true",
+  };
+  if (name === "edit") {
+    return (
+      <svg {...common}>
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+      </svg>
+    );
+  }
+  if (name === "trash") {
+    return (
+      <svg {...common}>
+        <path d="M3 6h18" />
+        <path d="M8 6V4h8v2" />
+        <path d="M19 6l-1 14H6L5 6" />
+        <path d="M10 11v6" />
+        <path d="M14 11v6" />
+      </svg>
+    );
+  }
+  if (name === "check") {
+    return (
+      <svg {...common}>
+        <path d="M20 6 9 17l-5-5" />
+      </svg>
+    );
+  }
+  if (name === "close") {
+    return (
+      <svg {...common}>
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg>
+    );
+  }
+  if (name === "copy") {
+    return (
+      <svg {...common}>
+        <rect x="9" y="9" width="13" height="13" rx="2" />
+        <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+      </svg>
+    );
+  }
+  if (name === "quote") {
+    return (
+      <svg {...common}>
+        <path d="M7 17h4l2-4V7H5v6h4Z" />
+        <path d="M15 17h4l2-4V7h-8v6h4Z" />
+      </svg>
+    );
+  }
+  return null;
+}
+
 export const AiAdvisoryChat = () => {
   const [messages, setMessages] = useState([WELCOME]);
   const [sessions, setSessions] = useState([]);
@@ -56,7 +121,6 @@ export const AiAdvisoryChat = () => {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [editingId, setEditingId] = useState("");
   const [editTitle, setEditTitle] = useState("");
-  const [menuId, setMenuId] = useState("");
   const [quote, setQuote] = useState("");
   const [copiedId, setCopiedId] = useState("");
   const [pendingDeleteId, setPendingDeleteId] = useState("");
@@ -86,7 +150,7 @@ export const AiAdvisoryChat = () => {
   }, [messages, thinking, busy]);
 
   useEffect(() => {
-    const onDoc = () => setMenuId("");
+    const onDoc = () => setPendingDeleteId("");
     document.addEventListener("click", onDoc);
     return () => document.removeEventListener("click", onDoc);
   }, []);
@@ -99,7 +163,7 @@ export const AiAdvisoryChat = () => {
     setInput("");
     setQuote("");
     setEditingId("");
-    setMenuId("");
+    setPendingDeleteId("");
     setMessages([
       Object.assign({}, WELCOME, { id: "welcome-" + Date.now() }),
     ]);
@@ -112,7 +176,7 @@ export const AiAdvisoryChat = () => {
     setThinking("");
     setInput("");
     setQuote("");
-    setMenuId("");
+    setPendingDeleteId("");
     sessionIdRef.current = session.id;
     setActiveId(session.id);
     try {
@@ -148,7 +212,7 @@ export const AiAdvisoryChat = () => {
 
   const startRename = (session, e) => {
     if (e) e.stopPropagation();
-    setMenuId("");
+    setPendingDeleteId("");
     setEditingId(session.id);
     setEditTitle(titleOf(session));
   };
@@ -176,7 +240,6 @@ export const AiAdvisoryChat = () => {
 
   const requestDelete = (session, e) => {
     if (e) e.stopPropagation();
-    setMenuId("");
     if (!session || !session.id || busy) return;
     setPendingDeleteId(session.id);
   };
@@ -490,37 +553,24 @@ html.dark .aic-hist-row.active {
   padding: 0;
 }
 .aic-icon-btn:hover { background: rgba(127,127,127,.2); opacity: 1; }
-.aic-menu {
+.aic-confirm {
   position: absolute;
   right: 4px;
   top: calc(100% - 2px);
   z-index: 5;
-  min-width: 108px;
+  display: inline-flex;
+  gap: 2px;
   border: 1px solid rgba(127,127,127,.3);
   border-radius: 8px;
   background: rgba(20,24,32,.96);
   box-shadow: 0 8px 24px rgba(0,0,0,.35);
   padding: 4px;
 }
-html:not(.dark) .aic-menu {
+html:not(.dark) .aic-confirm {
   background: #fff;
   color: #111;
 }
-.aic-menu button {
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  border: 0;
-  background: transparent;
-  border-radius: 6px;
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 8px 10px;
-  font-size: 13px;
-}
-.aic-menu button:hover { background: rgba(127,127,127,.14); }
-.aic-menu button.danger { color: #f87171; }
+.aic-icon-btn.danger { color: #f87171; }
 .aic-edit-box {
   display: flex;
   gap: 4px;
@@ -606,6 +656,9 @@ html.dark .aic-row.user .aic-bubble {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .aic-meta {
   font-size: 12px;
@@ -615,7 +668,7 @@ html.dark .aic-row.user .aic-bubble {
 .aic-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 2px;
   margin-top: 8px;
 }
 .aic-act {
@@ -625,11 +678,16 @@ html.dark .aic-row.user .aic-bubble {
   border: 0;
   background: transparent;
   border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 12px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   opacity: .72;
+  padding: 0;
 }
 .aic-act:hover { background: rgba(127,127,127,.14); opacity: 1; }
+.aic-act.ok { color: #34d399; opacity: 1; }
 .aic-thinking {
   display: inline-flex;
   align-items: center;
@@ -759,7 +817,7 @@ html.dark .aic-send {
                 className={
                   "aic-hist-row" +
                   (s.id === activeId ? " active" : "") +
-                  (menuId === s.id ? " open" : "")
+                  (pendingDeleteId === s.id ? " open" : "")
                 }
               >
                 {editingId === s.id ? (
@@ -782,23 +840,25 @@ html.dark .aic-send {
                       type="button"
                       className="aic-icon-btn"
                       title="保存"
+                      aria-label="保存"
                       onClick={(e) => {
                         e.stopPropagation();
                         saveRename(s.id);
                       }}
                     >
-                      ✓
+                      <Icon name="check" />
                     </button>
                     <button
                       type="button"
                       className="aic-icon-btn"
                       title="取消"
+                      aria-label="取消"
                       onClick={(e) => {
                         e.stopPropagation();
                         setEditingId("");
                       }}
                     >
-                      ×
+                      <Icon name="close" />
                     </button>
                   </div>
                 ) : (
@@ -816,59 +876,44 @@ html.dark .aic-send {
                       <button
                         type="button"
                         className="aic-icon-btn"
-                        title="编辑"
-                        aria-label="编辑会话"
+                        title="重命名"
+                        aria-label="重命名"
                         onClick={(e) => startRename(s, e)}
                       >
-                        ✎
+                        <Icon name="edit" />
                       </button>
                       <button
                         type="button"
-                        className="aic-icon-btn"
-                        title="更多"
-                        aria-label="更多操作"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setMenuId(menuId === s.id ? "" : s.id);
-                        }}
+                        className="aic-icon-btn danger"
+                        title="删除"
+                        aria-label="删除"
+                        onClick={(e) => requestDelete(s, e)}
                       >
-                        ···
+                        <Icon name="trash" />
                       </button>
                     </div>
-                    {menuId === s.id ? (
-                      <div className="aic-menu" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          type="button"
-                          onClick={(e) => startRename(s, e)}
-                        >
-                          重命名
-                        </button>
-                        <button
-                          type="button"
-                          className="danger"
-                          onClick={(e) => requestDelete(s, e)}
-                        >
-                          删除
-                        </button>
-                      </div>
-                    ) : null}
                     {pendingDeleteId === s.id ? (
-                      <div className="aic-menu" onClick={(e) => e.stopPropagation()}>
+                      <div className="aic-confirm" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"
-                          className="danger"
+                          className="aic-icon-btn danger"
+                          title="确认删除"
+                          aria-label="确认删除"
                           onClick={(e) => confirmDelete(s, e)}
                         >
-                          确认删除
+                          <Icon name="check" />
                         </button>
                         <button
                           type="button"
+                          className="aic-icon-btn"
+                          title="取消"
+                          aria-label="取消"
                           onClick={(e) => {
                             e.stopPropagation();
                             setPendingDeleteId("");
                           }}
                         >
-                          取消
+                          <Icon name="close" />
                         </button>
                       </div>
                     ) : null}
@@ -897,7 +942,7 @@ html.dark .aic-send {
                     <div className="aic-msg">
                       {m.quote ? (
                         <div className="aic-quote-tag" title={m.quote}>
-                          引用：{clip(m.quote, 48)}
+                          <Icon name="quote" /> {clip(m.quote, 48)}
                         </div>
                       ) : null}
                       <div
@@ -917,17 +962,21 @@ html.dark .aic-send {
                         <div className="aic-actions">
                           <button
                             type="button"
-                            className="aic-act"
+                            className={"aic-act" + (copiedId === m.id ? " ok" : "")}
+                            title={copiedId === m.id ? "已复制" : "复制"}
+                            aria-label={copiedId === m.id ? "已复制" : "复制"}
                             onClick={() => copyText(m.id, m.text)}
                           >
-                            {copiedId === m.id ? "已复制" : "复制"}
+                            <Icon name={copiedId === m.id ? "check" : "copy"} />
                           </button>
                           <button
                             type="button"
                             className="aic-act"
+                            title="引用"
+                            aria-label="引用"
                             onClick={() => quoteMessage(m.text)}
                           >
-                            引用
+                            <Icon name="quote" />
                           </button>
                         </div>
                       ) : null}
@@ -955,9 +1004,10 @@ html.dark .aic-send {
                   type="button"
                   className="aic-icon-btn"
                   title="取消引用"
+                  aria-label="取消引用"
                   onClick={() => setQuote("")}
                 >
-                  ×
+                  <Icon name="close" />
                 </button>
               </div>
             ) : null}
