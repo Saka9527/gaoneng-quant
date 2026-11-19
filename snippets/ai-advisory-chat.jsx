@@ -410,7 +410,22 @@ export const AiAdvisoryChat = () => {
           const type = ev.type || ev.data.type;
           const data = ev.data;
           if (type === "progress") {
-            setThinking(data.title || "思考中…");
+            const stage = data.stage || "";
+            const title = data.title || "思考中…";
+            const detail = data.detail ? String(data.detail) : "";
+            if (stage === "tool_call") {
+              setThinking("调用工具：" + title + (detail ? " — " + detail : ""));
+            } else if (stage === "tool_result") {
+              setThinking(
+                (data.status === "failed" ? "工具失败：" : "工具返回：") +
+                  title +
+                  (detail ? " — " + detail : "")
+              );
+            } else if (stage === "mcp") {
+              setThinking(title + (detail ? " · " + detail : ""));
+            } else {
+              setThinking(title + (detail ? " · " + detail : ""));
+            }
           } else if (type === "delta") {
             if (!gotDelta) {
               gotDelta = true;
