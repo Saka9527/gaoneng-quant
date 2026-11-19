@@ -1,12 +1,14 @@
-# Sync Mintlify AI chat API base from the local cpolar dashboard (port 4042).
+# Sync Mintlify AI chat API base from the local cpolar tunnel.
 # Free cpolar public URLs change daily; run this after restarting the tunnel, then push.
 #
 # Usage:
 #   powershell -File scripts/sync-cpolar-ai-url.ps1
 #   powershell -File scripts/sync-cpolar-ai-url.ps1 -Push
+#   powershell -File scripts/sync-cpolar-ai-url.ps1 -PublicUrl https://xxxx.r7.cpolar.top -Push
 
 param(
     [switch]$Push,
+    [string]$PublicUrl = "",
     [string]$DashboardUrl = "http://127.0.0.1:4042/",
     [string]$LocalHint = "localhost:8088"
 )
@@ -15,7 +17,7 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $configPath = Join-Path $repoRoot "snippets\ai-advisory-config.jsx"
 
-function Get-CpolarPublicUrl {
+function Get-CpolarPublicUrlFromDashboard {
     param([string]$Dashboard, [string]$Hint)
 
     $client = New-Object System.Net.WebClient
@@ -24,7 +26,7 @@ function Get-CpolarPublicUrl {
 
     $matches = [regex]::Matches(
         $html,
-        'PublicUrl\\":\\"(https://[a-zA-Z0-9.-]+\.cpolar\.[a-z.]+)\\"[^\}]{0,240}?LocalAddr\\":\\"http://([^\\"]+)\\"'
+        'PublicUrl\\":\\"(https://[a-zA-Z0-9.-]+\.cpolar\.[a-z.]+)\\"[^\}]{0,400}?LocalAddr\\":\\"http://([^\\"]+)\\"'
     )
     foreach ($m in $matches) {
         $pub = $m.Groups[1].Value
@@ -38,7 +40,45 @@ function Get-CpolarPublicUrl {
     if ($fallback.Success) {
         return $fallback.Value
     }
-    throw "No cpolar public URL found at $Dashboard. Is cpolar running with an http tunnel?"
+    return ""
+}
+
+function Get-CpolarPublicUrlFromLogs {
+    $candidates = @()
+    $logRoots = @(
+        (Join-Path $env:USERPROFILE ".cpolar\logs"),
+        (Join-Path $env:USERPROFILE ".cursor\projects\d-project-ai-chat\terminals")
+    )
+    foreach ($root in $logRoots) {
+        if (-not (Test-Path $root)) { continue }
+        Get-ChildItem -Path $root -File -ErrorAction SilentlyContinue |
+            Where-Object { $_.LastWriteTime -gt (Get-Date).AddHours(-6) } |
+            ForEach-Object {
+                Select-String -Path $_.FullName -Pattern 'Tunnel established at (https://[a-zA-Z0-9.-]+\.cpolar\.[a-z.]+)' -ErrorAction SilentlyContinue |
+                    ForEach-Object {
+                        $candidates += [pscustomobject]@{
+                            Url  = $_.Matches[0].Groups[1].Value
+                            Time = $_.Filename
+                            Line = $_.LineNumber
+                            File = $_.Path
+                            MTime = (Get-Item $_.Path).LastWriteTime
+                        }
+                    }
+            }
+    }
+    if (-not $candidates) { return "" }
+    return ($candidates | Sort-Object MTime, Line | Select-Object -Last 1).Url
+}
+
+function Test-AiApiBase {
+    param([string]$Base)
+    try {
+        $probe = $Base.TrimEnd("/") + "/api/ai/sessions?userId=mintlify-debug"
+        $resp = Invoke-WebRequest -Uri $probe -UseBasicParsing -TimeoutSec 12
+        return ($resp.StatusCode -ge 200 -and $resp.StatusCode -lt 300)
+    } catch {
+        return $false
+    }
 }
 
 function Get-CurrentApiBase {
@@ -50,8 +90,30 @@ function Get-CurrentApiBase {
     return ""
 }
 
-$publicUrl = Get-CpolarPublicUrl -Dashboard $DashboardUrl -Hint $LocalHint
+if ($PublicUrl) {
+    $publicUrl = $PublicUrl.Trim().TrimEnd("/")
+} else {
+    $publicUrl = Get-CpolarPublicUrlFromDashboard -Dashboard $DashboardUrl -Hint $LocalHint
+    if (-not $publicUrl) {
+        # Older/newer clients may also expose inspect UI on 4040.
+        try {
+            $publicUrl = Get-CpolarPublicUrlFromDashboard -Dashboard "http://127.0.0.1:4040/" -Hint $LocalHint
+        } catch {}
+    }
+    if (-not $publicUrl) {
+        $publicUrl = Get-CpolarPublicUrlFromLogs
+    }
+}
+
+if (-not $publicUrl) {
+    throw "No cpolar public URL found. Pass -PublicUrl or start the ai-chat tunnel first."
+}
+
 $publicUrl = $publicUrl.TrimEnd("/")
+if (-not (Test-AiApiBase -Base $publicUrl)) {
+    throw "cpolar URL $publicUrl is not serving AI chat on /$LocalHint. Is Spring Boot up on 8088?"
+}
+
 $current = Get-CurrentApiBase -Path $configPath
 
 Write-Host "cpolar public URL : $publicUrl"
@@ -65,11 +127,13 @@ if ($current -eq $publicUrl) {
     exit 0
 }
 
+# UTF8 no BOM — BOM can break Mintlify JSX snippets.
 $content = @"
 // Updated by scripts/sync-cpolar-ai-url.ps1 when the free cpolar URL changes.
 export const AI_CHAT_API_BASE = "$publicUrl";
 "@
-Set-Content -Path $configPath -Value $content -Encoding UTF8
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText($configPath, $content, $utf8NoBom)
 Write-Host "Updated $configPath"
 
 if (-not $Push) {
