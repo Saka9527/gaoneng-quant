@@ -19,24 +19,109 @@ description: "回测读行情的第一路径。文件从 gngltdb 镜像一次性
 
 ## 列
 
-`security`：`sec_id`，`sec_code`，`sec_short_name_cn`，`thscode`，`td_mkt_encode`
-
-`bars`：`sec_code`，`td_date`，`open_price`，`high_price`，`low_price`，`close_price`，`volume`。索引 `idx_bars_code_date (sec_code, td_date)`。镜像里的 `high_trans` / `low_trans` / `latest_trans` / `trans_vol` 迁入时改成这四个行情列名。
-
-`adjust`：`sec_id`，`exright_date`，`forward_af`，`backward_af`，`cum_back`（镜像列 `cum_back_adj_factor`）
-
-`index_bars`：`index_code`，`td_date`，`open_index`，`high_index`，`low_index`，`close_index`，`volume`，`sec_id`，`index_short_name`。收盘在镜像里叫 `latest_index`，成交量叫 `vol`。
-
-`limit_price`：`sec_code`，`td_date`，`ul_price`，`dl_price`。索引 `idx_limit_code_date (sec_code, td_date)`。价格未复权。
-
-`calendar`：`td_date`
-
-`industry`：`sec_code`，`industry_code`，`industry_name`
-
-`suspend`：`sec_code`，`suspen_date`，`resump_date`。停牌区间含开始日，不含复牌日。
-
-`st_hat`：`sec_code`，`start_date`，`end_date`。旧镜像若只有 `implementation_date`，迁入时起止都写成该日。
-
-`float_share`：`sec_code`，`end_date`，`free_float_shares`
-
 DuckDB 没有主键。同一代码、同一日期若镜像里重复，文件里也会重复。
+
+### `security`
+
+| 字段 | 说明 |
+|------|------|
+| `sec_id` | 证券内部 ID，复权因子按它关联 |
+| `sec_code` | 6 位代码 |
+| `sec_short_name_cn` | 简称；当前名称含 ST 只用于可选的排除过滤 |
+| `thscode` | 同花顺代码 |
+| `td_mkt_encode` | 市场编码 |
+
+### `bars`
+
+索引：`idx_bars_code_date (sec_code, td_date)`。镜像 `high_trans` / `low_trans` / `latest_trans` / `trans_vol` 迁入时改成下列行情列名。
+
+| 字段 | 说明 |
+|------|------|
+| `sec_code` | 证券代码 |
+| `td_date` | 交易日 |
+| `open_price` | 开盘，未复权 |
+| `high_price` | 最高 |
+| `low_price` | 最低 |
+| `close_price` | 收盘 |
+| `volume` | 成交量 |
+
+### `adjust`
+
+镜像列 `cum_back_adj_factor` 迁入后为 `cum_back`。
+
+| 字段 | 说明 |
+|------|------|
+| `sec_id` | 与 `security.sec_id` 对应 |
+| `exright_date` | 除权日 |
+| `forward_af` | 前复权因子 |
+| `backward_af` | 后复权因子 |
+| `cum_back` | 累计后复权因子 |
+
+### `index_bars`
+
+镜像收盘为 `latest_index`、成交量为 `vol`，迁入后为 `close_index`、`volume`。
+
+| 字段 | 说明 |
+|------|------|
+| `index_code` | 指数代码 |
+| `td_date` | 交易日 |
+| `open_index` | 开盘 |
+| `high_index` | 最高 |
+| `low_index` | 最低 |
+| `close_index` | 收盘 |
+| `volume` | 成交量 |
+| `sec_id` | 指数证券 ID |
+| `index_short_name` | 简称 |
+
+### `limit_price`
+
+索引：`idx_limit_code_date (sec_code, td_date)`。价格未复权。
+
+| 字段 | 说明 |
+|------|------|
+| `sec_code` | 证券代码 |
+| `td_date` | 交易日 |
+| `ul_price` | 涨停价 |
+| `dl_price` | 跌停价 |
+
+### `calendar`
+
+| 字段 | 说明 |
+|------|------|
+| `td_date` | 开市日 |
+
+### `industry`
+
+| 字段 | 说明 |
+|------|------|
+| `sec_code` | 证券代码 |
+| `industry_code` | 申万一级代码 |
+| `industry_name` | 行业名称 |
+
+### `suspend`
+
+停牌区间含开始日，不含复牌日。
+
+| 字段 | 说明 |
+|------|------|
+| `sec_code` | 证券代码 |
+| `suspen_date` | 停牌开始，含当日 |
+| `resump_date` | 复牌日；空表示尚未复牌 |
+
+### `st_hat`
+
+旧镜像若只有 `implementation_date`，迁入时起止都写成该日。
+
+| 字段 | 说明 |
+|------|------|
+| `sec_code` | 证券代码 |
+| `start_date` | 戴帽开始，含当日 |
+| `end_date` | 戴帽结束，含当日 |
+
+### `float_share`
+
+| 字段 | 说明 |
+|------|------|
+| `sec_code` | 证券代码 |
+| `end_date` | 股本截止日期；取不晚于行情日的最近一条 |
+| `free_float_shares` | 自由流通股本 |
