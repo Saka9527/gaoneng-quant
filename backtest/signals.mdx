@@ -313,8 +313,6 @@ holdDays ≥ holdingPeriodDays → 当天开盘卖
 
 ## 9. 组合回测结果
 
-结果页十项绩效与曲线在回测完成后给出。`POST /run` 带全部成交；表格再按 `GET .../trades` 从进程内存分页。默认对照沪深300。`bt_job.result_json` 只留摘要；`barCount` = `candidateCount`。
-
 ### 9.1 净值
 
 交易日 = 镜像日历 ∩ 对比指数交易日（不足 2 天则用指数日）。循环从第 2 个交易日起。指数无 K 线的日子不记净值点，但已发生成交仍保留。
