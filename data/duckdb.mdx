@@ -4,18 +4,18 @@ sidebarTitle: "本地库"
 description: "回测读行情的第一路径。文件从 gngltdb 镜像一次性迁入。quant.duckdb.migrate 为 false 时启动不会重迁。"
 ---
 
-| DuckDB 表 | 行数 | MySQL 镜像来源 | 回测里怎么用 |
-|-----------|-----:|----------------|--------------|
-| `security` | 5,223 | `ls_sec_basic_info` | 代码、简称。简称含 ST 只在勾选「排除 ST」时载入 |
-| `bars` | 3,774,065 | `ls_stock_daily_quotation` | 开高低收、成交量。组合撮合默认前复权后只用开盘和收盘 |
-| `adjust` | 56,503 | `stock_adjust_factor_table` | `forward_af` 做前复权。涨跌停价仍是未复权公布价 |
-| `index_bars` | 4,446 | `ls_index_daily_quotation` | 对比指数，默认沪深 300 `000300` |
-| `limit_price` | 3,772,711 | `bt_limit_price` | 当日 `ul_price` / `dl_price`。有公布价就用公布价判断开盘是否封板 |
-| `calendar` | 1,770 | `bt_trade_calendar` | 交易日 |
-| `industry` | 5,223 | `bt_industry` | 行业，用于同行业持仓上限 |
-| `suspend` | 1,333 | `bt_suspend` | 停牌区间。复牌日当天可交易 |
-| `st_hat` | 20 | `bt_st_hat` | 戴帽区间。每次加载辅助数据都会读，用来决定缺公布价时的板幅 |
-| `float_share` | 150,343 | `bt_float_share` | 自由流通股本。只有买入排序选了成交额、换手或流通市值才读 |
+| DuckDB 表 | 行数 | MySQL 镜像来源 | 说明 | 用途 |
+|-----------|-----:|----------------|------|------|
+| `security` | 5,223 | `ls_sec_basic_info` | 代码、简称 | 简称含 ST 只在勾选「排除 ST」时载入 |
+| `bars` | 3,774,065 | `ls_stock_daily_quotation` | 开高低收、成交量 | 组合撮合默认前复权后只用开盘和收盘 |
+| `adjust` | 56,503 | `stock_adjust_factor_table` | `forward_af` 前复权因子 | 做前复权；涨跌停价仍是未复权公布价 |
+| `index_bars` | 4,446 | `ls_index_daily_quotation` | 对比指数 | 默认沪深 300 `000300` |
+| `limit_price` | 3,772,711 | `bt_limit_price` | 当日 `ul_price` / `dl_price` | 有公布价就用公布价判断开盘是否封板 |
+| `calendar` | 1,770 | `bt_trade_calendar` | 交易日 | 定回测交易日 |
+| `industry` | 5,223 | `bt_industry` | 行业 | 同行业持仓上限 |
+| `suspend` | 1,333 | `bt_suspend` | 停牌区间 | 复牌日当天可交易 |
+| `st_hat` | 20 | `bt_st_hat` | 戴帽区间 | 每次加载辅助数据都会读，用来决定缺公布价时的板幅 |
+| `float_share` | 150,343 | `bt_float_share` | 自由流通股本 | 只有买入排序选了成交额、换手或流通市值才读 |
 
 ## 列
 
