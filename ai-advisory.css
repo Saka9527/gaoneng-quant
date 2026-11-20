@@ -21,8 +21,8 @@ html[data-current-path="/ai-advisory"] body {
 }
 
 /*
-  Wide screens: center the whole AI panel like Mintlify docs shell (~1472px),
-  instead of pinning columns to the left edge of the viewport.
+  Desktop: two-column shell.
+  Mobile overrides below MUST use !important — this file wins over snippet <style>.
 */
 html[data-current-path="/ai-advisory"] .aic-shell {
   display: grid !important;
@@ -41,6 +41,15 @@ html[data-current-path="/ai-advisory"] .aic-shell {
   background: transparent !important;
   box-sizing: border-box !important;
   min-height: calc(100dvh - 7.5rem) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+html[data-current-path="/ai-advisory"] .aic-topbar,
+html[data-current-path="/ai-advisory"] .aic-backdrop,
+html[data-current-path="/ai-advisory"] .aic-side-close,
+html[data-current-path="/ai-advisory"] .aic-hint {
+  display: none !important;
 }
 
 html[data-current-path="/ai-advisory"] .aic-side {
@@ -48,6 +57,9 @@ html[data-current-path="/ai-advisory"] .aic-side {
   max-width: none !important;
   border-right: 0 !important;
   background: transparent !important;
+  position: relative !important;
+  transform: none !important;
+  z-index: 2 !important;
 }
 
 html[data-current-path="/ai-advisory"] .aic-main {
@@ -55,11 +67,13 @@ html[data-current-path="/ai-advisory"] .aic-main {
   max-width: none !important;
   align-items: stretch !important;
   min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
 }
 
 html[data-current-path="/ai-advisory"] .aic-list,
 html[data-current-path="/ai-advisory"] .aic-composer {
-  display: block !important;
   width: 100% !important;
   max-width: 49.5rem !important;
   margin-left: 0 !important;
@@ -70,11 +84,15 @@ html[data-current-path="/ai-advisory"] .aic-composer {
 }
 
 html[data-current-path="/ai-advisory"] .aic-list {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
   padding-top: 1.25rem !important;
   padding-bottom: 0.5rem !important;
 }
 
 html[data-current-path="/ai-advisory"] .aic-composer {
+  flex-shrink: 0 !important;
   padding-top: 0.5rem !important;
   padding-bottom: 1.25rem !important;
   border: 0 !important;
@@ -98,11 +116,122 @@ html[data-current-path="/ai-advisory"] .aic-box {
   margin: 0 !important;
 }
 
+/* Mobile / ChatGPT-style: full-width chat + drawer sidebar */
 @media (max-width: 900px) {
   html[data-current-path="/ai-advisory"] .aic-shell {
-    grid-template-columns: 12rem minmax(0, 1fr) !important;
-    column-gap: 1.25rem !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+    column-gap: 0 !important;
+    row-gap: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    min-height: calc(100dvh - 6.5rem) !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-topbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+    width: 100% !important;
+    padding: 8px 12px !important;
+    border-bottom: 1px solid rgba(127, 127, 127, 0.22) !important;
+    box-sizing: border-box !important;
+    z-index: 3 !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-backdrop {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 40 !important;
+    background: rgba(0, 0, 0, 0.45) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-shell.side-open .aic-backdrop {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Closed: remove from layout entirely so no empty left column */
+  html[data-current-path="/ai-advisory"] .aic-shell:not(.side-open) .aic-side {
+    display: none !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-shell.side-open .aic-side {
+    display: flex !important;
+    flex-direction: column !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: min(86vw, 20rem) !important;
+    max-width: 86vw !important;
+    z-index: 50 !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+    background: #f7f8fa !important;
+    color: #111 !important;
+    box-shadow: 8px 0 28px rgba(0, 0, 0, 0.12) !important;
+    transform: none !important;
+    overflow: hidden !important;
+  }
+
+  html.dark[data-current-path="/ai-advisory"] .aic-shell.side-open .aic-side {
+    background: #0f141c !important;
+    color: #e8eaed !important;
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-side-close {
+    display: inline-flex !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-main {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-list,
+  html[data-current-path="/ai-advisory"] .aic-composer {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-list {
+    padding-top: 12px !important;
+    padding-bottom: 6px !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-composer {
+    padding-top: 8px !important;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+    border-top: 1px solid rgba(127, 127, 127, 0.18) !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-row.user .aic-msg {
+    max-width: 88% !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-hint {
+    display: block !important;
+  }
+
+  html[data-current-path="/ai-advisory"] .aic-input {
+    font-size: 16px !important;
   }
 }

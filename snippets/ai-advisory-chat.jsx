@@ -993,18 +993,23 @@ html.dark .aic-send {
 }
 .aic-send:disabled { opacity: .5; cursor: not-allowed; }
 @media (max-width: 900px) {
+  /* Keep in sync with /ai-advisory.css (!important there wins on Mintlify). */
   .aic-shell {
     --aic-side-w: min(86vw, 20rem);
-    display: flex;
-    flex-direction: column;
-    column-gap: 0;
-    padding-left: 0;
-    padding-right: 0;
-    max-width: none;
-    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    column-gap: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
     min-height: calc(100dvh - 7.5rem);
     height: calc(100dvh - 7.5rem);
     overflow: hidden;
+  }
+  .aic-shell:not(.side-open) .aic-side {
+    display: none !important;
   }
   .aic-topbar {
     display: flex;
