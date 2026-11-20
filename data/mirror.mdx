@@ -48,7 +48,7 @@ curl -X POST http://127.0.0.1:8080/api/v1/universe/market-warmup \
   -H "Content-Type: application/json" \
   -d "{\"universeId\":\"all_a\",\"lookbackYears\":3,\"limit\":50}"
 
-# 组合回测（应看到 loadMs 显著下降）
+# 组合回测
 curl -X POST http://127.0.0.1:8080/api/v1/portfolio/run \
   -H "Content-Type: application/json" \
   -d "{\"warmupLimit\":50,\"lookbackYears\":3,\"benchmarkCode\":\"000300\"}"
