@@ -30,17 +30,7 @@ python -u scripts/sync_ths_market_to_gngltdb.py --years 3 --limit 100
 python -u scripts/sync_ths_market_to_gngltdb.py --years 3 --offset 1000 --skip-index --skip-adjust --skip-stats
 ```
 
-写入 `gngltdb` 同名精简表（仅回测所需列 + 主键）。
-
 建议顺序：先股票日 K → 再复权因子（`--skip-stock --skip-index`）→ 最后指数（按代码逐只，易超时）。
-
-快捷（仅指数 + 复权）：
-
-```bash
-python -u scripts/sync_indexes_and_adjust.py
-```
-
-服务器资源与部署规格见 [部署与服务器资源](/guide/deploy)。
 
 ## 应用读镜像
 
