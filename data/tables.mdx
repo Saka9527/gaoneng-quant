@@ -1,17 +1,10 @@
 ---
 title: "表元数据放在哪"
 sidebarTitle: "总览"
-description: "三套库，三份文档。改列时改对应的表说明。"
 ---
 
 | 库 | 角色 | 文档 | DDL |
 |----|------|------|-----|
-| `lm_ths_db` | 同花顺源库，54 张表的结构快照 | [同花顺库表结构：lm_ths_db](/data/ths/index) | 源库，本仓库不建表 |
+| `lm_ths_db` | 同花顺源库，54 张表的结构快照 | [`lm_ths_db`](/data/ths/index) | 源库，本仓库不建表 |
 | `gngltdb` | 可写业务表 + 精简行情镜像 | [测试库 gngltdb](/data/gngltdb/index) | 部署时建表 |
 | 本地 `data/market.duckdb` | 回测实际读取的行情 | [本地行情文件 data/market.duckdb](/data/duckdb) | 随本地库一起生成 |
-
-源表文档里的行数、体积是当时 `information_schema` 的估算。回测用的行数以 DuckDB 文档里 2026-10-13 迁入后的计数为准。
-
-回测写进 `bt_job.result_json` 的字段，以及接口返回的净值、持仓、成交，见 [同步组合回测](/api-reference/portfolio-backtest/run)、[查询组合回测任务](/api-reference/portfolio-backtest/job) 和 [分页查询成交明细](/api-reference/portfolio-backtest/trades)。上面三套库是行情和业务表，不存逐笔成交。
-
-接口文档在 [枚举](/api/portfolio-meta)。
