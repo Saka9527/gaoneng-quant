@@ -361,8 +361,6 @@ sharpeRatio = 均值 / √方差 × √252
 turnover = 当日换手的平均     // 日均单边，不 ×252
 ```
 
-权益 ≤ 0 的日子不计；无净值日 → 0。
-
 ### 9.6 成交、盈亏、胜率
 
 | 字段 | 买入 | 卖出 |
@@ -379,8 +377,6 @@ winTrades = pnl > 0 的卖出笔数
 winRate = tradeCount = 0 ? 0 : winTrades / tradeCount
 ```
 
-`rejectedBuys` / `rejectedSells`：信号成立但开盘未成交。结果页盈亏比 = 盈利卖出平均 `returnPct` / 亏损卖出平均 `|returnPct|`（无亏损 → 0）。
-
 ### 9.7 结果页十项
 
 | 页面 | 字段 |
@@ -394,5 +390,3 @@ winRate = tradeCount = 0 ? 0 : winTrades / tradeCount
 | 最大回撤 | `maxDrawdown`（正百分数） |
 | 单次最大 / 最小收益 | `maxTradeReturn` / `minTradeReturn` |
 | 交易次数 | `tradeCount` |
-
-曲线：`(equity / initialCash − 1)` 与基准累计收益。`sharpeRatio`、`turnover`、`profitFactor`、拒单次数在接口摘要中，不在十格。
