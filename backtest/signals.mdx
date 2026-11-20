@@ -208,8 +208,6 @@ holdDays ≥ holdingPeriodDays → 当天开盘卖
 | `MA_TOP_DIV` | MA顶背离 | ta4j：`i ≥ shortMa+1`，收盘 = 最近 `shortMa+1` 根收盘最高（含当天），且 SMA 今天 &lt; 昨天 |
 | `HOLD_PERIOD` | 仅持股周期 | 标记恒 false，只等持股天数 |
 
-`MA_TOP_DIV` 建 K 线时最高 = max(开,收)，最低 = min(开,收)，成交量 0；比较读收盘。
-
 ### 6.2 RSI（6 / 12）
 
 | id | 成立 |
