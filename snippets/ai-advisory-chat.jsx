@@ -130,6 +130,23 @@ function Icon({ name }) {
       </svg>
     );
   }
+  if (name === "menu") {
+    return (
+      <svg {...common} width={18} height={18}>
+        <path d="M4 7h16" />
+        <path d="M4 12h16" />
+        <path d="M4 17h16" />
+      </svg>
+    );
+  }
+  if (name === "plus") {
+    return (
+      <svg {...common} width={18} height={18}>
+        <path d="M12 5v14" />
+        <path d="M5 12h14" />
+      </svg>
+    );
+  }
   return null;
 }
 
@@ -150,6 +167,7 @@ export const AiAdvisoryChat = () => {
   const [quote, setQuote] = useState("");
   const [copiedId, setCopiedId] = useState("");
   const [pendingDeleteId, setPendingDeleteId] = useState("");
+  const [sideOpen, setSideOpen] = useState(false);
   const sessionIdRef = useRef("");
   const listRef = useRef(null);
   const idRef = useRef(1);
@@ -220,6 +238,20 @@ export const AiAdvisoryChat = () => {
     return () => document.removeEventListener("click", onDoc);
   }, []);
 
+  useEffect(() => {
+    if (!sideOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setSideOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [sideOpen]);
+
   const resetChat = () => {
     if (busy) return;
     sessionIdRef.current = "";
@@ -229,6 +261,7 @@ export const AiAdvisoryChat = () => {
     setQuote("");
     setEditingId("");
     setPendingDeleteId("");
+    setSideOpen(false);
     setMessages([
       Object.assign({}, WELCOME, { id: "welcome-" + Date.now() }),
     ]);
@@ -236,7 +269,11 @@ export const AiAdvisoryChat = () => {
 
   const openSession = async (session) => {
     if (!session || !session.id || busy) return;
-    if (session.id === activeId && !editingId) return;
+    if (session.id === activeId && !editingId) {
+      setSideOpen(false);
+      return;
+    }
+    setSideOpen(false);
     setLoadingHistory(true);
     setThinking("");
     setInput("");
@@ -513,26 +550,35 @@ export const AiAdvisoryChat = () => {
   };
 
   return (
-    <div className="not-prose aic-shell">
+    <div className={"not-prose aic-shell" + (sideOpen ? " side-open" : "")}>
       <style>{`
 .aic-shell {
+  --aic-side-w: 18rem;
   color: inherit;
   border: 0;
   border-radius: 0;
   overflow: hidden;
   display: grid;
-  grid-template-columns: var(--sidebar-width, 18rem) minmax(0, 1fr);
+  grid-template-columns: var(--aic-side-w) minmax(0, 1fr);
   justify-content: stretch;
   column-gap: 2.75rem;
   width: 100%;
   max-width: 92rem;
   margin-left: auto;
   margin-right: auto;
-  min-height: 320px;
+  min-height: min(72vh, 720px);
+  height: min(78vh, 820px);
   padding-left: 2rem;
   padding-right: 2rem;
   background: transparent;
   box-sizing: border-box;
+  position: relative;
+}
+.aic-backdrop {
+  display: none;
+}
+.aic-topbar {
+  display: none;
 }
 .aic-side {
   width: 100%;
@@ -541,6 +587,10 @@ export const AiAdvisoryChat = () => {
   background: transparent;
   min-height: 0;
   box-sizing: border-box;
+  z-index: 2;
+}
+.aic-side-close {
+  display: none;
 }
 .aic-side-head { padding: 12px 0; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; }
 .aic-new-row { display: flex; gap: 8px; align-items: stretch; }
@@ -744,15 +794,21 @@ html:not(.dark) .aic-confirm {
   flex-direction: column;
   align-items: stretch;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 .aic-list {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px 0 8px;
   min-height: 0;
   width: 100%;
   max-width: 49.5rem;
+  margin-left: auto;
+  margin-right: auto;
   box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
 }
 .aic-thread {
   width: 100%;
@@ -765,8 +821,11 @@ html:not(.dark) .aic-confirm {
 .aic-row.user { justify-content: flex-end; }
 .aic-row.assistant { justify-content: flex-start; }
 .aic-msg {
-  max-width: 100%;
+  max-width: min(100%, 42rem);
   min-width: 0;
+}
+.aic-row.user .aic-msg {
+  max-width: min(85%, 36rem);
 }
 .aic-bubble {
   max-width: 100%;
@@ -863,9 +922,14 @@ html.dark .aic-cursor::after { color: rgb(var(--primary-light)); }
   flex-shrink: 0;
   width: 100%;
   max-width: 49.5rem;
+  margin-left: auto;
+  margin-right: auto;
   box-sizing: border-box;
 }
 .aic-composer-inner { width: 100%; box-sizing: border-box; }
+.aic-hint {
+  display: none;
+}
 .aic-quote-bar {
   display: flex;
   align-items: flex-start;
@@ -930,16 +994,211 @@ html.dark .aic-send {
 .aic-send:disabled { opacity: .5; cursor: not-allowed; }
 @media (max-width: 900px) {
   .aic-shell {
-    grid-template-columns: 12rem minmax(0, 1fr);
-    column-gap: 1.25rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    --aic-side-w: min(86vw, 20rem);
+    display: flex;
+    flex-direction: column;
+    column-gap: 0;
+    padding-left: 0;
+    padding-right: 0;
     max-width: none;
+    width: 100%;
+    min-height: calc(100dvh - 7.5rem);
+    height: calc(100dvh - 7.5rem);
+    overflow: hidden;
   }
+  .aic-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(127,127,127,.22);
+    background: transparent;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+  }
+  .aic-top-btn {
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(127,127,127,.1);
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .aic-top-btn:hover { background: rgba(127,127,127,.18); }
+  .aic-top-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .aic-top-title {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: .9;
+  }
+  .aic-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(0,0,0,.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+  }
+  .aic-shell.side-open .aic-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .aic-side {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--aic-side-w);
+    max-width: 86vw;
+    z-index: 50;
+    padding: 12px 12px 20px;
+    background: #0f141c;
+    color: #e8eaed;
+    box-shadow: 8px 0 32px rgba(0,0,0,.35);
+    transform: translateX(-105%);
+    transition: transform .22s ease;
+    overflow: hidden;
+  }
+  html:not(.dark) .aic-side {
+    background: #f7f8fa;
+    color: #111;
+    box-shadow: 8px 0 28px rgba(0,0,0,.12);
+  }
+  .aic-shell.side-open .aic-side {
+    transform: translateX(0);
+  }
+  .aic-side-close {
+    display: inline-flex;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(127,127,127,.12);
+    color: inherit;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+  .aic-side-head { padding-top: 4px; }
+  .aic-new-row { align-items: stretch; }
+  .aic-hist-actions {
+    display: inline-flex;
+  }
+  .aic-main {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+  }
+  .aic-list {
+    max-width: none;
+    padding: 12px 14px 6px;
+  }
+  .aic-thread { gap: 12px; }
+  .aic-msg {
+    max-width: 100%;
+  }
+  .aic-row.user .aic-msg {
+    max-width: 88%;
+  }
+  .aic-bubble {
+    font-size: 15px;
+    padding: 11px 13px;
+    line-height: 1.55;
+  }
+  .aic-composer {
+    max-width: none;
+    padding: 8px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid rgba(127,127,127,.18);
+    background: transparent;
+  }
+  .aic-box {
+    border-radius: 16px;
+    padding: 6px 6px 6px 10px;
+    align-items: flex-end;
+  }
+  .aic-input {
+    min-height: 40px;
+    max-height: 120px;
+    font-size: 16px;
+    padding: 10px 4px;
+  }
+  .aic-send {
+    min-width: 64px;
+    padding: 11px 14px;
+    border-radius: 12px;
+  }
+  .aic-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    opacity: .55;
+    text-align: center;
+  }
+  .aic-confirm {
+    right: 8px;
+  }
+}
+@media (max-width: 480px) {
+  .aic-shell {
+    min-height: calc(100dvh - 6.25rem);
+    height: calc(100dvh - 6.25rem);
+  }
+  .aic-top-title { font-size: 13px; }
 }
 @keyframes aic-spin { to { transform: rotate(360deg); } }
 @keyframes aic-blink { 50% { opacity: 0; } }
       `}</style>
+
+      <div
+        className="aic-backdrop"
+        aria-hidden={!sideOpen}
+        onClick={() => setSideOpen(false)}
+      />
+
+      <div className="aic-topbar">
+        <button
+          type="button"
+          className="aic-top-btn"
+          title="会话列表"
+          aria-label="打开会话列表"
+          aria-expanded={sideOpen}
+          onClick={() => setSideOpen(true)}
+        >
+          <Icon name="menu" />
+        </button>
+        <div className="aic-top-title">
+          {activeId
+            ? titleOf(sessions.find((s) => s.id === activeId) || {})
+            : "新会话"}
+        </div>
+        <button
+          type="button"
+          className="aic-top-btn"
+          title="新会话"
+          aria-label="新会话"
+          disabled={busy}
+          onClick={resetChat}
+        >
+          <Icon name="plus" />
+        </button>
+      </div>
 
       <aside className="aic-side">
         <div className="aic-side-head">
@@ -964,6 +1223,15 @@ html.dark .aic-send {
               }}
             >
               <Icon name="gear" />
+            </button>
+            <button
+              type="button"
+              className="aic-side-close"
+              title="关闭"
+              aria-label="关闭会话列表"
+              onClick={() => setSideOpen(false)}
+            >
+              <Icon name="close" />
             </button>
           </div>
           {showApiSettings ? (
@@ -1228,6 +1496,7 @@ html.dark .aic-send {
                 发送
               </button>
             </div>
+            <div className="aic-hint">点发送提交 · 可换行后继续输入</div>
           </div>
         </div>
       </div>
