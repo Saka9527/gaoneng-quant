@@ -1,13 +1,10 @@
 ---
 title: "lm_ths_db"
 sidebarTitle: "概览"
-description: "源库结构快照，54 张表。回测不直接扫这些全量表，精简镜像和本地文件见 表元数据放在哪。"
 ---
 
 - Host: `rm-uf68ip7k7isrv895h7o.mysql.rds.aliyuncs.com:6306`（只读账号接入，文档不含密码）
 - 表数量: **54**
-- 完整 JSON: `schema.json`（`./schema.json`）
-- 单表详情: `tables/`（`./tables/`）
 
 ## 表清单
 
@@ -84,7 +81,3 @@ description: "源库结构快照，54 张表。回测不直接扫这些全量表
 | `risk_warning_situation` | `bt_st_hat` | 戴帽区间 |
 | `corp_his_sw_ic` | `bt_industry` | 申万一级 |
 | `ls_stock_free_float_share` | `bt_float_share` | 自由流通股本 |
-
-`rit_inte_info`、`sec_basic_info`、`listing_state_chg` 仍只有源表文档，回测没有读。上市日期因此不在本地，新股前几个交易日不设涨跌停的窗口也没有落地。总股本、市盈率、市净率同样没有镜像列。
-
-其余 40 余张源表（资金流、龙虎榜、财报、股东、基金等）只有本目录的结构快照，服务不读。
